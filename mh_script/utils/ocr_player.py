@@ -1,19 +1,20 @@
+import mss
 import paddlehub as hub
-from PyQt6.QtGui.QTextCursor import position
 
 from mh_script.model.screen_region import ScreenRegion
 from mh_script.utils.screen import ScreenUtils
-from player import Player
+from .player import Player
 import os
 import cv2
 import numpy
+
 
 class OCR_Player(Player):
     def __init__(self, accuracy=0.85):
         super().__init__(accuracy)
         self.ocr = hub.Module(name="chinese_ocr_db_crnn_mobile", enable_mkldnn=True)
-        self.load_targets()
         self.target_map = {}
+        self.load_targets()
 
     def read(self, debug=False, region: ScreenRegion = None):
         """截图并识别，可传入区域"""
@@ -48,19 +49,20 @@ class OCR_Player(Player):
         return None
 
     def touch(self, position, offset_click=True, img_name=None):
-        Player.touch(position,offset_click,img_name)
+        Player.touch(position, offset_click, img_name)
 
+    def doubleTouch(self, position, offset_click=True, img_name=None):
+        Player.doubleTouch(position, offset_click, img_name)
     # 循环等待
-    def wait_find_by_pic(self, background:ScreenRegion, target_name):
-        position = self.find_by_pic(background,target_name)
-        while position is  None:
+    def wait_find_by_pic(self, background: ScreenRegion, target_name):
+        position = self.find_by_pic(background, target_name)
+        while position is None:
             self.delay()
             position = self.find_by_pic(background, target_name)
         return position
 
-
     # 匹配截图
-    def find_by_pic(self, background:ScreenRegion, target_name):
+    def find_by_pic(self, region: ScreenRegion, target_name):
         """在截图中寻找目标"""
         loc_pos = []
         if target_name not in self.target_map:
@@ -71,6 +73,7 @@ class OCR_Player(Player):
         h, w = target.shape[:2]
         ex, ey = 0, 0
 
+        background = self.background(region)
         result = cv2.matchTemplate(background, target, cv2.TM_CCOEFF_NORMED)
         locations = numpy.where(result >= self.accuracy)
 
@@ -84,8 +87,24 @@ class OCR_Player(Player):
         print(f'查找结果：{target_name} 匹配到 {len(loc_pos)} 个位置')
         return loc_pos if loc_pos else None
 
+    def background(self, region: ScreenRegion):
+        with mss.mss() as sct:
+            # 获取所有监视器信息
+            monitors = sct.monitors
+
+            # 设置全屏幕区域
+            full_monitors = {"top": region.top, "left": region.left, "width": region.width, "height": region.height}
+
+            # 获取全屏幕截图
+            full_screen = sct.grab(full_monitors)
+            # 截图对象转换为 NumPy 数组，以便后续在 OpenCV 中处理
+            full_screen = numpy.array(full_screen)
+            # 格式转换
+            full_screen = cv2.cvtColor(full_screen, cv2.COLOR_BGRA2BGR)
+            return full_screen
+
     # 匹配第一个截图
-    def find_by_pic_first(self, background: ScreenRegion, target_name):
+    def find_by_pic_first(self, region: ScreenRegion, target_name):
         """在截图中寻找目标"""
         if target_name not in self.target_map:
             print(f"未加载目标图片: {target_name}")
@@ -94,7 +113,7 @@ class OCR_Player(Player):
         target, _ = self.target_map[target_name]
         h, w = target.shape[:2]
         ex, ey = 0, 0
-
+        background = self.background(region)
         result = cv2.matchTemplate(background, target, cv2.TM_CCOEFF_NORMED)
         locations = numpy.where(result >= self.accuracy)
 
@@ -102,8 +121,8 @@ class OCR_Player(Player):
             x, y = pt[0] + w // 2, pt[1] + h // 2
             if abs(x - ex) + abs(y - ey) < 15:
                 continue
-            return [x,y]
-        return  None
+            return [x, y]
+        return None
 
     # 加载资源库的所有截图
     def load_targets(self, folder_name='resource'):
@@ -121,7 +140,7 @@ class OCR_Player(Player):
                     relative_folder = os.path.relpath(root, target_folder)
                     name = os.path.splitext(file)[0]
                     if relative_folder != ".":
-                        name = os.path.join(relative_folder, name)
+                        name = os.path.join(relative_folder, name).replace("\\", ".")
                     file_path = os.path.join(root, file)
                     image = cv2.imread(file_path)
                     if image is not None:

@@ -41,6 +41,17 @@ class Player:
         print(f"点击坐标 ({x}, {y}) 成功")
 
     @staticmethod
+    def doubleClick(position, is_offset=True):
+        if is_offset:
+            x, y = Player.random_offset(position)
+        else:
+            x, y = position
+        duration = random.uniform(0.1, 0.2)
+        pyautogui.moveTo(x, y, duration)
+        pyautogui.doubleClick(x, y)
+        print(f"双击坐标 ({x}, {y}) 成功")
+
+    @staticmethod
     def rightClick(position, is_offset=True):
         if is_offset:
             x, y = Player.random_offset(position)
@@ -73,3 +84,8 @@ class Player:
     def touch(position, offset_click=True, img_name=None):
         """提供 touch 的简化调用（给 OCR_Player 用）"""
         Player.click(position, is_offset=offset_click)
+
+    @staticmethod
+    def doubleTouch(position, offset_click=True, img_name=None):
+        """提供 touch 的简化调用（给 OCR_Player 用）"""
+        Player.doubleClick(position, is_offset=offset_click)

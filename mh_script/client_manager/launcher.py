@@ -81,3 +81,33 @@ class Launcher:
     def start_and_arrange(self):
         self.start_clients()
         return self.resize_and_move_window()
+
+    def get_regions(self):
+        print("正在查找已启动的梦幻西游窗口...")
+        windows = [w for w in gw.getWindowsWithTitle(self.window_title_keyword) if w.visible]
+        regions = []
+
+        if windows:
+            windows = windows[:self.num_windows]
+            for idx, win in enumerate(windows):
+                row = idx // self.windows_per_row
+                col = idx % self.windows_per_row
+
+                x = self.start_x + col * self.x_gap
+                y = self.start_y + row * self.y_gap
+
+                print(f"获取窗口 {idx + 1} 的区域为 ({x},{y},{self.window_width},{self.window_height})")
+
+                regions.append(ScreenRegion(
+                    top=y,
+                    left=x,
+                    width=self.window_width,
+                    height=self.window_height
+                ))
+
+            print("✅ 成功获取所有窗口区域信息！")
+        else:
+            print("❌ 未找到任何符合条件的梦幻西游窗口！")
+
+        return regions
+
