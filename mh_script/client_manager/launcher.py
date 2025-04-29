@@ -1,0 +1,83 @@
+import subprocess
+import time
+import pygetwindow as gw
+import psutil
+import pyautogui
+
+from mh_script.constant import constant
+from mh_script.model.screen_region import ScreenRegion
+
+
+class Launcher:
+
+    def __init__(self):
+        self.exe_path = constant.Constant.EXE_PATH
+        self.window_title_keyword = constant.Constant.WINDOW_TITLE_KEYWORD
+        self.process_name_keyword = constant.Constant.PROCESS_NAME_KEYWORD
+        self.num_windows = constant.Constant.NUM_WINDOWS
+        self.window_width = constant.Constant.WINDOW_WIDTH
+        self.window_height = constant.Constant.WINDOW_HEIGHT
+        self.windows_per_row = constant.Constant.WINDOWS_PER_ROW
+        self.start_x = constant.Constant.START_X
+        self.start_y = constant.Constant.START_Y
+        self.x_gap = constant.Constant.X_GAP
+        self.y_gap = constant.Constant.Y_GAP
+
+    def close_existing_clients(self):
+        print("正在查找并关闭已有的梦幻西游客户端...")
+        for proc in psutil.process_iter(['pid', 'name']):
+            try:
+                if self.process_name_keyword.lower() in proc.info['name'].lower():
+                    print(f"关闭进程：{proc.info['name']} (PID: {proc.info['pid']})")
+                    psutil.Process(proc.info['pid']).terminate()
+            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                pass
+        time.sleep(2)
+        print("✅ 已关闭所有梦幻西游客户端！")
+
+    def start_clients(self):
+        for i in range(self.num_windows):
+            subprocess.Popen(self.exe_path)
+            print(f"启动第 {i + 1} 个客户端...")
+            time.sleep(2)
+
+    def resize_and_move_window(self):
+        print("等待游戏客户端全部启动...")
+        for _ in range(10):
+            windows = [w for w in gw.getWindowsWithTitle(self.window_title_keyword) if w.visible]
+            if len(windows) >= self.num_windows:
+                break
+            time.sleep(1)
+
+        windows = [w for w in gw.getWindowsWithTitle(self.window_title_keyword) if w.visible]
+        regions = []
+
+        if windows:
+            windows = windows[:self.num_windows]
+            for idx, win in enumerate(windows):
+                row = idx // self.windows_per_row
+                col = idx % self.windows_per_row
+
+                x = self.start_x + col * self.x_gap
+                y = self.start_y + row * self.y_gap
+
+                print(f"调整窗口 {idx + 1} 到位置 ({x},{y})")
+                win.resizeTo(self.window_width, self.window_height)
+                win.moveTo(x, y)
+
+                regions.append(ScreenRegion(
+                    top=y,
+                    left=x,
+                    width=self.window_width,
+                    height=self.window_height
+                ))
+
+            print("✅ 所有窗口排列完成！")
+        else:
+            print("❌ 没找到梦幻西游窗口，请检查窗口标题！")
+
+        return regions
+
+    def start_and_arrange(self):
+        self.start_clients()
+        return self.resize_and_move_window()
