@@ -34,10 +34,13 @@ class BasicHandler:
     # 战斗失败
     def fail(self, region: ScreenRegion):
         return self.ocrPlayer.find_by_pic_first(region, "common.fail")
-    # TODO 清理主页面，根据生命值判断是否在主页面把，后续看是否要修改
+
+    # 清理主页面，根据活动判断是否在主页面
     def clean(self,region:ScreenRegion):
+        return
         for _ in range(10):
-            if self.ocrPlayer.find_by_pic_first(region, "common.activity") is None:
+            pos = self.ocrPlayer.find_by_pic_first(region=region,target_name= "common.activity")
+            if pos is None:
                 center = [region.left + region.width // 2, region.top + region.height // 2]
                 self.ocrPlayer.rightClick(center, True)
                 self.ocrPlayer.delay()

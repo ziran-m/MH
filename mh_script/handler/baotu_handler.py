@@ -60,13 +60,15 @@ class BaoTu:
 
         # 打开包裹
         pos = self.ocrPlayer.find_by_pic_first(region, "common.bag")
-        self.ocrPlayer.touch(pos, True, None)
-        self.delay()
+        if pos is not None:
+            self.ocrPlayer.touch(pos, True, None)
+            self.delay()
 
         # 点击整理
         pos = self.ocrPlayer.find_by_pic_first(region, "common.clean_up")
-        self.ocrPlayer.touch(pos, True, None)
-        self.delay()
+        if pos is not None:
+            self.ocrPlayer.touch(pos, True, None)
+            self.delay()
         # 双击背包里的宝图
         pos = self.ocrPlayer.find_by_pic_first(region, "baotu.bag_baotu")
         if pos is None:

@@ -21,7 +21,7 @@ class MiJing:
         self.basicHandler.goDailyActivity(region)
 
         # 点击秘境的参加,坐标要微调下
-        pos = self.ocrPlayer.find_by_pic(region, "mijing.canjia",0.6,True)
+        pos = self.ocrPlayer.find_by_pic_first(region, "mijing.canjia",0.6,True)
         # 找不到就是已经完成了
         if pos is None:
             print("任务已完成或找不到")
@@ -30,7 +30,7 @@ class MiJing:
         self.delay()
 
         # 会到陆萧然的对话框,秘境降妖
-        pos = self.ocrPlayer.wait_find_by_pic(region, "mijing.xiangyao")
+        pos = self.ocrPlayer.wait_find_by_pic_first(region, "mijing.xiangyao")
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
 

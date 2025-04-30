@@ -18,7 +18,7 @@ class DailyTask:
         self.regions = regions  # 存储每个客户端的窗口信息
 
     def run(self, idx):
-        ocrPlayer = OCR_Player
+        ocrPlayer = OCR_Player()
 
         # 宝图
         baotu = BaoTu(ocrPlayer)
