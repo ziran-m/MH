@@ -39,7 +39,7 @@ class YaBiao:
                 print("活力不够50")
                 break
             if times>=3:
-                # 是否还在押镖
+                # 是否还在押镖还是在战斗
                 while (self.basicHandler.battling(region) or
                        self.ocrPlayer.find_by_pic_first(region, "yabiao.doing") is not None):
                     self.delay(30,30)

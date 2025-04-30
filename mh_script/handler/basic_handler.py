@@ -27,14 +27,14 @@ class BasicHandler:
         self.ocrPlayer.touch(pos, True, None)
         self.ocrPlayer.delay()
 
-    # 是否在战斗
+    # 是否在战斗,true在战斗
     def battling(self, region: ScreenRegion):
-        return self.ocrPlayer.find_by_pic_first(region, "common.enter_battle_flag")
+        return self.ocrPlayer.find_by_pic_first(region, "common.enter_battle_flag") is not None
 
     # 战斗失败
     def fail(self, region: ScreenRegion):
         return self.ocrPlayer.find_by_pic_first(region, "common.fail")
-    # 清理主页面
+    # TODO 清理主页面，根据生命值判断是否在主页面把，后续看是否要修改
     def clean(self,region:ScreenRegion):
         for _ in range(10):
             if self.ocrPlayer.find_by_pic_first(region, target_name="common.live") is None:

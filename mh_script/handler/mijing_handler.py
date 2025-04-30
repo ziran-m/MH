@@ -20,7 +20,7 @@ class MiJing:
         self.basicHandler.goDailyActivity(region)
 
         # 点击秘境的参加,坐标要微调下
-        pos = self.ocrPlayer.find_by_pic(region, "mijing.goto")
+        pos = self.ocrPlayer.find_by_pic(region, "mijing.canjia",0.6,True)
         # 找不到就是已经完成了
         if pos is None:
             print("任务已完成或找不到")

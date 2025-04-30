@@ -15,7 +15,7 @@ class BaoTu:
         self.delay()
         self.basicHandler.clean(region)
 
-        # 看下任务栏有没有宝图任务先
+        # 看下任务栏有没有宝图任务
         pos = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission")
         if pos is not None:
             self.ocrPlayer.touch(pos, True, None)
@@ -25,29 +25,29 @@ class BaoTu:
 
 
 
-        # 点击宝图的参加,坐标要微调下
+        # 点击宝图的参加,找不到就是已经完成了
         pos = self.ocrPlayer.find_by_pic_first(region, "baotu.canjia",0.9,True)
-        # 找不到就是已经完成了
         if pos is None:
             print("任务已完成或找不到")
             return
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
-
+        # 清理页面
         self.basicHandler.clean(region)
-        # 会自动走到店小二脸上,点击听听无妨
+        # 自动走到店小二脸上,点击听听无妨
         pos = self.ocrPlayer.wait_find_by_pic_first(region, "baotu.start",0.9)
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
         # 点下任务栏宝图任务
         pos = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission")
         if pos is None:
-            print("问题领取失败了")
+            print("任务领取失败")
+            return
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
 
         # 根据战斗页面和宝图任务判断是否已经结束
-        while self.basicHandler.battling(region) or self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission"):
+        while self.basicHandler.battling(region) or self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission") is not None:
             self.delay(10, 10)
 
         print("宝图任务完成")
