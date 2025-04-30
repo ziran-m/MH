@@ -36,7 +36,7 @@ class Launcher:
         print("✅ 已关闭所有梦幻西游客户端！")
 
     def start_clients(self):
-        for i in range(self.num_windows):
+        for i in range(self.num_windows-self.get_regions_num()):
             subprocess.Popen(self.exe_path)
             print(f"启动第 {i + 1} 个客户端...")
             time.sleep(2)
@@ -81,7 +81,10 @@ class Launcher:
     def start_and_arrange(self):
         self.start_clients()
         return self.resize_and_move_window()
-
+    def get_regions_num(self):
+        print("正在查找已启动的梦幻西游窗口...")
+        windows = [w for w in gw.getWindowsWithTitle(self.window_title_keyword) if w.visible]
+        return len(windows)
     def get_regions(self):
         print("正在查找已启动的梦幻西游窗口...")
         windows = [w for w in gw.getWindowsWithTitle(self.window_title_keyword) if w.visible]

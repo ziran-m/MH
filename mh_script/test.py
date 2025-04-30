@@ -8,8 +8,4 @@ from mh_script.utils.player import Player
 
 
 l = Launcher()
-regions = l.get_regions()
-
-
-baotu = BaoTu()
-baotu.dig(regions[0])
+regions = l.start_and_arrange()
