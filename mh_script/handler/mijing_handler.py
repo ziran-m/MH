@@ -15,6 +15,7 @@ class MiJing:
     def do(self, region: ScreenRegion = None):
         # 延迟
         self.delay()
+        self.basicHandler.clean(region)
 
         # 去到日常活动页面
         self.basicHandler.goDailyActivity(region)

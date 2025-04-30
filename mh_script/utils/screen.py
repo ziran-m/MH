@@ -10,13 +10,24 @@ class ScreenUtils:
     @staticmethod
     def screen_shot(region: ScreenRegion):
         with mss.mss() as sct:
-            # 设置屏幕区域
-            full_monitors = {"top": region.top, "left": region.left, "width": region.width, "height": region.height}
+            if region is None:
+                monitor = sct.monitors[1]
+                region = ScreenRegion(
+                    top=monitor["top"],
+                    left=monitor["left"],
+                    width=monitor["width"],
+                    height=monitor["height"]
+                )
+                # 设置截图区域
+            monitor_region = {
+                "top": region.top,
+                "left": region.left,
+                "width": region.width,
+                "height": region.height
+            }
 
             # 获取屏幕截图
-            full_screen = sct.grab(full_monitors)
-            # 截图对象转换为 NumPy 数组，以便后续在 OpenCV 中处理
-            full_screen = numpy.array(full_screen)
-            # 格式转换
-            full_screen = cv2.cvtColor(full_screen, cv2.COLOR_BGRA2BGR)
-            return full_screen
+            img = sct.grab(monitor_region)
+            img = numpy.array(img)
+            img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+            return img

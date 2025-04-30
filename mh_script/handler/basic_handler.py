@@ -37,7 +37,7 @@ class BasicHandler:
     # TODO 清理主页面，根据生命值判断是否在主页面把，后续看是否要修改
     def clean(self,region:ScreenRegion):
         for _ in range(10):
-            if self.ocrPlayer.find_by_pic_first(region, target_name="common.live") is None:
+            if self.ocrPlayer.find_by_pic_first(region, target_name="common.blood") is None:
                 center = [region.left + region.width // 2, region.top + region.height // 2]
                 self.ocrPlayer.rightClick(center, True)
                 self.ocrPlayer.delay()

@@ -22,7 +22,7 @@ class YaBiao:
         pos = self.ocrPlayer.find_by_pic_first(region, "yabiao.canjia",0.9,True)
         # 找不到就是已经完成了
         if pos is None:
-            print("任务已完成或找不到")
+            print("押镖任务已完成或找不到")
             return
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
