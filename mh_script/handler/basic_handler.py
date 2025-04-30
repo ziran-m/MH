@@ -1,4 +1,5 @@
 from mh_script.model.screen_region import ScreenRegion
+from mh_script.utils.player import Player
 
 
 class BasicHandler:
@@ -10,25 +11,11 @@ class BasicHandler:
     def goDailyActivity(self, region: ScreenRegion = None):
         # 延迟
         self.ocrPlayer.delay()
-        # 是否有活动
-        pos = self.ocrPlayer.find_by_pic_first(background=region, target_name="common.activity")
 
-        times = 0
-        while pos is None:
-            print("请关闭弹窗等遮挡物")
-            center = [region.left + region.width // 2, region.top + region.height // 2]
-            self.ocrPlayer.rightClick(center, True)
-            self.ocrPlayer.delay()
-            pos = self.ocrPlayer.find_by_pic_first(region, "common.activity")
-            times += 1
-            if times >= 20:
-                print("有问题！！！")
-                return
-
-        # 进入活动页面
-        self.ocrPlayer.touch(pos, True, None)
+        # 快捷键打开
+        Player.hotKeyAlt('m')
         self.ocrPlayer.delay()
-        # 点击日常活动
+        # 点击日常活动，防止再挑战活动页面
         pos = self.ocrPlayer.find_by_pic(region, "common.activity_daily")
         self.ocrPlayer.touch(pos, True, None)
         self.ocrPlayer.delay()
@@ -40,3 +27,10 @@ class BasicHandler:
     # 战斗失败
     def fail(self, region: ScreenRegion):
         return self.ocrPlayer.find_by_pic_first(region, "common.fail")
+    # 清理主页面
+    def clean(self,region):
+        for _ in range(2):
+            center = [region.left + region.width // 2, region.top + region.height // 2]
+            self.ocrPlayer.rightClick(center, True)
+            self.ocrPlayer.delay()
+

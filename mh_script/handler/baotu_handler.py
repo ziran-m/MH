@@ -35,7 +35,7 @@ class BaoTu:
         self.ocrPlayer.wait_find_by_pic_first(region, "baotu.baotu_mission_start")
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
-        # 点下任务栏宝图
+        # 点下任务栏宝图任务
         pos = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission")
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
