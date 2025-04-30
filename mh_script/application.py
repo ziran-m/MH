@@ -17,13 +17,13 @@ def main():
 
     # 或者自动检测某个条件，比如检测界面出现什么按钮（如果你想全自动的话）
 
-    print("🟣 第二步：执行副本任务")
-    dungeon = DungeonTask(regions)
-    dungeon.run()
+    # print("🟣 第二步：执行副本任务")
+    # dungeon = DungeonTask(regions)
+    # dungeon.run(-1)
 
     print("🟢 第三步：执行日常任务")
-    daily = DailyTask(-1,regions)
-    daily.run()
+    daily = DailyTask(regions)
+    daily.run(-1)
 
 if __name__ == "__main__":
     main()

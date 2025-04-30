@@ -1,9 +1,11 @@
 from typing import List
 import pyautogui
 
+from mh_script.handler.mijing_handler import MiJing
 from mh_script.model.screen_region import ScreenRegion
 from mh_script.handler.baotu_handler import BaoTu
 from mh_script.constant.constant import Constant
+from mh_script.utils.ocr_player import OCR_Player
 
 
 class DailyTask:
@@ -15,12 +17,18 @@ class DailyTask:
         self.regions = regions  # 存储每个客户端的窗口信息
 
     def run(self, idx):
+        ocrPlayer = OCR_Player
 
-        baotu = BaoTu()
+        # 宝图
+        baotu = BaoTu(ocrPlayer)
+        # 秘境
+        mijing = MiJing(ocrPlayer)
         if idx == -1:
             for i in range(1, Constant.NUM_WINDOWS):
                 baotu.do(self.regions[i])
+                baotu.dig(self.regions[i])
         else:
             baotu.do(self.regions[idx])
+            baotu.dig(self.regions[idx])
 
         print("✅ 所有日常任务完成！")

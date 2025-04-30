@@ -1,19 +1,17 @@
-
 from mh_script.model.screen_region import ScreenRegion
-from mh_script.utils.ocr_player import OCR_Player
 
 
 class BasicHandler:
-    def __init__(self):
+    def __init__(self, ocrPlayer):
         # 初始化时创建 OCR_Player 实例
-        self.ocrPlayer = OCR_Player()
+        self.ocrPlayer = ocrPlayer
 
     # 打开日常活动
-    def goDailyActivity(self,region:ScreenRegion=None):
+    def goDailyActivity(self, region: ScreenRegion = None):
         # 延迟
         self.ocrPlayer.delay()
         # 是否有活动
-        pos = self.ocrPlayer.find_by_pic(background=region, target_name="common.activity")
+        pos = self.ocrPlayer.find_by_pic_first(background=region, target_name="common.activity")
 
         times = 0
         while pos is None:
@@ -21,7 +19,7 @@ class BasicHandler:
             center = [region.left + region.width // 2, region.top + region.height // 2]
             self.ocrPlayer.rightClick(center, True)
             self.ocrPlayer.delay()
-            pos = self.ocrPlayer.find_by_pic(region, "common.activity")
+            pos = self.ocrPlayer.find_by_pic_first(region, "common.activity")
             times += 1
             if times >= 20:
                 print("有问题！！！")
@@ -36,5 +34,9 @@ class BasicHandler:
         self.ocrPlayer.delay()
 
     # 是否在战斗
-    def battling(self,region:ScreenRegion):
-        return self.ocrPlayer.find_by_pic(region, "common.enter_battle_flag")
+    def battling(self, region: ScreenRegion):
+        return self.ocrPlayer.find_by_pic_first(region, "common.enter_battle_flag")
+
+    # 战斗失败
+    def fail(self, region: ScreenRegion):
+        return self.ocrPlayer.find_by_pic_first(region, "common.fail")

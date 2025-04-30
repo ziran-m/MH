@@ -16,7 +16,7 @@ class OCR_Player(Player):
         self.target_map = {}
         self.load_targets()
 
-    def read(self, debug=False, region: ScreenRegion = None):
+    def read(self, region: ScreenRegion = None, debug=False):
         """截图并识别，可传入区域"""
         screen = ScreenUtils.screen_shot(region) if region else ScreenUtils.screen_shot()
         imgs = [screen]
@@ -32,9 +32,9 @@ class OCR_Player(Player):
         return data
 
     # 匹配文字
-    def find_by_name(self, key_list, debug=False):
+    def find_by_name(self, key_list, region: ScreenRegion, debug=False):
         """找到关键字"""
-        data = self.read(debug)
+        data = self.read(region,debug)
         key_list = [key_list] if isinstance(key_list, str) else key_list
         re = False
         for key in key_list:
@@ -55,10 +55,10 @@ class OCR_Player(Player):
         Player.doubleTouch(position, offset_click, img_name)
     # 循环等待
     def wait_find_by_pic(self, background: ScreenRegion, target_name):
-        position = self.find_by_pic(background, target_name)
+        position = self.find_by_pic_first(background, target_name)
         while position is None:
             self.delay()
-            position = self.find_by_pic(background, target_name)
+            position = self.find_by_pic_first(background, target_name)
         return position
 
     # 匹配截图
@@ -73,7 +73,7 @@ class OCR_Player(Player):
         h, w = target.shape[:2]
         ex, ey = 0, 0
 
-        background = self.background(region)
+        background =ScreenUtils.screen_shot(region)
         result = cv2.matchTemplate(background, target, cv2.TM_CCOEFF_NORMED)
         locations = numpy.where(result >= self.accuracy)
 
@@ -87,22 +87,6 @@ class OCR_Player(Player):
         print(f'查找结果：{target_name} 匹配到 {len(loc_pos)} 个位置')
         return loc_pos if loc_pos else None
 
-    def background(self, region: ScreenRegion):
-        with mss.mss() as sct:
-            # 获取所有监视器信息
-            monitors = sct.monitors
-
-            # 设置全屏幕区域
-            full_monitors = {"top": region.top, "left": region.left, "width": region.width, "height": region.height}
-
-            # 获取全屏幕截图
-            full_screen = sct.grab(full_monitors)
-            # 截图对象转换为 NumPy 数组，以便后续在 OpenCV 中处理
-            full_screen = numpy.array(full_screen)
-            # 格式转换
-            full_screen = cv2.cvtColor(full_screen, cv2.COLOR_BGRA2BGR)
-            return full_screen
-
     # 匹配第一个截图
     def find_by_pic_first(self, region: ScreenRegion, target_name):
         """在截图中寻找目标"""
@@ -113,7 +97,7 @@ class OCR_Player(Player):
         target, _ = self.target_map[target_name]
         h, w = target.shape[:2]
         ex, ey = 0, 0
-        background = self.background(region)
+        background = ScreenUtils.screen_shot(region)
         result = cv2.matchTemplate(background, target, cv2.TM_CCOEFF_NORMED)
         locations = numpy.where(result >= self.accuracy)
 
