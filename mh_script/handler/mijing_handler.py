@@ -23,10 +23,12 @@ class MiJing:
         self.basicHandler.goDailyActivity(region)
 
         print("[秘境] 寻找“参加”按钮")
-        pos = self.ocrPlayer.find_by_pic_first(region, "mijing.canjia", 0.6, True)
+        pos = self.ocrPlayer.find_by_pic_first(region, "mijing.canjia", 0.8, True)
         if pos is None:
-            print("[秘境] 任务已完成或找不到“参加”按钮")
-            return
+            pos = self.ocrPlayer.find_by_pic_first(region, "mijing.canjia_v2", 0.8, True)
+            if pos is None:
+                print("[秘境] 任务已完成或找不到“参加”按钮")
+                return
         print(f"[秘境] 点击“参加”按钮：{pos}")
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
@@ -68,7 +70,7 @@ class MiJing:
                 self.join_fight(region)
                 lastBattleTime = datetime.datetime.now()
 
-            resume = self.ocrPlayer.find_by_pic_first(region, "mijing.goin_fight")
+            resume = self.ocrPlayer.find_by_pic_first(region, "mijing.join_fight")
             if resume is not None:
                 resumeTimes += 1
                 if resumeTimes <= 2:
@@ -81,10 +83,11 @@ class MiJing:
 
             if self.basicHandler.fail(region):
                 print("[秘境] 检测到战斗失败，准备退出")
+                self.basicHandler.clickCenter(region)
                 self.escape(region)
                 break
 
-            self.delay(0, 10)
+            self.delay(5, 10)
 
         print("[秘境] 秘境降妖完成")
 

@@ -40,10 +40,16 @@ class YaBiao:
             print(f"[押镖] 点击“开始押镖”：{pos}")
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
+            pos = self.ocrPlayer.find_by_pic_first(region, "yabiao.queding", 0.9)
+            print(f"[押镖] 点击“确定”：{pos}")
+            self.ocrPlayer.touch(pos, True, None)
+            self.delay()
+
             times += 1
 
             no_power = self.ocrPlayer.find_by_pic_first(region, "yabiao.no_power", 0.9)
             if no_power is not None:
+                self.basicHandler.clickCenter(region)
                 print("[押镖] 活力不足，任务中止")
                 break
 
@@ -58,4 +64,4 @@ class YaBiao:
         print("[押镖] 押镖任务完成")
 
     def delay(self, min_seconds=0.5, max_seconds=2.0):
-        Player.delay()
+        Player.delay(min_seconds,max_seconds)

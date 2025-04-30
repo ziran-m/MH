@@ -37,7 +37,7 @@ class BasicHandler:
 
     # 清理主页面，根据活动判断是否在主页面
     def clean(self,region:ScreenRegion):
-        for _ in range(10):
+        for _ in range(4):
             pos = self.ocrPlayer.find_by_pic_first(region=region, target_name= "common.activity",match=0.5)
             if pos is None:
                 center = [region.left + region.width // 2, region.top + region.height // 2]
