@@ -33,25 +33,20 @@ class MiJing:
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
 
-        # 如果是周一会让选择日月还是普通，选择
-        pos = self.ocrPlayer.find_by_pic_first(region, "mijing.goon")
+        # 如果是周一会让选择日月还是普通，选择普通
+        pos = self.ocrPlayer.find_by_pic_first(region, "mijing.join")
         if pos is not None:
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
         # 点击继续挑战
         pos = self.ocrPlayer.find_by_pic_first(region, "mijing.goon")
-        times = 0
-        while pos is None and times < 10:
-            self.delay()
-            pos = self.ocrPlayer.find_by_pic_first(region, "mijing.goon")
-            print("关闭可使用物品对继续战斗的遮挡")
-            times += 1
+        if pos is None :
+            print("找不到继续挑战")
+            return
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
         # 点击右侧秘境降妖的框会进入战斗
-        pos = self.ocrPlayer.find_by_pic_first(region, "mijing.fight")
-        self.ocrPlayer.touch(pos, True, None)
-        self.delay()
+        self.join_fight(region)
         # 点击进入战斗的次数
         resumeTimes = 0
         while True:
@@ -70,19 +65,24 @@ class MiJing:
                 else:
                     self.escape(region)
                     break
-
+            # 失败了也离开
             if self.basicHandler.fail(region):
                 self.escape(region)
                 break
             self.delay(0, 10)
+        print("秘境降妖完成")
 
     # 离开
     def escape(self, region: ScreenRegion):
+        self.delay()
+        # 点下中间
+        self.basicHandler.clickCenter(region)
         self.delay()
         # 点击离开
         escape = self.ocrPlayer.find_by_pic_first(region, 'mijing.escape')
         if escape is not None:
             self.ocrPlayer.touch(escape, True, None)
+            self.delay()
 
     def touch_center(self, region):
         center = [region.left + region.width // 2, region.top + region.height // 2]
@@ -92,6 +92,9 @@ class MiJing:
     # 进入战斗
     def join_fight(self, region: ScreenRegion):
         pos = self.ocrPlayer.find_by_pic_first(region, "mijing.fight")
+        if pos is None:
+            print("找不到秘境降妖")
+            return
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
 
