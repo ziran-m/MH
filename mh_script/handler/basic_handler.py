@@ -15,14 +15,14 @@ class BasicHandler:
         # 点击活动
         pos = self.ocrPlayer.find_by_pic_first(region, "common.activity",0.5)
         if pos is None:
-            print("匹配活动失败")
+            print("❌ 匹配活动失败")
             return
         self.ocrPlayer.touch(pos, True, None)
         self.ocrPlayer.delay()
         # 点击日常活动，防止再挑战活动页面
         pos = self.ocrPlayer.find_by_pic_first(region, "common.activity_daily")
         if pos is None:
-            print("匹配活动页面的日常活动失败")
+            print("❌ 匹配活动页面的日常活动失败")
             return
         self.ocrPlayer.touch(pos, True, None)
         self.ocrPlayer.delay()

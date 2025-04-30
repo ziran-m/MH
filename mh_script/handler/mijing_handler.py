@@ -13,7 +13,7 @@ class MiJing:
 
     # 秘境
     def do(self, region: ScreenRegion = None):
-        print("[秘境] 开始执行")
+        print("[秘境] 开始执行秘境任务流程")
         self.delay()
 
         print("[秘境] 清理界面")

@@ -66,7 +66,7 @@ class OCR_Player(Player):
         """在截图中寻找目标"""
         loc_pos = []
         if target_name not in self.target_map:
-            print(f"未加载目标图片: {target_name}")
+            print(f"❌ 未加载目标图片: {target_name}")
             return loc_pos
 
         target, _ = self.target_map[target_name]
@@ -91,7 +91,7 @@ class OCR_Player(Player):
     def find_by_pic_first(self, region: ScreenRegion, target_name, match=None, rightmost=False):
         """在截图中寻找目标"""
         if target_name not in self.target_map:
-            print(f"未加载目标图片: {target_name}")
+            print(f"❌ 未加载目标图片: {target_name}")
             return None
 
         target, _ = self.target_map[target_name]
@@ -120,7 +120,7 @@ class OCR_Player(Player):
         self.target_map.clear()
         target_folder = os.path.join(os.getcwd(), folder_name)
         if not os.path.exists(target_folder):
-            print(f"目标文件夹 {target_folder} 不存在")
+            print(f"❌ 目标文件夹 {target_folder} 不存在")
             return
 
         for root, _, files in os.walk(target_folder):
