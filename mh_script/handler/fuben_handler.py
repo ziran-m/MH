@@ -48,7 +48,7 @@ class Fuben:
             self.delay()
 
         # 等待找到百晓仙子
-        pos = self.ocrPlayer.wait_find_by_pic_first(region, "fuben.canjia", 0.9)
+        pos = self.ocrPlayer.wait_find_by_pic_first(region, "fuben.join", 0.9)
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
 
@@ -64,9 +64,10 @@ class Fuben:
 
         # 需要点击确定
         pos_list = self.ocrPlayer.find_by_pic(region, "fuben.check", 0.9)
-        for p in pos_list:
-            self.ocrPlayer.touch(p, True, None)
-            self.delay()
+        if pos_list is not None:
+            for p in pos_list:
+                self.ocrPlayer.touch(p, True, None)
+                self.delay()
         # 副本里面没有活动这个图标
         while self.ocrPlayer.find_by_pic_first(region,"common.activity") is None:
             # 副本任务有个时间的标志
