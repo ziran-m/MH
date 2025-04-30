@@ -13,7 +13,7 @@ class BasicHandler:
         # 延迟
         self.ocrPlayer.delay()
         # 是否有活动
-        pos = self.ocrPlayer.find_by_pic(background=region, target_name="common.activity")
+        pos = self.ocrPlayer.find_by_pic(region, "common.activity")
 
         times = 0
         while pos is None:

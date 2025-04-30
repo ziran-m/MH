@@ -19,7 +19,7 @@ def main():
 
     print("🟣 第二步：执行副本任务")
     dungeon = DungeonTask(regions)
-    dungeon.run()
+    dungeon.run(-1)
 
     print("🟢 第三步：执行日常任务")
     daily = DailyTask(-1,regions)
