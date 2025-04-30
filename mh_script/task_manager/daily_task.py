@@ -2,6 +2,7 @@ from typing import List
 import pyautogui
 
 from mh_script.handler.mijing_handler import MiJing
+from mh_script.handler.yabiao_handler import YaBiao
 from mh_script.model.screen_region import ScreenRegion
 from mh_script.handler.baotu_handler import BaoTu
 from mh_script.constant.constant import Constant
@@ -23,12 +24,18 @@ class DailyTask:
         baotu = BaoTu(ocrPlayer)
         # 秘境
         mijing = MiJing(ocrPlayer)
+        # 秘境
+        yabiao = YaBiao(ocrPlayer)
         if idx == -1:
             for i in range(1, Constant.NUM_WINDOWS):
                 baotu.do(self.regions[i])
                 baotu.dig(self.regions[i])
+                mijing.do(self.regions[i])
+                yabiao.do(self.regions[i])
         else:
             baotu.do(self.regions[idx])
             baotu.dig(self.regions[idx])
+            mijing.do(self.regions[idx])
+            yabiao.do(self.regions[idx])
 
         print("✅ 所有日常任务完成！")
