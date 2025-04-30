@@ -24,20 +24,20 @@ class BaoTu:
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
 
+
         print("[宝图] 进入日常活动界面")
         self.basicHandler.goDailyActivity(region)
 
         print("[宝图] 查找“宝图.参加”按钮")
         pos = self.ocrPlayer.find_by_pic_first(region, "baotu.canjia", 0.9, True)
         if pos is None:
-            print("[宝图] 找不到参加按钮，任务可能已完成")
-            return
+            pos = self.ocrPlayer.find_by_pic_first(region, "baotu.canjia_v2", 0.9, True)
+            if pos is None:
+                print("[宝图] 找不到参加按钮，任务可能已完成")
+                return
         print(f"[宝图] 点击“参加”：{pos}")
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
-
-        print("[宝图] 清理页面")
-        self.basicHandler.clean(region)
 
         print("[宝图] 等待“听听无妨”按钮")
         pos = self.ocrPlayer.wait_find_by_pic_first(region, "baotu.start", 0.9)
