@@ -11,87 +11,100 @@ class BaoTu:
         self.basicHandler = BasicHandler(ocrPlayer)
 
     def do(self, region: ScreenRegion = None):
-        # 延迟
+        print("[宝图] 开始执行宝图任务流程")
         self.delay()
+
+        print("[宝图] 清理页面")
         self.basicHandler.clean(region)
 
-        # 看下任务栏有没有宝图任务
+        print("[宝图] 检查任务栏是否存在宝图任务")
         pos = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission")
         if pos is not None:
+            print(f"[宝图] 点击宝图任务：{pos}")
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
-        # 去到日常活动页面
+
+        print("[宝图] 进入日常活动界面")
         self.basicHandler.goDailyActivity(region)
 
-
-
-        # 点击宝图的参加,找不到就是已经完成了
-        pos = self.ocrPlayer.find_by_pic_first(region, "baotu.canjia",0.9,True)
+        print("[宝图] 查找“宝图.参加”按钮")
+        pos = self.ocrPlayer.find_by_pic_first(region, "baotu.canjia", 0.9, True)
         if pos is None:
-            print("任务已完成或找不到")
+            print("[宝图] 找不到参加按钮，任务可能已完成")
             return
+        print(f"[宝图] 点击“参加”：{pos}")
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
-        # 清理页面
+
+        print("[宝图] 清理页面")
         self.basicHandler.clean(region)
-        # 自动走到店小二脸上,点击听听无妨
-        pos = self.ocrPlayer.wait_find_by_pic_first(region, "baotu.start",0.9)
+
+        print("[宝图] 等待“听听无妨”按钮")
+        pos = self.ocrPlayer.wait_find_by_pic_first(region, "baotu.start", 0.9)
+        print(f"[宝图] 点击“听听无妨”：{pos}")
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
-        # 点下任务栏宝图任务
+
+        print("[宝图] 查找任务栏宝图任务")
         pos = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission")
         if pos is None:
-            print("任务领取失败")
+            print("[宝图] 找不到任务栏宝图任务，领取失败")
             return
+        print(f"[宝图] 点击任务栏宝图任务：{pos}")
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
 
-        # 根据战斗页面和宝图任务判断是否已经结束
-        while self.basicHandler.battling(region) or self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission") is not None:
+        print("[宝图] 等待战斗或任务执行完成")
+        while self.basicHandler.battling(region) or self.ocrPlayer.find_by_pic_first(region,
+                                                                                     "baotu.baotu_mission") is not None:
             self.delay(10, 10)
 
-        print("宝图任务完成")
+        print("[宝图] 宝图任务完成")
 
-    # 挖宝
     def dig(self, region: ScreenRegion = None):
-        # 延迟
+        print("[宝图] 开始执行挖宝流程")
         self.delay()
         self.basicHandler.clean(region)
 
-        # 打开包裹
+        print("[宝图] 打开包裹")
         pos = self.ocrPlayer.find_by_pic_first(region, "common.bag")
         if pos is not None:
+            print(f"[宝图] 点击包裹图标：{pos}")
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
 
-        # 点击整理
+        print("[宝图] 点击整理按钮")
         pos = self.ocrPlayer.find_by_pic_first(region, "common.clean_up")
         if pos is not None:
+            print(f"[宝图] 点击整理：{pos}")
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
-        # 双击背包里的宝图
+
+        print("[宝图] 查找包裹中的藏宝图")
         pos = self.ocrPlayer.find_by_pic_first(region, "baotu.bag_baotu")
         if pos is None:
-            print("挖宝完成")
+            print("[宝图] 找不到宝图，挖宝流程结束")
             return
+        print(f"[宝图] 双击藏宝图：{pos}")
         self.ocrPlayer.doubleTouch(pos, True, None)
         self.delay()
-        # 点击藏宝图的使用
+
+        print("[宝图] 开始使用藏宝图")
         dig_flag = True
         times = 0
         while dig_flag:
             pos = self.ocrPlayer.find_by_pic_first(region, "baotu.use_baotu")
             if pos is not None:
+                print(f"[宝图] 点击使用藏宝图：{pos}")
                 self.ocrPlayer.touch(pos, True, None)
                 times = 0
             times += 1
-            # 2s休眠
             self.delay(2, 2)
-            #  60s没有第二个使用直接跳出循环了
             if times % 30 == 0:
+                print("[宝图] 超过60秒未发现藏宝图使用按钮，结束挖宝")
                 dig_flag = False
 
-        print("挖宝完成")
+        print("[宝图] 挖宝完成")
 
     def delay(self, min_seconds=0.5, max_seconds=2.0):
         Player.delay()
