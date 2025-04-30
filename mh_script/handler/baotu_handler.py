@@ -1,4 +1,3 @@
-
 from mh_script.handler.basic_handler import BasicHandler
 from mh_script.model.screen_region import ScreenRegion
 from mh_script.utils.ocr_player import OCR_Player
@@ -6,10 +5,10 @@ from mh_script.utils.player import Player
 
 
 class BaoTu:
-    def __init__(self):
+    def __init__(self, ocrPlayer):
         # 初始化时创建 OCR_Player 实例
-        self.ocrPlayer = OCR_Player()
-        self.basicHandler = BasicHandler()
+        self.ocrPlayer = ocrPlayer
+        self.basicHandler = BasicHandler(ocrPlayer)
 
     def do(self, region: ScreenRegion = None):
         # 延迟
@@ -36,15 +35,14 @@ class BaoTu:
         self.ocrPlayer.wait_find_by_pic_first(region, "baotu.baotu_mission_start")
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
-        # 点下任务栏宝图
+        # 点下任务栏宝图任务
         pos = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission")
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
 
-
         # 根据战斗页面和宝图任务判断是否已经结束
-        while self.basicHandler.battling(region) or  self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission"):
-            self.delay(10,10)
+        while self.basicHandler.battling(region) or self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission"):
+            self.delay(10, 10)
 
         print("宝图任务完成")
 
@@ -66,22 +64,21 @@ class BaoTu:
         self.ocrPlayer.doubleTouch(pos, True, None)
         self.delay()
         # 点击藏宝图的使用
-        dig_flag=True
+        dig_flag = True
         times = 0
         while dig_flag:
             pos = self.ocrPlayer.find_by_pic_first(region, "baotu.use_baotu")
             if pos is not None:
                 self.ocrPlayer.touch(pos, True, None)
                 times = 0
-            times+= 1
+            times += 1
             # 2s休眠
-            self.delay(2,2)
+            self.delay(2, 2)
             #  60s没有第二个使用直接跳出循环了
             if times % 30 == 0:
-                dig_flag=False
+                dig_flag = False
 
         print("挖宝完成")
 
-
-    def delay(self,min_seconds=0.5, max_seconds=2.0):
+    def delay(self, min_seconds=0.5, max_seconds=2.0):
         Player.delay()

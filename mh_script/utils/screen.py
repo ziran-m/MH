@@ -1,29 +1,22 @@
 import mss
+
 from mh_script.model.screen_region import ScreenRegion
+import cv2
+import numpy
 
 
 class ScreenUtils:
+
     @staticmethod
-    def screen_shot(region: ScreenRegion = None):
-        """截图，可选指定区域对象"""
+    def screen_shot(region: ScreenRegion):
         with mss.mss() as sct:
-            monitor = sct.monitors[0]  # 主屏幕
+            # 设置屏幕区域
+            full_monitors = {"top": region.top, "left": region.left, "width": region.width, "height": region.height}
 
-            if region is None:
-                region = ScreenRegion(
-                    top=0,
-                    left=0,
-                    width=monitor["width"],
-                    height=monitor["height"]
-                )
-
-            capture_area = {
-                "top": region.top,
-                "left": region.left,
-                "width": region.width,
-                "height": region.height
-            }
-
-            screenshot = sct.grab(capture_area)
-            img = np.array(screenshot)
-            return cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+            # 获取屏幕截图
+            full_screen = sct.grab(full_monitors)
+            # 截图对象转换为 NumPy 数组，以便后续在 OpenCV 中处理
+            full_screen = numpy.array(full_screen)
+            # 格式转换
+            full_screen = cv2.cvtColor(full_screen, cv2.COLOR_BGRA2BGR)
+            return full_screen

@@ -89,3 +89,8 @@ class Player:
     def doubleTouch(position, offset_click=True, img_name=None):
         """提供 touch 的简化调用（给 OCR_Player 用）"""
         Player.doubleClick(position, is_offset=offset_click)
+
+    @staticmethod
+    def hotKeyAlt(s):
+        """提供 touch 的简化调用（给 OCR_Player 用）"""
+        pyautogui.hotkey('alt',s)
