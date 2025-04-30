@@ -1,6 +1,6 @@
 import datetime
 
-from basic_handler import BasicHandler
+from mh_script.handler.basic_handler import BasicHandler
 from mh_script.model.screen_region import ScreenRegion
 from mh_script.utils.player import Player
 

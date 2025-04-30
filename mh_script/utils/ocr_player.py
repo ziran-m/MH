@@ -10,7 +10,7 @@ import numpy
 
 
 class OCR_Player(Player):
-    def __init__(self, accuracy=0.85):
+    def __init__(self, accuracy=0.8):
         super().__init__(accuracy)
         self.ocr = hub.Module(name="chinese_ocr_db_crnn_mobile", enable_mkldnn=True)
         self.target_map = {}
@@ -32,7 +32,7 @@ class OCR_Player(Player):
         return data
 
     # 匹配文字
-    def find_by_name(self, key_list, region: ScreenRegion, debug=False):
+    def find_by_name(self,region: ScreenRegion ,key_list, debug=False):
         """找到关键字"""
         data = self.read(region,debug)
         key_list = [key_list] if isinstance(key_list, str) else key_list
@@ -54,11 +54,11 @@ class OCR_Player(Player):
     def doubleTouch(self, position, offset_click=True, img_name=None):
         Player.doubleTouch(position, offset_click, img_name)
     # 循环等待
-    def wait_find_by_pic(self, background: ScreenRegion, target_name):
-        position = self.find_by_pic_first(background, target_name)
+    def wait_find_by_pic_first(self, background: ScreenRegion, target_name, match=None, rightmost=False):
+        position = self.find_by_pic_first(background, target_name,match,rightmost)
         while position is None:
             self.delay()
-            position = self.find_by_pic_first(background, target_name)
+            position = self.find_by_pic_first(background, target_name,match,rightmost)
         return position
 
     # 匹配截图
@@ -88,7 +88,7 @@ class OCR_Player(Player):
         return loc_pos if loc_pos else None
 
     # 匹配第一个截图
-    def find_by_pic_first(self, region: ScreenRegion, target_name):
+    def find_by_pic_first(self, region: ScreenRegion, target_name, match=None, rightmost=False):
         """在截图中寻找目标"""
         if target_name not in self.target_map:
             print(f"未加载目标图片: {target_name}")
@@ -96,17 +96,23 @@ class OCR_Player(Player):
 
         target, _ = self.target_map[target_name]
         h, w = target.shape[:2]
-        ex, ey = 0, 0
         background = ScreenUtils.screen_shot(region)
         result = cv2.matchTemplate(background, target, cv2.TM_CCOEFF_NORMED)
-        locations = numpy.where(result >= self.accuracy)
+        if match is None:
+            match = self.accuracy
+        locations = numpy.where(result >= match)
 
-        for pt in zip(*locations[::-1]):
-            x, y = pt[0] + w // 2, pt[1] + h // 2
-            if abs(x - ex) + abs(y - ey) < 15:
-                continue
-            return [x, y]
-        return None
+        if rightmost:
+            # 最右侧
+            for pt in zip(*locations[::-1]):
+                x, y = pt[0] + w , pt[1] + h // 2
+                return [x, y]  # 直接返回第一个匹配
+        else:
+            # 原逻辑，匹配第一个
+            for pt in zip(*locations[::-1]):
+                x, y = pt[0] + w // 2, pt[1] + h // 2
+                return [x, y]  # 直接返回第一个匹配
+            return None
 
     # 加载资源库的所有截图
     def load_targets(self, folder_name='resource'):

@@ -13,6 +13,7 @@ class BaoTu:
     def do(self, region: ScreenRegion = None):
         # 延迟
         self.delay()
+        self.basicHandler.clean(region)
 
         # 看下任务栏有没有宝图任务先
         pos = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission")
@@ -22,8 +23,10 @@ class BaoTu:
         # 去到日常活动页面
         self.basicHandler.goDailyActivity(region)
 
+
+
         # 点击宝图的参加,坐标要微调下
-        pos = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_canjia")
+        pos = self.ocrPlayer.find_by_pic_first(region, "baotu.canjia",0.9,True)
         # 找不到就是已经完成了
         if pos is None:
             print("任务已完成或找不到")
@@ -31,8 +34,9 @@ class BaoTu:
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
 
+        self.basicHandler.clean(region)
         # 会自动走到店小二脸上,点击听听无妨
-        self.ocrPlayer.wait_find_by_pic_first(region, "baotu.baotu_mission_start")
+        self.ocrPlayer.wait_find_by_pic_first(region, "baotu.start",0.9)
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
         # 点下任务栏宝图任务
@@ -50,6 +54,8 @@ class BaoTu:
     def dig(self, region: ScreenRegion = None):
         # 延迟
         self.delay()
+        self.basicHandler.clean(region)
+
         # 打开包裹
         pos = self.ocrPlayer.find_by_pic_first(region, "common.bag")
         self.ocrPlayer.touch(pos, True, None)
@@ -61,6 +67,9 @@ class BaoTu:
         self.delay()
         # 双击背包里的宝图
         pos = self.ocrPlayer.find_by_pic_first(region, "baotu.bag_baotu")
+        if pos is None:
+            print("挖宝完成")
+            return
         self.ocrPlayer.doubleTouch(pos, True, None)
         self.delay()
         # 点击藏宝图的使用

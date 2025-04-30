@@ -12,11 +12,12 @@ class BasicHandler:
         # 延迟
         self.ocrPlayer.delay()
 
-        # 快捷键打开
-        Player.hotKeyAlt('m')
+        # 匹配日常
+        pos = self.ocrPlayer.find_by_pic_first(region, "common.activity",0.5)
+        self.ocrPlayer.touch(pos, True, None)
         self.ocrPlayer.delay()
         # 点击日常活动，防止再挑战活动页面
-        pos = self.ocrPlayer.find_by_pic(region, "common.activity_daily")
+        pos = self.ocrPlayer.find_by_pic_first(region, "common.activity_daily")
         self.ocrPlayer.touch(pos, True, None)
         self.ocrPlayer.delay()
 
@@ -28,9 +29,17 @@ class BasicHandler:
     def fail(self, region: ScreenRegion):
         return self.ocrPlayer.find_by_pic_first(region, "common.fail")
     # 清理主页面
-    def clean(self,region):
-        for _ in range(2):
-            center = [region.left + region.width // 2, region.top + region.height // 2]
-            self.ocrPlayer.rightClick(center, True)
-            self.ocrPlayer.delay()
+    def clean(self,region:ScreenRegion):
+        for _ in range(10):
+            if self.ocrPlayer.find_by_pic_first(region, target_name="common.live") is None:
+                center = [region.left + region.width // 2, region.top + region.height // 2]
+                self.ocrPlayer.rightClick(center, True)
+                self.ocrPlayer.delay()
+            else:
+                self.ocrPlayer.delay()
+                return
 
+    def clickCenter(self,region:ScreenRegion):
+        center = [region.left + region.width // 2, region.top + region.height // 2]
+        self.ocrPlayer.rightClick(center, True)
+        self.ocrPlayer.delay()
