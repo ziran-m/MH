@@ -14,10 +14,16 @@ class BasicHandler:
 
         # 匹配日常
         pos = self.ocrPlayer.find_by_pic_first(region, "common.activity",0.5)
+        if pos is None:
+            print("匹配活动失败")
+            return
         self.ocrPlayer.touch(pos, True, None)
         self.ocrPlayer.delay()
         # 点击日常活动，防止再挑战活动页面
         pos = self.ocrPlayer.find_by_pic_first(region, "common.activity_daily")
+        if pos is None:
+            print("匹配活动页面的日常活动失败")
+            return
         self.ocrPlayer.touch(pos, True, None)
         self.ocrPlayer.delay()
 
@@ -38,7 +44,7 @@ class BasicHandler:
             else:
                 self.ocrPlayer.delay()
                 return
-
+    # 点击图中间
     def clickCenter(self,region:ScreenRegion):
         center = [region.left + region.width // 2, region.top + region.height // 2]
         self.ocrPlayer.rightClick(center, True)

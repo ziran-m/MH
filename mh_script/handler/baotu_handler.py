@@ -36,7 +36,7 @@ class BaoTu:
 
         self.basicHandler.clean(region)
         # 会自动走到店小二脸上,点击听听无妨
-        self.ocrPlayer.wait_find_by_pic_first(region, "baotu.start",0.9)
+        pos = self.ocrPlayer.wait_find_by_pic_first(region, "baotu.start",0.9)
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
         # 点下任务栏宝图任务
