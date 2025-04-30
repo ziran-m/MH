@@ -41,6 +41,8 @@ class BaoTu:
         self.delay()
         # 点下任务栏宝图任务
         pos = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission")
+        if pos is None:
+            print("问题领取失败了")
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
 
