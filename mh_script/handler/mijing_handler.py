@@ -23,18 +23,19 @@ class MiJing:
         self.basicHandler.goDailyActivity(region)
 
         print("[秘境] 寻找“参加”按钮")
-        pos = self.ocrPlayer.find_by_pic_first(region, "mijing.canjia", 0.8, True)
+        pos = self.ocrPlayer.find_by_pic_first(region, "mijing.canjia", 0.9, True)
         if pos is None:
-            pos = self.ocrPlayer.find_by_pic_first(region, "mijing.canjia_v2", 0.8, True)
-            if pos is None:
-                print("[秘境] 任务已完成或找不到“参加”按钮")
-                return
+            print("[秘境] 任务已完成或找不到“参加”按钮")
+            return
         print(f"[秘境] 点击“参加”按钮：{pos}")
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
 
         print("[秘境] 等待“降妖”对话框")
         pos = self.ocrPlayer.wait_find_by_pic_first(region, "mijing.xiangyao")
+        if pos is None:
+            print("[[秘境] 等待“降妖”对话框异常")
+            return
         print(f"[秘境] 点击“降妖”：{pos}")
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
@@ -77,7 +78,7 @@ class MiJing:
                     print(f"[秘境] 尝试第 {resumeTimes} 次点击“进入战斗”：{resume}")
                     self.ocrPlayer.touch(resume, True, None)
                 else:
-                    print("[秘境] 多次进入战斗失败，尝试退出")
+                    print("[秘境] 多次进入战斗，尝试退出")
                     self.escape(region)
                     break
 
@@ -108,7 +109,6 @@ class MiJing:
             self.delay()
         else:
             print("[秘境] 未找到“离开”按钮，可能已离开或不在战斗中")
-
 
     def join_fight(self, region: ScreenRegion):
         print("[秘境] 尝试查找“降妖”图标以进入战斗")

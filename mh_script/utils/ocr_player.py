@@ -56,8 +56,10 @@ class OCR_Player(Player):
     # 循环等待
     def wait_find_by_pic_first(self, background: ScreenRegion, target_name, match=None, rightmost=False):
         position = self.find_by_pic_first(background, target_name,match,rightmost)
-        while position is None:
+        times = 0
+        while position is None and times <=10:
             self.delay()
+            times+=1
             position = self.find_by_pic_first(background, target_name,match,rightmost)
         return position
 
@@ -78,7 +80,8 @@ class OCR_Player(Player):
         locations = numpy.where(result >= self.accuracy)
 
         for pt in zip(*locations[::-1]):
-            x, y = pt[0] + w // 2, pt[1] + h // 2
+            x = pt[0] + region.left + w // 2
+            y = pt[1] + region.top + h // 2
             if abs(x - ex) + abs(y - ey) < 15:
                 continue
             ex, ey = x, y
@@ -105,12 +108,14 @@ class OCR_Player(Player):
         if rightmost:
             # 最右侧
             for pt in zip(*locations[::-1]):
-                x, y = pt[0] + w , pt[1] + h // 2
+                x = pt[0] + region.left + w
+                y = pt[1] + region.top + h //2
                 return [x, y]  # 直接返回第一个匹配
         else:
             # 原逻辑，匹配第一个
             for pt in zip(*locations[::-1]):
-                x, y = pt[0] + w // 2, pt[1] + h // 2
+                x = pt[0] + region.left + w // 2
+                y = pt[1] + region.top + h // 2
                 return [x, y]  # 直接返回第一个匹配
             return None
 

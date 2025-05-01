@@ -11,7 +11,7 @@ class Player:
 
     # 延时
     @staticmethod
-    def delay(min_seconds=0.5, max_seconds=3.0):
+    def delay(min_seconds=1.0, max_seconds=3.0):
         time.sleep(random.uniform(min_seconds, max_seconds))
 
     @staticmethod

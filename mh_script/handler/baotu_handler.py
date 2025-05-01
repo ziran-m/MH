@@ -31,10 +31,8 @@ class BaoTu:
             print("[宝图] 查找“宝图.参加”按钮")
             pos = self.ocrPlayer.find_by_pic_first(region, "baotu.canjia", 0.9, True)
             if pos is None:
-                pos = self.ocrPlayer.find_by_pic_first(region, "baotu.canjia_v2", 0.9, True)
-                if pos is None:
-                    print("[宝图] 找不到参加按钮，任务可能已完成")
-                    return
+                print("[宝图] 找不到参加按钮，任务可能已完成")
+                return
             print(f"[宝图] 点击“参加”：{pos}")
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
@@ -42,6 +40,9 @@ class BaoTu:
             print("[宝图] 等待“听听无妨”按钮")
             pos = self.ocrPlayer.wait_find_by_pic_first(region, "baotu.start", 0.9)
             print(f"[宝图] 点击“听听无妨”：{pos}")
+            if pos is None:
+                print("[宝图] 等待“听听无妨”按钮异常")
+                return
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
             self.ocrPlayer.touch(pos, True, None)
@@ -69,7 +70,7 @@ class BaoTu:
         self.basicHandler.clean(region)
 
         print("[宝图] 打开包裹")
-        pos = self.ocrPlayer.find_by_pic_first(region, "common.bag",0.7)
+        pos = self.ocrPlayer.find_by_pic_first(region, "common.bag", 0.7)
         if pos is not None:
             print(f"[宝图] 点击包裹图标：{pos}")
             self.ocrPlayer.touch(pos, True, None)

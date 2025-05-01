@@ -3,12 +3,13 @@ from mh_script.handler.mijing_handler import MiJing
 from mh_script.handler.yabiao_handler import YaBiao
 from mh_script.model.screen_region import ScreenRegion
 from mh_script.utils.ocr_player import OCR_Player
+from mh_script.utils.player import Player
 
 if __name__ == "__main__":
     ocrPlayer = OCR_Player()
     region = ScreenRegion(0, 0, 768, 600)
-    pos = ocrPlayer.find_by_pic_first(region, "common.bag", 0.7 )
-    # Player.move(pos, False)
+    pos = ocrPlayer.find_by_pic_first(region, "yabiao.canjia", 0.9,True )
+    Player.move(pos, False)
     regions=[]
     region = ScreenRegion(0, 0, 768, 600)
     regions.append(region)
@@ -21,6 +22,6 @@ if __name__ == "__main__":
     # baotu.dig(region)
     # mijing = MiJing(ocrPlayer)
     # mijing.do(region)
-    yabiao = YaBiao(ocrPlayer)
-    yabiao.do(region)
+    # yabiao = YaBiao(ocrPlayer)
+    # yabiao.do(region)
 

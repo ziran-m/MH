@@ -27,7 +27,7 @@ class DailyTask:
         # 秘境
         yabiao = YaBiao(ocrPlayer)
         if idx == -1:
-            for i in range(1, Constant.NUM_WINDOWS):
+            for i in range(0, Constant.NUM_WINDOWS):
                 baotu.do(self.regions[i])
                 baotu.dig(self.regions[i])
                 mijing.do(self.regions[i])
