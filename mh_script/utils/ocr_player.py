@@ -63,6 +63,15 @@ class OCR_Player(Player):
             position = self.find_by_pic_first(background, target_name,match,rightmost)
         return position
 
+    def wait_no_time_find_by_pic_first(self, background: ScreenRegion, target_name, match=None, rightmost=False):
+        position = self.find_by_pic_first(background, target_name,match,rightmost)
+
+        while position is None:
+            self.delay()
+
+            position = self.find_by_pic_first(background, target_name,match,rightmost)
+        return position
+
     # 匹配截图
     def find_by_pic(self, region: ScreenRegion, target_name):
         """在截图中寻找目标"""

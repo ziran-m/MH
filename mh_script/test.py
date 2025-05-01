@@ -8,7 +8,7 @@ from mh_script.utils.player import Player
 if __name__ == "__main__":
     ocrPlayer = OCR_Player()
     region = ScreenRegion(0, 0, 768, 600)
-    pos = ocrPlayer.find_by_pic_first(region, "yabiao.canjia", 0.9,True )
+    pos = ocrPlayer.find_by_pic_first(region, "mijing.canjia", 0.9,True )
     Player.move(pos, False)
     regions=[]
     region = ScreenRegion(0, 0, 768, 600)

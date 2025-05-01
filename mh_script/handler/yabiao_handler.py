@@ -24,6 +24,7 @@ class YaBiao:
         pos = self.ocrPlayer.find_by_pic_first(region, "yabiao.canjia", 0.9, True)
         if pos is None:
             print("[押镖] 找不到参加按钮，可能任务已完成")
+            self.basicHandler.clickCenter(region)
             return
 
         print(f"[押镖] 点击“参加”按钮：{pos}")
@@ -33,13 +34,15 @@ class YaBiao:
         print("[押镖] 再次清理页面")
         self.basicHandler.clean(region)
 
-        times = 0
+        print("[押镖] 等待“开始押镖”按钮出现")
+        pos = self.ocrPlayer.wait_find_by_pic_first(region, "yabiao.start", 0.9)
+        if pos is None:
+            print("[押镖] 等待“开始押镖”按钮出现异常")
+            return
+        times = 1
         while True:
             print("[押镖] 等待“开始押镖”按钮出现")
-            pos = self.ocrPlayer.wait_find_by_pic_first(region, "yabiao.start", 0.9)
-            if pos is None:
-                print("[押镖] 等待“开始押镖”按钮出现异常")
-                return
+            pos = self.ocrPlayer.wait_no_time_find_by_pic_first(region, "yabiao.start", 0.9)
             print(f"[押镖] 点击“开始押镖”：{pos}")
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
@@ -55,9 +58,6 @@ class YaBiao:
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
             times += 1
-
-
-
             if times >= 3:
                 print("[押镖] 达到执行上限，检查是否仍在押镖或战斗中")
                 while (self.basicHandler.battling(region) or

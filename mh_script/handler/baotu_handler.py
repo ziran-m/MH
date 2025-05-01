@@ -103,8 +103,8 @@ class BaoTu:
                 times = 0
             times += 1
             self.delay(2, 2)
-            if times % 60 == 0:
-                print("[宝图] 超过120秒未发现藏宝图使用按钮，结束挖宝")
+            if times % 40 == 0:
+                print("[宝图] 超过80秒未发现藏宝图使用按钮，结束挖宝")
                 dig_flag = False
 
         print("[宝图] 挖宝完成")
