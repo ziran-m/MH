@@ -6,7 +6,7 @@ import pyautogui
 
 from mh_script.constant import constant
 from mh_script.model.screen_region import ScreenRegion
-
+from mh_script.utils.log_util import global_log
 
 class Launcher:
 
@@ -23,26 +23,15 @@ class Launcher:
         self.x_gap = constant.Constant.X_GAP
         self.y_gap = constant.Constant.Y_GAP
 
-    def close_existing_clients(self):
-        print("正在查找并关闭已有的梦幻西游客户端...")
-        for proc in psutil.process_iter(['pid', 'name']):
-            try:
-                if self.process_name_keyword.lower() in proc.info['name'].lower():
-                    print(f"关闭进程：{proc.info['name']} (PID: {proc.info['pid']})")
-                    psutil.Process(proc.info['pid']).terminate()
-            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-                pass
-        time.sleep(2)
-        print("✅ 已关闭所有梦幻西游客户端！")
 
     def start_clients(self):
         for i in range(self.num_windows-self.get_regions_num()):
             subprocess.Popen(self.exe_path)
-            print(f"启动第 {i + 1} 个客户端...")
+            global_log.info(f"启动第 {i + 1} 个客户端...")
             time.sleep(2)
 
     def resize_and_move_window(self):
-        print("等待游戏客户端全部启动...")
+        global_log.info("等待游戏客户端全部启动...")
         for _ in range(10):
             windows = [w for w in gw.getWindowsWithTitle(self.window_title_keyword) if w.visible]
             if len(windows) >= self.num_windows:
@@ -61,7 +50,7 @@ class Launcher:
                 x = self.start_x + col * self.x_gap
                 y = self.start_y + row * self.y_gap
 
-                print(f"调整窗口 {idx + 1} 到位置 ({x},{y})")
+                global_log.info(f"调整窗口 {idx + 1} 到位置 ({x},{y})")
                 win.resizeTo(self.window_width, self.window_height)
                 win.moveTo(x, y)
 
@@ -72,21 +61,23 @@ class Launcher:
                     height=self.window_height
                 ))
 
-            print("✅ 所有窗口排列完成！")
+            global_log.info("✅ 所有窗口排列完成！")
         else:
-            print("❌ 没找到梦幻西游窗口，请检查窗口标题！")
+            global_log.info("❌ 没找到梦幻西游窗口，请检查窗口标题！")
 
         return regions
 
     def start_and_arrange(self):
         self.start_clients()
         return self.resize_and_move_window()
+
     def get_regions_num(self):
-        print("正在查找已启动的梦幻西游窗口...")
+        global_log.info("正在查找已启动的梦幻西游窗口...")
         windows = [w for w in gw.getWindowsWithTitle(self.window_title_keyword) if w.visible]
         return len(windows)
+
     def get_regions(self):
-        print("正在查找已启动的梦幻西游窗口...")
+        global_log.info("正在查找已启动的梦幻西游窗口...")
         windows = [w for w in gw.getWindowsWithTitle(self.window_title_keyword) if w.visible]
         regions = []
 
@@ -99,7 +90,7 @@ class Launcher:
                 x = self.start_x + col * self.x_gap
                 y = self.start_y + row * self.y_gap
 
-                print(f"获取窗口 {idx + 1} 的区域为 ({x},{y},{self.window_width},{self.window_height})")
+                global_log.info(f"获取窗口 {idx + 1} 的区域为 ({x},{y},{self.window_width},{self.window_height})")
 
                 regions.append(ScreenRegion(
                     top=y,
@@ -108,9 +99,26 @@ class Launcher:
                     height=self.window_height
                 ))
 
-            print("✅ 成功获取所有窗口区域信息！")
+            global_log.info("✅ 成功获取所有窗口区域信息！")
         else:
-            print("❌ 未找到任何符合条件的梦幻西游窗口！")
+            global_log.info("❌ 未找到任何符合条件的梦幻西游窗口！")
 
         return regions
+
+    def close_windows(self):
+        global_log.info("正在关闭梦幻西游窗口...")
+
+        # 查找所有符合条件的窗口并关闭它们
+        windows = [w for w in gw.getWindowsWithTitle(self.window_title_keyword) if w.visible]
+
+        if windows:
+            for win in windows:
+                global_log.info(f"正在关闭窗口：{win.title}")
+                win.close()  # 关闭窗口
+            global_log.info("✅ 成功关闭所有窗口！")
+        else:
+            global_log.info("❌ 未找到任何符合条件的梦幻西游窗口！")
+
+
+
 
