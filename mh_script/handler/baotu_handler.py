@@ -11,6 +11,9 @@ class BaoTu:
         self.basicHandler = BasicHandler(ocrPlayer)
 
     def do(self, region: ScreenRegion = None):
+        while self.basicHandler.battling(region):
+            self.delay()
+
         print("[宝图] 开始执行宝图任务流程")
         self.delay()
 
@@ -58,10 +61,8 @@ class BaoTu:
             self.delay()
 
         print("[宝图] 等待战斗或任务执行完成")
-        while self.basicHandler.battling(region) or self.ocrPlayer.find_by_pic_first(region,
-                                                                                     "baotu.baotu_mission") is not None:
-            self.delay(10, 10)
-
+        while self.basicHandler.battling(region) and self.ocrPlayer.find_by_pic_first(region,"baotu.baotu_mission") is not None:
+            self.delay(30,30)
         print("[宝图] 宝图任务完成")
 
     def dig(self, region: ScreenRegion = None):
@@ -96,7 +97,7 @@ class BaoTu:
         dig_flag = True
         times = 0
         while dig_flag:
-            pos = self.ocrPlayer.find_by_pic_first(region, "baotu.use_baotu")
+            pos = self.ocrPlayer.find_by_pic_first(region, "baotu.use_baotu",0.9)
             if pos is not None:
                 print(f"[宝图] 点击使用藏宝图：{pos}")
                 self.ocrPlayer.touch(pos, False, None)

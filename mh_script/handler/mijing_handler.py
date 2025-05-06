@@ -46,6 +46,11 @@ class MiJing:
             print(f"[秘境] 点击“普通挑战”：{pos}")
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
+            pos = self.ocrPlayer.find_by_pic_first(region, "mijing.yes")
+            if pos is not None:
+                print(f"[秘境] 点击“确定”：{pos}")
+                self.ocrPlayer.touch(pos, True, None)
+                self.delay()
 
         print("[秘境] 查找“继续挑战”按钮")
         pos = self.ocrPlayer.find_by_pic_first(region, "mijing.goon")

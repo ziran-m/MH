@@ -11,6 +11,9 @@ class YaBiao:
         self.basicHandler = BasicHandler(ocrPlayer)
 
     def do(self, region: ScreenRegion = None):
+        while self.basicHandler.battling(region):
+            self.delay()
+
         print("[押镖] 开始执行押镖任务流程")
         self.delay()
 
@@ -45,7 +48,7 @@ class YaBiao:
             pos = self.ocrPlayer.wait_no_time_find_by_pic_first(region, "yabiao.start", 0.9)
             print(f"[押镖] 点击“开始押镖”：{pos}")
             self.ocrPlayer.touch(pos, True, None)
-            self.delay()
+            self.delay(3,3)
 
             no_power = self.ocrPlayer.find_by_pic_first(region, "yabiao.no_power", 0.9)
             if no_power is not None:

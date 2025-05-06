@@ -20,6 +20,7 @@ class DailyTask:
     def run(self, idx):
         ocrPlayer = OCR_Player()
 
+
         # 宝图
         baotu = BaoTu(ocrPlayer)
         # 秘境
