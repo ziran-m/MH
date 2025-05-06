@@ -1,3 +1,6 @@
+import threading
+from typing import List
+
 from mh_script.handler.basic_handler import BasicHandler
 from mh_script.model.screen_region import ScreenRegion
 from mh_script.utils.ocr_player import OCR_Player
@@ -9,6 +12,26 @@ class YaBiao:
         # 初始化时创建 OCR_Player 实例
         self.ocrPlayer = ocrPlayer
         self.basicHandler = BasicHandler(ocrPlayer)
+
+
+    def do_all(self,regions:List[ScreenRegion]):
+        print("[押镖] 开始执行押镖任务流程")
+        threads = []
+
+        # 对于每个区域，启动一个线程来执行 do
+        for region in regions:
+            t_do = threading.Thread(target=self.do, args=(region,))
+
+            t_do.start()  # do任务
+            threads.append(t_do)
+
+
+        # 等待所有线程执行完毕
+        for t in threads:
+            t.join()
+
+        print("[押镖] 所有任务执行完成")
+
 
     def do(self, region: ScreenRegion = None):
         print("[押镖] 开始执行押镖任务流程")

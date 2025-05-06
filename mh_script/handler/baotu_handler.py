@@ -1,3 +1,6 @@
+import threading
+from typing import List
+
 from mh_script.handler.basic_handler import BasicHandler
 from mh_script.model.screen_region import ScreenRegion
 from mh_script.utils.ocr_player import OCR_Player
@@ -10,10 +13,38 @@ class BaoTu:
         self.ocrPlayer = ocrPlayer
         self.basicHandler = BasicHandler(ocrPlayer)
 
+    def do_all(self,regions:List[ScreenRegion]):
+        print("[宝图] 开始执行宝图任务流程")
+        threads = []
+
+        # 对于每个区域，启动一个线程来执行 do
+        for region in regions:
+            t_do = threading.Thread(target=self.do, args=(region,))
+
+            t_do.start()  # do任务
+            threads.append(t_do)
+
+
+        # 等待所有线程执行完毕
+        for t in threads:
+            t.join()
+
+        print("[宝图] 所有任务执行完成")
+
+
     def do(self, region: ScreenRegion = None):
         print("[宝图] 开始执行宝图任务流程")
+        print(f"[宝图] 区域坐标: ({region.top}, {region.left})")  # 假设 region 有 x, y 属性
+        print(f"[宝图] 区域大小: {region.width}x{region.height}")  # 假设 region 有 width, height 属性
         self.delay()
 
+        self.before_do(region)
+
+        self.while_do(region)
+
+        print("[宝图] 宝图任务完成")
+
+    def before_do(self, region):
         print("[宝图] 清理页面")
         self.basicHandler.clean(region)
 
@@ -57,12 +88,11 @@ class BaoTu:
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
 
+    def while_do(self, region):
         print("[宝图] 等待战斗或任务执行完成")
         while self.basicHandler.battling(region) or self.ocrPlayer.find_by_pic_first(region,
                                                                                      "baotu.baotu_mission") is not None:
             self.delay(10, 10)
-
-        print("[宝图] 宝图任务完成")
 
     def dig(self, region: ScreenRegion = None):
         print("[宝图] 开始执行挖宝流程")
@@ -92,6 +122,11 @@ class BaoTu:
         self.ocrPlayer.doubleTouch(pos, True, None)
         self.delay()
 
+        self.while_dig(region)
+
+        print("[宝图] 挖宝完成")
+
+    def while_dig(self, region):
         print("[宝图] 开始使用藏宝图")
         dig_flag = True
         times = 0
@@ -106,8 +141,6 @@ class BaoTu:
             if times % 40 == 0:
                 print("[宝图] 超过80秒未发现藏宝图使用按钮，结束挖宝")
                 dig_flag = False
-
-        print("[宝图] 挖宝完成")
 
     def delay(self, min_seconds=1.0, max_seconds=2.0):
         Player.delay()

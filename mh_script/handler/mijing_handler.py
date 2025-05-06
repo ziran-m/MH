@@ -1,4 +1,6 @@
 import datetime
+import threading
+from typing import List
 
 from mh_script.handler.basic_handler import BasicHandler
 from mh_script.model.screen_region import ScreenRegion
@@ -11,9 +13,28 @@ class MiJing:
         self.ocrPlayer = ocrPlayer
         self.basicHandler = BasicHandler(ocrPlayer)
 
+    def do_all(self, regions: List[ScreenRegion]):
+        print("[秘境] 开始执行秘境任务流程")
+        threads = []
+
+        # 对于每个区域，启动一个线程来执行do
+        for region in regions:
+            t_do = threading.Thread(target=self.do, args=(region,))
+
+            t_do.start()  # do任务
+            threads.append(t_do)
+
+        # 等待所有线程执行完毕
+        for t in threads:
+            t.join()
+
+        print("[秘境] 所有任务执行完成")
+
     # 秘境
     def do(self, region: ScreenRegion = None):
         print("[秘境] 开始执行秘境任务流程")
+        print(f"[秘境] 区域坐标: ({region.top}, {region.left})")  # 假设 region 有 x, y 属性
+        print(f"[秘境] 区域大小: {region.width}x{region.height}")  # 假设 region 有 width, height 属性
         self.delay()
 
         print("[秘境] 清理界面")
@@ -25,8 +46,10 @@ class MiJing:
         print("[秘境] 寻找“参加”按钮")
         pos = self.ocrPlayer.find_by_pic_first(region, "mijing.canjia", 0.9, True)
         if pos is None:
-            print("[秘境] 任务已完成或找不到“参加”按钮")
-            return
+            pos = self.ocrPlayer.find_by_pic_first(region, "mijing.canjia_v2", 0.9, True)
+            if pos is None:
+                print("[秘境] 任务已完成或找不到“参加”按钮")
+                return
         print(f"[秘境] 点击“参加”按钮：{pos}")
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
@@ -59,9 +82,13 @@ class MiJing:
         print("[秘境] 准备进入战斗")
         self.join_fight(region)
 
+        self.while_do(region)
+
+        print("[秘境] 秘境降妖完成")
+
+    def while_do(self, region):
         resumeTimes = 0
         lastBattleTime = datetime.datetime.now()
-
         while True:
             if self.basicHandler.battling(region):
                 print("[秘境] 正在战斗中...")
@@ -89,8 +116,6 @@ class MiJing:
                 break
 
             self.delay(5, 10)
-
-        print("[秘境] 秘境降妖完成")
 
     # 离开
     def escape(self, region: ScreenRegion):
@@ -120,5 +145,5 @@ class MiJing:
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
 
-    def delay(self, min_seconds=0.5, max_seconds=3.0):
+    def delay(self, min_seconds=1.0, max_seconds=3.0):
         Player.delay()
