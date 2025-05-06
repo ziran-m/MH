@@ -43,7 +43,7 @@ class DaTi:
         log.info("[三界奇缘] 三界奇缘答题完成")
 
     def keju(self, region: ScreenRegion):
-        log.info("[科举答题] 开始执行三界奇缘任务流程")
+        log.info("[科举答题] 开始执行科举答题任务流程")
         log.info("[科举答题] 清理界面")
         self.basicHandler.clean(region)
 
@@ -64,7 +64,7 @@ class DaTi:
             self.basicHandler.clickCenter(region)
             self.delay()
 
-        log.info("[科举答题] 三界奇缘答题完成")
+        log.info("[科举答题] 科举答题完成")
 
     def delay(self, min_seconds=2.0, max_seconds=3.0):
         Player.delay(min_seconds, max_seconds)
