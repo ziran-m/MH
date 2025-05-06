@@ -4,6 +4,7 @@ from mh_script.handler.mijing_handler import MiJing
 from mh_script.handler.yabiao_handler import YaBiao
 from mh_script.model.screen_region import ScreenRegion
 from mh_script.handler.baotu_handler import BaoTu
+from mh_script.handler.dati_handler import DaTi
 from mh_script.constant.constant import Constant
 from mh_script.utils.log_util import global_log , set_thread_prefix
 from mh_script.utils.ocr_player import OCR_Player
@@ -16,6 +17,7 @@ class DailyTask:
         self.baotu = BaoTu(ocrPlayer)
         self.mijing = MiJing(ocrPlayer)
         self.yabiao = YaBiao(ocrPlayer)
+        self.dati = DaTi(ocrPlayer)
         self.regions = regions
 
     def run_tasks(self, region: ScreenRegion, idx: int):
@@ -27,6 +29,7 @@ class DailyTask:
         self.baotu.dig(region)
         self.mijing.do(region)
         self.yabiao.do(region)
+        self.dati.do(region)
 
         global_log .info("✅ 所有日常任务完成")
 
