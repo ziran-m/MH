@@ -1,42 +1,49 @@
+import threading
 from typing import List
-import pyautogui
-
 from mh_script.handler.mijing_handler import MiJing
 from mh_script.handler.yabiao_handler import YaBiao
 from mh_script.model.screen_region import ScreenRegion
 from mh_script.handler.baotu_handler import BaoTu
+from mh_script.handler.dati_handler import DaTi
 from mh_script.constant.constant import Constant
+from mh_script.utils.log_util import global_log , set_thread_prefix
 from mh_script.utils.ocr_player import OCR_Player
+
 
 
 class DailyTask:
     def __init__(self, regions: List[ScreenRegion]):
-        """
-        初始化副本任务
-        :param regions: 客户端窗口的区域信息，包含窗口的大小、位置等
-        """
-        self.regions = regions  # 存储每个客户端的窗口信息
-
-    def run(self, idx):
         ocrPlayer = OCR_Player()
+        self.baotu = BaoTu(ocrPlayer)
+        self.mijing = MiJing(ocrPlayer)
+        self.yabiao = YaBiao(ocrPlayer)
+        self.dati = DaTi(ocrPlayer)
+        self.regions = regions
 
+    def run_tasks(self, region: ScreenRegion, idx: int):
+        prefix = f"窗口{idx}"
+        set_thread_prefix(prefix)
+        global_log .info("开始执行日常任务")
 
-        # 宝图
-        baotu = BaoTu(ocrPlayer)
-        # 秘境
-        mijing = MiJing(ocrPlayer)
-        # 秘境
-        yabiao = YaBiao(ocrPlayer)
+        self.baotu.do(region)
+        self.baotu.dig(region)
+        self.mijing.do(region)
+        self.yabiao.do(region)
+        self.dati.do(region)
+
+        global_log .info("✅ 所有日常任务完成")
+
+    def run(self, idx: int):
         if idx == -1:
-            for i in range(0, Constant.NUM_WINDOWS):
-                baotu.do(self.regions[i])
-                baotu.dig(self.regions[i])
-                mijing.do(self.regions[i])
-                yabiao.do(self.regions[i])
-        else:
-            baotu.do(self.regions[idx])
-            baotu.dig(self.regions[idx])
-            mijing.do(self.regions[idx])
-            yabiao.do(self.regions[idx])
+            threads = []
+            for i in range(Constant.NUM_WINDOWS):
+                thread = threading.Thread(target=self.run_tasks, args=(self.regions[i], i))
+                threads.append(thread)
+                thread.start()
 
-        print("✅ 所有日常任务完成！")
+            for thread in threads:
+                thread.join()
+
+            global_log.info( "✅ 所有窗口的任务执行完毕")
+        else:
+            self.run_tasks(self.regions[idx], idx)

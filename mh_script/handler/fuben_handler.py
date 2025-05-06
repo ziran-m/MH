@@ -9,12 +9,11 @@ class Fuben:
         # 初始化时创建 OCR_Player 实例
         self.ocrPlayer = ocrPlayer
         self.basicHandler = BasicHandler(ocrPlayer)
-    # 前置条件，队伍组队组好，且双本没有打
+
+    # 前置条件，队伍组队组好
     def do(self,region:ScreenRegion,go_map,times=0):
         if times > 1:
             return
-        # 延迟
-        self.delay()
         # 清理页面
         self.basicHandler.clean(region)
 
