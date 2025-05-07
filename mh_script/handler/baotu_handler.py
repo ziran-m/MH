@@ -86,11 +86,10 @@ class BaoTu:
     def while_do(self, region: ScreenRegion):
         log.info("[宝图] 等待战斗或任务执行完成")
         while self.basicHandler.battling(region) or self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission"):
-            self.delay(10, 10)
+            self.delay(15, 30)
 
     def dig(self, region: ScreenRegion):
         log.info("[宝图] 开始执行挖宝流程")
-        self.delay()
         self.basicHandler.clean(region)
 
         log.info("[宝图] 打开包裹")
@@ -136,5 +135,5 @@ class BaoTu:
                 log.info("[宝图] 超过80秒未发现藏宝图使用按钮，结束挖宝")
                 dig_flag = False
 
-    def delay(self, min_seconds=1.0, max_seconds=2.0):
+    def delay(self, min_seconds=1.0, max_seconds=3.0):
         Player.delay(min_seconds, max_seconds)
