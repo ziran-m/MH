@@ -1,33 +1,22 @@
+from mh_script.client_manager.launcher import Launcher
 from mh_script.handler.baotu_handler import BaoTu
+from mh_script.handler.dati_handler import DaTi
 from mh_script.handler.mijing_handler import MiJing
 from mh_script.handler.yabiao_handler import YaBiao
-from mh_script.model.screen_region import ScreenRegion
 from mh_script.utils.ocr_player import OCR_Player
-from mh_script.utils.player import Player
-from mh_script.utils.log_util import global_log,log
+
 if __name__ == "__main__":
+    launcher = Launcher()
+    regions = launcher.get_regions()
+    region = regions[0]
 
-
-    log.info("test")
-
-    # ocrPlayer = OCR_Player()
-    # region = ScreenRegion(0, 0, 768, 600)
-    # pos = ocrPlayer.find_by_pic_first(region, "mijing.canjia", 0.9,True )
-    # Player.move(pos, False)
-    # regions=[]
-    # region = ScreenRegion(0, 0, 768, 600)
-    # regions.append(region)
-    #
-    # ocrPlayer = OCR_Player()
-
-
-
-    # 宝图
-    # baotu = BaoTu(ocrPlayer)
-    # baotu.do(region)
-    # baotu.dig(region)
-    # mijing = MiJing(ocrPlayer)
-    # mijing.do(region)
-    # yabiao = YaBiao(ocrPlayer)
-    # yabiao.do(region)
-
+    ocrPlayer = OCR_Player()
+    baotu = BaoTu(ocrPlayer)
+    baotu.do(region)
+    baotu.dig(region)
+    mijing = MiJing(ocrPlayer)
+    mijing.do(region)
+    yabiao = YaBiao(ocrPlayer)
+    yabiao.do(region)
+    dati = DaTi(ocrPlayer)
+    dati.do(region)
