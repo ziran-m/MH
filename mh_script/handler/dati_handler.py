@@ -37,9 +37,10 @@ class DaTi:
 
 
         while self.ocrPlayer.find_by_pic_first(region, "dati.sanjie_end", 0.9, True) is None:
-            self.basicHandler.clickCenter(region)
+            self.basicHandler.clickLeftCenter(region)
             self.delay()
 
+        self.basicHandler.clean(region)
         log.info("[三界奇缘] 三界奇缘答题完成")
 
     def keju(self, region: ScreenRegion):
@@ -61,9 +62,10 @@ class DaTi:
         self.delay()
 
         while self.ocrPlayer.find_by_pic_first(region, "dati.keju_end", 0.9, True) is None:
-            self.basicHandler.clickCenter(region)
+            self.basicHandler.clickLeftCenter(region)
             self.delay()
 
+        self.basicHandler.clean(region)
         log.info("[科举答题] 科举答题完成")
 
     def delay(self, min_seconds=2.0, max_seconds=3.0):

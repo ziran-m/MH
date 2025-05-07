@@ -7,16 +7,16 @@ from mh_script.utils.ocr_player import OCR_Player
 
 if __name__ == "__main__":
     launcher = Launcher()
-    regions = launcher.get_regions()
+    regions = launcher.start_and_arrange(1)
     region = regions[0]
 
     ocrPlayer = OCR_Player()
     baotu = BaoTu(ocrPlayer)
-    baotu.do(region)
-    baotu.dig(region)
-    mijing = MiJing(ocrPlayer)
-    mijing.do(region)
-    yabiao = YaBiao(ocrPlayer)
-    yabiao.do(region)
+    # baotu.do(region)
+    # baotu.dig(region)
+    # mijing = MiJing(ocrPlayer)
+    # mijing.do(region)
+    # yabiao = YaBiao(ocrPlayer)
+    # yabiao.do(region)
     dati = DaTi(ocrPlayer)
     dati.do(region)

@@ -51,3 +51,8 @@ class BasicHandler:
         center = [region.left + region.width // 2, region.top + region.height // 2]
         self.ocrPlayer.rightClick(center, True)
         self.ocrPlayer.delay()
+
+    def clickLeftCenter(self, region: ScreenRegion):
+        center = [region.left + region.width // 2, region.top + region.height // 2]
+        self.ocrPlayer.touch(center, True)
+        self.ocrPlayer.delay()
