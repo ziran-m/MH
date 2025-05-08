@@ -1,5 +1,4 @@
-import mss
-import paddlehub as hub
+from paddleocr import PaddleOCR
 
 from mh_script.model.screen_region import ScreenRegion
 from mh_script.utils.screen import ScreenUtils
@@ -12,40 +11,30 @@ import numpy
 class OCR_Player(Player):
     def __init__(self, accuracy=0.8):
         super().__init__(accuracy)
-        self.ocr = hub.Module(name="chinese_ocr_db_crnn_mobile", enable_mkldnn=True)
+        self.ocr = PaddleOCR(use_angle_cls=True, lang='ch')
         self.target_map = {}
         self.load_targets()
 
-    def read(self, region: ScreenRegion = None, debug=False):
+    def read(self, region: ScreenRegion = None, debug=False,accuracy=None):
+        if accuracy:
+            self.accuracy = accuracy
         """截图并识别，可传入区域"""
-        screen = ScreenUtils.screen_shot(region) if region else ScreenUtils.screen_shot()
-        imgs = [screen]
-        results = self.ocr.recognize_text(
-            images=imgs,
-            use_gpu=False,
-            output_dir='ocr_result',
-            visualization=debug,
-            box_thresh=self.accuracy,
-            text_thresh=self.accuracy
-        )
-        data = results[0]['data']
+        img = ScreenUtils.screen_shot(region) if region else ScreenUtils.screen_shot()
+        result = self.ocr.ocr(img, cls=True)
+        data = result[0]
         return data
 
     # 匹配文字
-    def find_by_name(self,region: ScreenRegion ,key_list, debug=False):
+    def find_by_name_first(self, region: ScreenRegion, keyword,accuracy=None, debug = False) -> tuple[int, int] | None:
         """找到关键字"""
-        data = self.read(region,debug)
-        key_list = [key_list] if isinstance(key_list, str) else key_list
-        re = False
-        for key in key_list:
-            found = [e for e in data if key in e['text']]
-            msg = f'目标：{key}, 找到数量：{len(found)}'
-            print(msg)
-            if found:
-                p1, _, p2, _ = found[0]['text_box_position']
-                (x1, y1), (x2, y2) = p1, p2
-                center = (int((x1 + x2) / 2), int((y1 + y2) / 2))
-                return center
+        data = self.read(region,debug,accuracy)
+        for line in data:
+            text, confidence = line[1][0], line[1][1]
+            if keyword in text and confidence >= accuracy:
+                box = line[0]  # 四个顶点坐标
+                x = sum([pt[0] for pt in box]) / 4
+                y = sum([pt[1] for pt in box]) / 4
+                return int(x), int(y)
         return None
 
     def touch(self, position, offset_click=True, img_name=None):

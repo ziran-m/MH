@@ -8,7 +8,7 @@ import numpy
 class ScreenUtils:
 
     @staticmethod
-    def screen_shot(region: ScreenRegion):
+    def screen_shot(region: ScreenRegion=None):
         with mss.mss() as sct:
             if region is None:
                 monitor = sct.monitors[1]
