@@ -18,6 +18,22 @@ class ThreadPrefixAdapter(logging.LoggerAdapter):
         prefix = get_thread_prefix()
         return f"[{prefix}] {msg}", kwargs
 
+
+# 自定义的 Logging Handler, 用于将日志输出到 Text 控件
+class TextHandler(logging.Handler):
+    def __init__(self, text_widget):
+        super().__init__()
+        self.text_widget = text_widget
+
+    def emit(self, record):
+        try:
+            msg = self.format(record)
+            self.text_widget.insert("end", msg + "\n")
+            self.text_widget.yview("end")  # 自动滚动到最新行
+        except Exception:
+            self.handleError(record)
+
+
 # 创建 logger
 logger = logging.getLogger("DailyLogger")
 logger.setLevel(logging.INFO)

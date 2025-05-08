@@ -6,6 +6,8 @@ from mh_script.utils.log_util import log,global_log
 def main():
     launcher = Launcher()
     regions = launcher.get_regions()
+    if regions is None or len(regions) == 0:
+        return
 
     # print("🟣 第二步：执行副本任务")
     # dungeon = DungeonTask(regions)
