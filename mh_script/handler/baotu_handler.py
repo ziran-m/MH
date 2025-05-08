@@ -43,7 +43,7 @@ class BaoTu:
         if pos:
             log.info(f"[宝图] 点击宝图任务：{pos}")
             self.ocrPlayer.touch(pos, True, None)
-            self.delay()
+            self.delay(3,5)
         else:
             log.info("[宝图] 进入日常活动界面")
             self.basicHandler.goDailyActivity(region)
@@ -81,7 +81,7 @@ class BaoTu:
 
             log.info(f"[宝图] 点击任务栏宝图任务：{pos}")
             self.ocrPlayer.touch(pos, True, None)
-            self.delay()
+            self.delay(3,5)
 
     def while_do(self, region: ScreenRegion):
         log.info("[宝图] 等待战斗或任务执行完成")
