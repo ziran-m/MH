@@ -15,26 +15,34 @@ class OCR_Player(Player):
         self.target_map = {}
         self.load_targets()
 
-    def read(self, region: ScreenRegion = None, debug=False,accuracy=None):
+    def read(self, region: ScreenRegion = None, debug=False, accuracy=None):
         if accuracy:
             self.accuracy = accuracy
-        """截图并识别，可传入区域"""
+        # 截图
         img = ScreenUtils.screen_shot(region) if region else ScreenUtils.screen_shot()
         result = self.ocr.ocr(img, cls=True)
         data = result[0]
         return data
 
     # 匹配文字
-    def find_by_name_first(self, region: ScreenRegion, keyword,accuracy=None, debug = False) -> tuple[int, int] | None:
-        """找到关键字"""
-        data = self.read(region,debug,accuracy)
-        for line in data:
+    def find_by_name_first(self, region: ScreenRegion, keyword, accuracy=None, debug=False) -> tuple[int, int] | None:
+
+        """根据关键字查找文本中心坐标"""
+        print(f"[OCR] 开始查找关键字：'{keyword}'，区域：{region}，置信度阈值：{accuracy}")
+
+        data = self.read(region, debug=debug, accuracy=accuracy)
+
+        for i, line in enumerate(data):
             text, confidence = line[1][0], line[1][1]
+            print(f"[OCR][{i}] 文本：'{text}'，置信度：{confidence:.4f}")
+
             if keyword in text and confidence >= accuracy:
                 box = line[0]  # 四个顶点坐标
-                x = sum([pt[0] for pt in box]) / 4
-                y = sum([pt[1] for pt in box]) / 4
+                x = sum(pt[0] for pt in box) / 4
+                y = sum(pt[1] for pt in box) / 4
+                print(f"[OCR] 找到匹配项 '{text}'，坐标：({int(x)}, {int(y)})")
                 return int(x), int(y)
+        print(f"[OCR] 未找到匹配关键字：'{keyword}'")
         return None
 
     def touch(self, position, offset_click=True, img_name=None):
@@ -42,23 +50,24 @@ class OCR_Player(Player):
 
     def doubleTouch(self, position, offset_click=True, img_name=None):
         Player.doubleTouch(position, offset_click, img_name)
+
     # 循环等待
     def wait_find_by_pic_first(self, background: ScreenRegion, target_name, match=None, rightmost=False):
-        position = self.find_by_pic_first(background, target_name,match,rightmost)
+        position = self.find_by_pic_first(background, target_name, match, rightmost)
         times = 0
-        while position is None and times <=10:
+        while position is None and times <= 10:
             self.delay()
-            times+=1
-            position = self.find_by_pic_first(background, target_name,match,rightmost)
+            times += 1
+            position = self.find_by_pic_first(background, target_name, match, rightmost)
         return position
 
     def wait_no_time_find_by_pic_first(self, background: ScreenRegion, target_name, match=None, rightmost=False):
-        position = self.find_by_pic_first(background, target_name,match,rightmost)
+        position = self.find_by_pic_first(background, target_name, match, rightmost)
 
         while position is None:
             self.delay()
 
-            position = self.find_by_pic_first(background, target_name,match,rightmost)
+            position = self.find_by_pic_first(background, target_name, match, rightmost)
         return position
 
     # 匹配截图
@@ -73,7 +82,7 @@ class OCR_Player(Player):
         h, w = target.shape[:2]
         ex, ey = 0, 0
 
-        background =ScreenUtils.screen_shot(region)
+        background = ScreenUtils.screen_shot(region)
         result = cv2.matchTemplate(background, target, cv2.TM_CCOEFF_NORMED)
         locations = numpy.where(result >= self.accuracy)
 
@@ -107,7 +116,7 @@ class OCR_Player(Player):
             # 最右侧
             for pt in zip(*locations[::-1]):
                 x = pt[0] + region.left + w
-                y = pt[1] + region.top + h //2
+                y = pt[1] + region.top + h // 2
                 return [x, y]  # 直接返回第一个匹配
         else:
             # 原逻辑，匹配第一个
