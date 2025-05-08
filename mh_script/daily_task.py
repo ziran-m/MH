@@ -4,7 +4,9 @@ from mh_script.utils.ocr_player import OCR_Player
 
 if __name__ == "__main__":
     launcher = Launcher()
+    launcher.resize_and_move_window()
     regions = launcher.get_regions()
+
     ocr_player = OCR_Player()
     task = DailyTask(regions)
     task.run(0)

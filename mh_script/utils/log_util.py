@@ -44,9 +44,9 @@ console_formatter = logging.Formatter('%(asctime)s %(message)s', datefmt='%H:%M:
 console_handler.setFormatter(console_formatter)
 
 # 文件日志输出（每天新文件，最多保留7天）
-file_handler = TimedRotatingFileHandler("daily_task.log", when="midnight", backupCount=7, encoding='utf-8')
-file_formatter = logging.Formatter('%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-file_handler.setFormatter(file_formatter)
+# file_handler = TimedRotatingFileHandler("daily_task.log", when="midnight", backupCount=7, encoding='utf-8')
+# file_formatter = logging.Formatter('%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+# file_handler.setFormatter(file_formatter)
 
 # 添加 handler
 logger.addHandler(console_handler)
