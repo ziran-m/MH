@@ -28,13 +28,15 @@ class OCR_Player(Player):
     def find_by_name_first(self, region: ScreenRegion, keyword, accuracy=None, debug=False) -> tuple[int, int] | None:
 
         """根据关键字查找文本中心坐标"""
-        print(f"[OCR] 开始查找关键字：'{keyword}'，区域：{region}，置信度阈值：{accuracy}")
+        if debug:
+            print(f"[OCR] 开始查找关键字：'{keyword}'，区域：{region}，置信度阈值：{accuracy}")
 
         data = self.read(region, debug=debug, accuracy=accuracy)
 
         for i, line in enumerate(data):
             text, confidence = line[1][0], line[1][1]
-            print(f"[OCR][{i}] 文本：'{text}'，置信度：{confidence:.4f}")
+            if debug:
+                print(f"[OCR][{i}] 文本：'{text}'，置信度：{confidence:.4f}")
 
             if keyword in text and confidence >= accuracy:
                 box = line[0]  # 四个顶点坐标
