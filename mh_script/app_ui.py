@@ -79,17 +79,22 @@ class AppUI:
 
     def daily_task(self):
         """日常任务（对应 '日常' 按钮）"""
-        self.execute_file("application")
+        self.execute_file("daily")
 
     def close_task(self):
         """关闭任务（对应 '关闭' 按钮）"""
         self.execute_file("close")
 
 
-# 创建UI窗口
-app = ctk.CTk()
-# 创建AppUI实例
-ui = AppUI(app)
+def main():
+    # 创建UI窗口
+    app = ctk.CTk()
+    # 创建AppUI实例
+    ui = AppUI(app)
 
-# 启动UI主循环
-app.mainloop()
+    # 启动UI主循环
+    app.mainloop()
+
+
+if __name__ == "__main__":
+    main()
