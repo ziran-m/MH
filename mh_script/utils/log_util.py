@@ -50,7 +50,7 @@ file_handler.setFormatter(file_formatter)
 
 # 添加 handler
 logger.addHandler(console_handler)
-logger.addHandler(file_handler)
+# logger.addHandler(file_handler)
 
 # 有前缀（用于线程日志）
 log = ThreadPrefixAdapter(logger, {})

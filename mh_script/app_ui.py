@@ -1,4 +1,7 @@
 import importlib
+import os
+import sys
+import time
 import customtkinter as ctk
 from mh_script.utils.log_util import TextHandler, logger
 
@@ -68,22 +71,63 @@ class AppUI:
     def execute_file(self, file_name):
         """加载并执行指定文件的 main 方法"""
         try:
-            module = importlib.import_module(file_name)  # 动态加载模块
-            module.main()  # 调用模块中的 main 方法
+            # 获取当前脚本路径
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+
+            # 构建文件路径
+            file_path = os.path.join(current_dir, file_name + '.py')
+
+            # 检查文件是否存在
+            if not os.path.exists(file_path):
+                logger.error(f"找不到文件: {file_path}")
+                return
+
+            # 将文件目录添加到 sys.path
+            module_dir = os.path.dirname(file_path)
+            if module_dir not in sys.path:
+                sys.path.append(module_dir)  # 添加文件所在目录到 sys.path
+
+            # 动态加载模块
+            module_name = file_name  # 使用文件名作为模块名，不包含路径和扩展名
+            module = __import__(module_name)  # 使用模块名加载模块
+
+            # 调用模块中的 main 方法
+            if hasattr(module, 'main'):
+                module.main()
+            else:
+                logger.error(f"模块 {file_name} 中没有找到 'main' 方法")
         except Exception as e:
             logger.error(f"执行 {file_name} 时出错: {e}")
 
     def start_task(self):
         """启动任务（对应 '启动' 按钮）"""
+        self.disable_buttons_temporarily()  # 禁用按钮
         self.execute_file("start")
 
     def daily_task(self):
         """日常任务（对应 '日常' 按钮）"""
+        self.disable_buttons_temporarily()  # 禁用按钮
         self.execute_file("daily")
 
     def close_task(self):
         """关闭任务（对应 '关闭' 按钮）"""
+        self.disable_buttons_temporarily()  # 禁用按钮
         self.execute_file("close")
+
+    def disable_buttons_temporarily(self):
+        """禁用按钮并在1秒后重新启用"""
+        self.open_button.configure(state="disabled")
+        self.daily_button.configure(state="disabled")
+        self.close_button.configure(state="disabled")
+
+        # 设置1秒后重新启用按钮
+        self.root.after(1000, self.enable_buttons)
+
+    def enable_buttons(self):
+        """重新启用按钮"""
+        self.open_button.configure(state="normal")
+        self.daily_button.configure(state="normal")
+        self.close_button.configure(state="normal")
 
 
 def main():
