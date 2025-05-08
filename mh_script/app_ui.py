@@ -5,7 +5,6 @@ import time
 import customtkinter as ctk
 from mh_script.utils.log_util import TextHandler, logger
 
-
 class AppUI:
     def __init__(self, root):
         self.root = root
@@ -102,6 +101,7 @@ class AppUI:
     def start_task(self):
         """启动任务（对应 '启动' 按钮）"""
         self.disable_buttons_temporarily()  # 禁用按钮
+
         self.execute_file("start")
 
     def daily_task(self):
