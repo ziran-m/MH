@@ -33,7 +33,6 @@ class MiJing:
     # 秘境
     def do(self, region: ScreenRegion):
         log.info("[秘境] 开始执行秘境任务流程")
-        self.delay()
 
         log.info("[秘境] 清理界面")
         self.basicHandler.clean(region)

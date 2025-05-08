@@ -8,6 +8,7 @@ from mh_script.constant import constant
 from mh_script.model.screen_region import ScreenRegion
 from mh_script.utils.log_util import global_log
 
+
 class Launcher:
 
     def __init__(self):
@@ -23,9 +24,10 @@ class Launcher:
         self.x_gap = constant.Constant.X_GAP
         self.y_gap = constant.Constant.Y_GAP
 
-
-    def start_clients(self):
-        for i in range(self.num_windows-self.get_regions_num()):
+    def start_clients(self, num_windows=None):
+        if  num_windows is not None:
+            self.num_windows = num_windows
+        for i in range(self.num_windows - self.get_regions_num()):
             subprocess.Popen(self.exe_path)
             global_log.info(f"启动第 {i + 1} 个客户端...")
             time.sleep(2)
@@ -67,8 +69,8 @@ class Launcher:
 
         return regions
 
-    def start_and_arrange(self):
-        self.start_clients()
+    def start_and_arrange(self, num_windows=None):
+        self.start_clients(num_windows)
         return self.resize_and_move_window()
 
     def get_regions_num(self):
@@ -118,7 +120,3 @@ class Launcher:
             global_log.info("✅ 成功关闭所有窗口！")
         else:
             global_log.info("❌ 未找到任何符合条件的梦幻西游窗口！")
-
-
-
-
