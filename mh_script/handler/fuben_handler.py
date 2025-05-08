@@ -11,8 +11,8 @@ class Fuben:
         self.ocrPlayer = ocrPlayer
         self.basicHandler = BasicHandler(ocrPlayer)
 
-    # 前置条件，队伍组队组好
-    def do(self,region:ScreenRegion,go_map=None,times=0):
+    # 前置条件，队伍组队组好，在长安城
+    def do(self,region:ScreenRegion,go_map=False,times=0):
         if times > 2:
             return
         # 清理页面
@@ -30,6 +30,7 @@ class Fuben:
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
         else:
+            # 点长安城图标
             self.basicHandler.clean(region)
             pos = self.ocrPlayer.find_by_pic_first(region, "fuben.changan", 0.9, True)
             if pos is None:
@@ -47,7 +48,7 @@ class Fuben:
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
 
-        # 等待找到百晓仙子
+        # 等待找到百晓仙子出现对话框
         pos = self.ocrPlayer.wait_find_by_pic_first(region, "fuben.join", 0.9)
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
@@ -71,23 +72,25 @@ class Fuben:
                     self.delay()
         # 副本里面没有活动这个图标
         while self.ocrPlayer.find_by_pic_first(region,"common.activity") is None:
+            # 没有血条那就是在剧情，狂点左键就完事了
+            while self.ocrPlayer.find_by_pic_first(region,"common.blood") is None:
+                self.basicHandler.clickLeftCenter(region)
+                self.delay()
             # 跳过剧情
-            pos = self.ocrPlayer.find_by_pic_first(region, "common.skip")
+            pos = self.ocrPlayer.find_by_name_first(region, "跳过剧情动画")
             if pos is not None:
                 self.ocrPlayer.touch(pos, True, None)
                 self.delay()
-            # 快进
-
             # 副本任务有个时间的标志,
-            pos = self.ocrPlayer.find_by_pic_first(region, "common.time")
+            pos = self.ocrPlayer.find_by_pic_first(region, "fuben.time")
             if pos is not None:
                 self.ocrPlayer.touch(pos, True, None)
                 self.delay()
-            # 好多都要手动点击按钮才能进入战斗
-
-
-            break
-
+            # 有对话框就进去然后进入战斗
+            pos = self.ocrPlayer.wait_find_by_pic_first(region, "fuben.talk")
+            if pos is not None:
+                self.ocrPlayer.touch(pos, True, None)
+                self.delay()
 
 
         self.do(region,go_map,times+1)
