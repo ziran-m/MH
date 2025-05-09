@@ -32,14 +32,14 @@ class Fuben:
         else:
             # 点长安城图标
             self.basicHandler.clean(region)
-            pos = self.ocrPlayer.find_by_pic_first(region, "fuben.changan", 0.9, True)
+            pos = self.ocrPlayer.find_by_pic_first(region, "common.changan", 0.9, True)
             if pos is None:
                 print("找不到长安")
                 return
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
             # 地图转换
-            pos = self.ocrPlayer.find_by_pic_first(region, "fuben.tab_map", 0.9, True)
+            pos = self.ocrPlayer.find_by_pic_first(region, "common.tab_map", 0.9, True)
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
 
@@ -49,17 +49,17 @@ class Fuben:
             self.delay()
 
         # 等待找到百晓仙子出现对话框
-        pos = self.ocrPlayer.wait_find_by_pic_first(region, "fuben.join", 0.9)
+        pos = self.ocrPlayer.wait_find_by_name_first(region, "选择副本")
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
 
         # 第一次进来点击侠士副本
         if times == 0:
-            pos = self.ocrPlayer.wait_find_by_pic_first(region, "fuben.xiashi", 0.9)
+            pos = self.ocrPlayer.find_by_name_first(region, "侠士副本", 0.9)
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
         # 进入
-        pos = self.ocrPlayer.find_by_pic_first(region, "fuben.join", 0.9)
+        pos = self.ocrPlayer.find_by_name_first(region, "进入", 0.9)
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
 
