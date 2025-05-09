@@ -52,7 +52,7 @@ class MiJing:
         self.delay()
 
         log.info("[秘境] 等待“降妖”对话框")
-        pos = self.ocrPlayer.wait_find_by_pic_first(region, "mijing.xiangyao")
+        pos = self.ocrPlayer.find_by_name_first(region, "秘境降妖")
         if pos is None:
             log.info("[秘境] 等待“降妖”对话框异常")
             return
@@ -61,12 +61,12 @@ class MiJing:
         self.delay()
 
         log.info("[秘境] 检查是否需要选择普通挑战")
-        pos = self.ocrPlayer.find_by_pic_first(region, "mijing.join")
+        pos = self.ocrPlayer.find_by_name_first(region, "进入")
         if pos is not None:
             log.info(f"[秘境] 点击“普通挑战”：{pos}")
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
-            pos = self.ocrPlayer.find_by_pic_first(region, "mijing.yes")
+            pos = self.ocrPlayer.find_by_name_first(region, "确定")
             if pos is not None:
                 print(f"[秘境] 点击“确定”：{pos}")
                 self.ocrPlayer.touch(pos, True, None)
@@ -100,7 +100,7 @@ class MiJing:
                 self.join_fight(region)
                 lastBattleTime = datetime.datetime.now()
 
-            resume = self.ocrPlayer.find_by_pic_first(region, "mijing.join_fight")
+            resume = self.ocrPlayer.find_by_name_first(region, "进入战斗")
             if resume is not None:
                 resumeTimes += 1
                 if resumeTimes <= 2:
@@ -129,7 +129,7 @@ class MiJing:
         self.delay()
 
         log.info("[秘境] 寻找“离开”按钮")
-        escape = self.ocrPlayer.find_by_pic_first(region, 'mijing.escape')
+        escape = self.ocrPlayer.find_by_name_first(region, '离开')
         if escape is not None:
             log.info(f"[秘境] 点击“离开”按钮：{escape}")
             self.ocrPlayer.touch(escape, True, None)
@@ -139,7 +139,7 @@ class MiJing:
 
     def join_fight(self, region: ScreenRegion):
         log.info("[秘境] 尝试查找“降妖”图标以进入战斗")
-        pos = self.ocrPlayer.find_by_pic_first(region, "mijing.fight")
+        pos = self.ocrPlayer.find_by_name_first(region, "秘境降妖")
         if pos is None:
             log.info("[秘境] 找不到“降妖”图标，无法进入战斗")
             return

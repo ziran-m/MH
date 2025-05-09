@@ -4,7 +4,7 @@ from mh_script.utils.log_util import log
 from mh_script.utils.player import Player
 
 
-class DaTi:
+class Ghost:
     def __init__(self, ocrPlayer):
         # 初始化时创建 OCR_Player 实例
         self.ocrPlayer = ocrPlayer
@@ -36,6 +36,15 @@ class DaTi:
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
 
+        # 点击任务栏的捉鬼任务
+        pos = self.ocrPlayer.wait_find_by_name_first(region, "捉鬼")
+        self.ocrPlayer.touch(pos, True, None)
+        self.delay()
+
+        # 捉鬼完成就点击确定保证回到长安
+        pos = self.ocrPlayer.wait_find_by_name_first(region, "确定")
+        self.ocrPlayer.touch(pos, True, None)
+        self.delay()
 
         log.info("[抓鬼] 任务完成")
 
