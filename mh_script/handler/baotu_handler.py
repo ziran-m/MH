@@ -30,20 +30,15 @@ class BaoTu:
 
     def do(self, region: ScreenRegion):
         log.info("[宝图] 开始执行宝图任务流程")
-        self.before_do(region)
-        self.while_do(region)
-        log.info("[宝图] 宝图任务完成")
-
-    def before_do(self, region: ScreenRegion):
         log.info("[宝图] 清理页面")
         self.basicHandler.clean(region)
 
         log.info("[宝图] 检查任务栏是否存在宝图任务")
-        pos = self.ocrPlayer.find_by_name_first(region, "宝图任务")
+        pos = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission")
         if pos:
             log.info(f"[宝图] 点击宝图任务：{pos}")
             self.ocrPlayer.touch(pos, True, None)
-            self.delay(3,5)
+            self.delay(3, 5)
         else:
             log.info("[宝图] 进入日常活动界面")
             self.basicHandler.goDailyActivity(region)
@@ -61,7 +56,7 @@ class BaoTu:
             self.delay()
 
             log.info("[宝图] 等待“听听无妨”按钮")
-            pos = self.ocrPlayer.find_by_name_first(region, "听听无妨", 0.9)
+            pos = self.ocrPlayer.wait_find_by_pic_first(region, "baotu.start", 0.9)
             if not pos:
                 log.info("[宝图] 等待“听听无妨”按钮异常")
                 return
@@ -74,20 +69,24 @@ class BaoTu:
             self.delay()
 
             log.info("[宝图] 查找任务栏宝图任务")
-            pos = self.ocrPlayer.find_by_name_first(region, "宝图任务")
+            pos = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission")
             if not pos:
                 log.info("[宝图] 找不到任务栏宝图任务，领取失败")
                 return
 
             log.info(f"[宝图] 点击任务栏宝图任务：{pos}")
             self.ocrPlayer.touch(pos, True, None)
-            self.delay(3,5)
+            self.delay(3, 5)
+        self.while_do(region)
+        log.info("[宝图] 宝图任务完成")
+
+
 
     def while_do(self, region: ScreenRegion):
         log.info("[宝图] 等待战斗或任务执行完成")
         while True:
             in_battle = self.basicHandler.battling(region)
-            has_task = self.ocrPlayer.find_by_name_first(region, "宝图任务")
+            has_task = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission")
             has_blood = self.ocrPlayer.find_by_pic_first(region, "common.blood")
             # 不在战斗且没有任务，并且有人物血条，说明不在切换地图
             if not in_battle and not has_task and has_blood:
@@ -107,7 +106,7 @@ class BaoTu:
             self.delay()
 
         log.info("[宝图] 点击整理按钮")
-        pos = self.ocrPlayer.find_by_name_first(region, "整理")
+        pos = self.ocrPlayer.find_by_pic_first(region, "common.clean_up")
         if pos:
             log.info(f"[宝图] 点击整理：{pos}")
             self.ocrPlayer.touch(pos, True, None)
@@ -131,7 +130,7 @@ class BaoTu:
         dig_flag = True
         times = 0
         while dig_flag:
-            pos = self.ocrPlayer.find_by_name_first(region, "使用")
+            pos = self.ocrPlayer.find_by_pic_first(region, "baotu.use_baotu")
             if pos:
                 log.info(f"[宝图] 点击使用藏宝图：{pos}")
                 self.ocrPlayer.touch(pos, False, None)

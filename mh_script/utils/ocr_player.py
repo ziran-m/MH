@@ -1,4 +1,5 @@
 import sys
+import threading
 
 from paddleocr import PaddleOCR
 
@@ -13,7 +14,6 @@ import numpy
 class OCR_Player(Player):
     def __init__(self, accuracy=0.8):
         super().__init__(accuracy)
-        self.ocr = PaddleOCR(use_angle_cls=True, lang='ch')
         self.target_map = {}
         self.load_targets()
 
@@ -21,7 +21,8 @@ class OCR_Player(Player):
 
         # 截图
         img = ScreenUtils.screen_shot(region) if region else ScreenUtils.screen_shot()
-        result = self.ocr.ocr(img, cls=True)
+        # 加锁调用 OCR
+        result = PaddleOCR(use_angle_cls=True, use_gpu=False).ocr(img, cls=True)
         data = result[0]
         return data
 
@@ -46,7 +47,7 @@ class OCR_Player(Player):
                 box = line[0]  # 四个顶点坐标
                 x = sum(pt[0] for pt in box) / 4
                 y = sum(pt[1] for pt in box) / 4
-            loc_pos.append([x, y])
+                loc_pos.append([x, y])
 
 
         print(f'查找结果：{keyword} 匹配到 {len(loc_pos)} 个位置')
@@ -71,8 +72,8 @@ class OCR_Player(Player):
 
             if keyword in text and confidence is not None and confidence >= self.accuracy:
                 box = line[0]  # 四个顶点坐标
-                x = sum(pt[0] for pt in box) / 4
-                y = sum(pt[1] for pt in box) / 4
+                x = sum(pt[0] for pt in box) / 4 + region.left
+                y = sum(pt[1] for pt in box) / 4 + region.top
                 print(f"[OCR] 找到匹配项 '{text}'，坐标：({int(x)}, {int(y)})")
                 return int(x), int(y)
         print(f"[OCR] 未找到匹配关键字：'{keyword}'")
@@ -131,8 +132,8 @@ class OCR_Player(Player):
         locations = numpy.where(result >= self.accuracy)
 
         for pt in zip(*locations[::-1]):
-            x = pt[0] + region.left + w // 2
-            y = pt[1] + region.top + h // 2
+            x = pt[0]  + w // 2
+            y = pt[1]  + h // 2
             if abs(x - ex) + abs(y - ey) < 15:
                 continue
             ex, ey = x, y

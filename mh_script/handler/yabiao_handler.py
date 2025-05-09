@@ -59,25 +59,25 @@ class YaBiao:
         self.basicHandler.clean(region)
 
         log.info("[押镖] 等待“开始押镖”按钮出现")
-        pos = self.ocrPlayer.wait_find_by_pic_first(region, "押送普通镖银", 0.9)
+        pos = self.ocrPlayer.wait_find_by_pic_first(region, "yabiao.start", 0.9)
         if pos is None:
             log.info("[押镖] 等待“开始押镖”按钮出现异常")
             return
-        times = 1
+        times = 0
         while True:
             log.info("[押镖] 等待“开始押镖”按钮出现")
-            pos = self.ocrPlayer.wait_no_time_find_by_pic_first(region, "押送普通镖银", 0.9)
+            pos = self.ocrPlayer.wait_no_time_find_by_pic_first(region, "yabiao.start", 0.9)
             log.info(f"[押镖] 点击“开始押镖”：{pos}")
             self.ocrPlayer.touch(pos, True, None)
-            self.delay(4,4)
+            self.delay()
 
-            no_power = self.ocrPlayer.find_by_name_first(region, "运镖需要活跃度达到50点，你的活跃度")
+            no_power = self.ocrPlayer.find_by_pic_first(region, "yabiao.no_power", 0.9)
             if no_power is not None:
                 self.basicHandler.clickCenter(region)
                 log.info("[押镖] 活力不足，任务中止")
                 break
 
-            pos = self.ocrPlayer.find_by_name_first(region, "确定", 0.9)
+            pos = self.ocrPlayer.find_by_pic_first(region, "yabiao.queding", 0.9)
             log.info(f"[押镖] 点击“确定”：{pos}")
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
