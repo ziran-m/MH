@@ -1,7 +1,6 @@
 import importlib
 import os
 import sys
-import time
 import customtkinter as ctk
 from mh_script.utils.log_util import TextHandler, logger
 
@@ -70,25 +69,9 @@ class AppUI:
     def execute_file(self, file_name):
         """加载并执行指定文件的 main 方法"""
         try:
-            # 获取当前脚本路径
-            current_dir = os.path.dirname(os.path.abspath(__file__))
-
-            # 构建文件路径
-            file_path = os.path.join(current_dir, file_name + '.py')
-
-            # 检查文件是否存在
-            if not os.path.exists(file_path):
-                logger.error(f"找不到文件: {file_path}")
-                return
-
-            # 将文件目录添加到 sys.path
-            module_dir = os.path.dirname(file_path)
-            if module_dir not in sys.path:
-                sys.path.append(module_dir)  # 添加文件所在目录到 sys.path
 
             # 动态加载模块
-            module_name = file_name  # 使用文件名作为模块名，不包含路径和扩展名
-            module = __import__(module_name)  # 使用模块名加载模块
+            module = importlib.import_module(f"mh_script.{file_name}")
 
             # 调用模块中的 main 方法
             if hasattr(module, 'main'):
@@ -107,7 +90,7 @@ class AppUI:
     def daily_task(self):
         """日常任务（对应 '日常' 按钮）"""
         self.disable_buttons_temporarily()  # 禁用按钮
-        self.execute_file("daily")
+        self.execute_file("daily_task")
 
     def close_task(self):
         """关闭任务（对应 '关闭' 按钮）"""
