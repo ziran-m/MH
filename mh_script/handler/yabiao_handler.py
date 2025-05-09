@@ -44,9 +44,9 @@ class YaBiao:
         self.basicHandler.goDailyActivity(region)
 
         log.info("[押镖] 查找“押镖.参加”按钮")
-        pos = self.ocrPlayer.find_by_pic_first(region, "mijing.canjia", 0.9, True)
+        pos = self.ocrPlayer.find_by_pic_first(region, "yabiao.canjia", 0.9, True)
         if pos is None:
-            pos = self.ocrPlayer.find_by_pic_first(region, "mijing.canjia_v2", 0.9, True)
+            pos = self.ocrPlayer.find_by_pic_first(region, "yabiao.canjia_v2", 0.9, True)
             if pos is None:
                 log.info("[押镖] 找不到参加按钮，可能任务已完成")
                 self.basicHandler.clickCenter(region)

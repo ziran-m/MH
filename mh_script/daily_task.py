@@ -9,4 +9,4 @@ if __name__ == "__main__":
 
     ocr_player = OCR_Player()
     task = DailyTask(regions)
-    task.run(0)
+    task.run(-1)

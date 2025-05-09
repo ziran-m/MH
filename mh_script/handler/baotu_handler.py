@@ -85,6 +85,7 @@ class BaoTu:
 
     def while_do(self, region: ScreenRegion):
         log.info("[宝图] 等待战斗或任务执行完成")
+        self.delay(3, 5)
         while self.basicHandler.battling(region) or self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission"):
             self.delay(15, 30)
 
