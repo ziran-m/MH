@@ -65,7 +65,7 @@ class Fuben:
 
         # 侠士需要全图点击确定
         if times == 0:
-            pos_list = self.ocrPlayer.find_by_pic(None, "fuben.check", 0.9)
+            pos_list = self.ocrPlayer.find_by_pic(None, "准备")
             if pos_list is not None:
                 for p in pos_list:
                     self.ocrPlayer.touch(p, True, None)
