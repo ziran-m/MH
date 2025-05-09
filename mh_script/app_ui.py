@@ -59,7 +59,7 @@ class AppUI:
         # 名称为 320 的按钮
         self.button_320 = ctk.CTkButton(self.root, text="320", font=self.font_style, height=40, width=200,
                                         corner_radius=10, fg_color="#1e1e1e", hover_color="#3a3a3a",
-                                        command=self.three_two_zero_task)
+                                        command=self.task_320)
         self.button_320.grid(row=3, column=0, padx=20, pady=20, sticky="ew")
     def configure_grid(self):
         """配置行和列的自适应大小"""
@@ -102,7 +102,7 @@ class AppUI:
         self.disable_buttons_temporarily()  # 禁用按钮
         self.execute_file("close")
 
-    def three_two_zero_task(self):
+    def task_320(self):
         """320任务（对应 '320' 按钮）"""
         self.disable_buttons_temporarily()  # 禁用按钮
         self.execute_file("three_two_zero")
