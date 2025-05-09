@@ -47,6 +47,17 @@ class OCR_Player(Player):
         print(f"[OCR] 未找到匹配关键字：'{keyword}'")
         return None
 
+    # 循环等待
+    def wait_find_by_name_first(self, region: ScreenRegion, keyword, accuracy=None, debug=False):
+        position = self.find_by_name_first(region, keyword, accuracy, debug)
+        times = 0
+        while position is None and times <= 10:
+            self.delay()
+            times += 1
+            position = self.find_by_name_first(region, keyword, accuracy, debug)
+        return position
+
+
     def touch(self, position, offset_click=True, img_name=None):
         Player.touch(position, offset_click, img_name)
 
@@ -54,10 +65,10 @@ class OCR_Player(Player):
         Player.doubleTouch(position, offset_click, img_name)
 
     # 循环等待
-    def wait_find_by_pic_first(self, background: ScreenRegion, target_name, match=None, rightmost=False):
+    def wait_find_by_pic_first(self, background: ScreenRegion, target_name, match=None, rightmost=False,max_num=10):
         position = self.find_by_pic_first(background, target_name, match, rightmost)
         times = 0
-        while position is None and times <= 10:
+        while position is None and times <= max_num:
             self.delay()
             times += 1
             position = self.find_by_pic_first(background, target_name, match, rightmost)
