@@ -21,7 +21,7 @@ class DailyTask:
         self.regions = regions
 
     def run_tasks(self, region: ScreenRegion, idx: int):
-        prefix = f"窗口{idx}"
+        prefix = f"窗口{idx+1}"
         set_thread_prefix(prefix)
         log.info("开始执行日常任务")
 
