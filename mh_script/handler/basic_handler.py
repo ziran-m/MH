@@ -47,7 +47,7 @@ class BasicHandler:
     # 退出队伍
     def escape_team(self, region: ScreenRegion = None):
         # 点击队伍
-        pos = self.ocrPlayer.find_by_pic_first(region, "common.team", 0.9)
+        pos = self.ocrPlayer.find_by_name_first(region, "队伍")
         if pos is None:
             log.info("页面有问题请检查")
             return
