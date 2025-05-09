@@ -1,3 +1,5 @@
+import sys
+
 from paddleocr import PaddleOCR
 
 from mh_script.model.screen_region import ScreenRegion
@@ -47,6 +49,17 @@ class OCR_Player(Player):
         print(f"[OCR] 未找到匹配关键字：'{keyword}'")
         return None
 
+    # 循环等待
+    def wait_find_by_name_first(self, region: ScreenRegion, keyword, accuracy=None, debug=False):
+        position = self.find_by_name_first(region, keyword, accuracy, debug)
+        times = 0
+        while position is None and times <= 10:
+            self.delay()
+            times += 1
+            position = self.find_by_name_first(region, keyword, accuracy, debug)
+        return position
+
+
     def touch(self, position, offset_click=True, img_name=None):
         Player.touch(position, offset_click, img_name)
 
@@ -54,10 +67,10 @@ class OCR_Player(Player):
         Player.doubleTouch(position, offset_click, img_name)
 
     # 循环等待
-    def wait_find_by_pic_first(self, background: ScreenRegion, target_name, match=None, rightmost=False):
+    def wait_find_by_pic_first(self, background: ScreenRegion, target_name, match=None, rightmost=False,max_num=10):
         position = self.find_by_pic_first(background, target_name, match, rightmost)
         times = 0
-        while position is None and times <= 10:
+        while position is None and times <= max_num:
             self.delay()
             times += 1
             position = self.find_by_pic_first(background, target_name, match, rightmost)
@@ -129,10 +142,19 @@ class OCR_Player(Player):
             return None
 
     # 加载资源库的所有截图
-    def load_targets(self, folder_name='resource'):
+    def load_targets(self, folder_name='mh_script/resource'):
         """加载目标图片"""
         self.target_map.clear()
-        target_folder = os.path.join(os.getcwd(), folder_name)
+
+        # 获取资源目录基础路径
+        if hasattr(sys, '_MEIPASS'):  # 打包后的路径
+            base_path = sys._MEIPASS
+        else:  # 源码运行路径（当前文件所在目录）
+            base_path = os.path.dirname(os.path.abspath(__file__))
+
+        # 构建完整的资源路径
+        target_folder = os.path.join(base_path, folder_name)
+
         if not os.path.exists(target_folder):
             print(f"❌ 目标文件夹 {target_folder} 不存在")
             return
@@ -140,7 +162,6 @@ class OCR_Player(Player):
         for root, _, files in os.walk(target_folder):
             for file in files:
                 if file.lower().endswith(('.png', '.jpg', '.jpeg')):
-                    # 通过结合文件夹和文件名来创建唯一的名称
                     relative_folder = os.path.relpath(root, target_folder)
                     name = os.path.splitext(file)[0]
                     if relative_folder != ".":

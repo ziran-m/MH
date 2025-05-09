@@ -1,6 +1,5 @@
 from mh_script.client_manager.launcher import Launcher
-from mh_script.task_manager.daily_task import DailyTask
-from mh_script.utils.ocr_player import OCR_Player
+from mh_script.task_manager.dungeon_task import DungeonTask
 
 def main():
     launcher = Launcher()
@@ -9,8 +8,9 @@ def main():
     if regions is None or len(regions) == 0:
         return
     launcher.resize_and_move_window()
-    task = DailyTask(regions)
-    task.run(-1)
+
+    dungeon = DungeonTask(regions)
+    dungeon.run(0)
 
 if __name__ == "__main__":
     main()

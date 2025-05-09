@@ -33,7 +33,7 @@ class Launcher:
             time.sleep(2)
 
     def resize_and_move_window(self):
-        global_log.info("等待游戏客户端全部启动...")
+        global_log.info("调整并排列窗口...")
         for _ in range(10):
             windows = [w for w in gw.getWindowsWithTitle(self.window_title_keyword) if w.visible]
             if len(windows) >= self.num_windows:
