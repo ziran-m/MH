@@ -17,9 +17,8 @@ class OCR_Player(Player):
         self.target_map = {}
         self.load_targets()
 
-    def read(self, region: ScreenRegion = None, debug=False, accuracy=None):
-        if accuracy:
-            self.accuracy = accuracy
+    def read(self, region: ScreenRegion = None, debug=False):
+
         # 截图
         img = ScreenUtils.screen_shot(region) if region else ScreenUtils.screen_shot()
         result = self.ocr.ocr(img, cls=True)
@@ -27,20 +26,23 @@ class OCR_Player(Player):
         return data
 
     # 匹配文字
-    def find_by_name_first(self, region: ScreenRegion, keyword, accuracy=None, debug=False) -> tuple[int, int] | None:
+    def find_by_name_first(self, region: ScreenRegion, keyword, accuracy=None, debug=True) -> tuple[int, int] | None:
 
         """根据关键字查找文本中心坐标"""
         if debug:
             print(f"[OCR] 开始查找关键字：'{keyword}'，区域：{region}，置信度阈值：{accuracy}")
 
-        data = self.read(region, debug=debug, accuracy=accuracy)
+        data = self.read(region, debug=debug)
+
+        if accuracy:
+            self.accuracy = accuracy
 
         for i, line in enumerate(data):
             text, confidence = line[1][0], line[1][1]
             if debug:
                 print(f"[OCR][{i}] 文本：'{text}'，置信度：{confidence:.4f}")
 
-            if keyword in text and confidence >= accuracy:
+            if keyword in text and confidence is not None and confidence >= self.accuracy:
                 box = line[0]  # 四个顶点坐标
                 x = sum(pt[0] for pt in box) / 4
                 y = sum(pt[1] for pt in box) / 4
@@ -142,19 +144,10 @@ class OCR_Player(Player):
             return None
 
     # 加载资源库的所有截图
-    def load_targets(self, folder_name='mh_script/resource'):
+    def load_targets(self, folder_name='resource'):
         """加载目标图片"""
         self.target_map.clear()
-
-        # 获取资源目录基础路径
-        if hasattr(sys, '_MEIPASS'):  # 打包后的路径
-            base_path = sys._MEIPASS
-        else:  # 源码运行路径（当前文件所在目录）
-            base_path = os.path.dirname(os.path.abspath(__file__))
-
-        # 构建完整的资源路径
-        target_folder = os.path.join(base_path, folder_name)
-
+        target_folder = os.path.join(os.getcwd(), folder_name)
         if not os.path.exists(target_folder):
             print(f"❌ 目标文件夹 {target_folder} 不存在")
             return
