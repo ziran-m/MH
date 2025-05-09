@@ -4,7 +4,7 @@ from mh_script.utils.log_util import log
 from mh_script.utils.player import Player
 
 
-class DaTi:
+class Ghost:
     def __init__(self, ocrPlayer):
         # 初始化时创建 OCR_Player 实例
         self.ocrPlayer = ocrPlayer
