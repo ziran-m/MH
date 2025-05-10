@@ -5,6 +5,7 @@ class Constant:
     WINDOW_TITLE_KEYWORD = "梦幻西游"
     PROCESS_NAME_KEYWORD = "MyLauncher"
     NUM_WINDOWS = 5  # 打开5个客户端
+    GHOST_NUM = 2  # 抓鬼轮数
 
 
     # 窗口尺寸（4:3）

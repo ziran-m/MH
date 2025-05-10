@@ -1,6 +1,5 @@
 from typing import List
 
-from mh_script.handler.fuben_handler import Fuben
 from mh_script.handler.ghost_handler import Ghost
 from mh_script.model.screen_region import ScreenRegion
 from mh_script.utils.ocr_player import OCR_Player

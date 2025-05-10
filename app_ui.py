@@ -51,16 +51,22 @@ class AppUI:
                                           corner_radius=10, fg_color="#1e1e1e", hover_color="#3a3a3a", command=self.daily_task)
         self.daily_button.grid(row=1, column=0, padx=20, pady=20, sticky="ew")
 
-        # 关闭按钮
-        self.close_button = ctk.CTkButton(self.root, text="关闭", font=self.font_style, height=40, width=200,
-                                          corner_radius=10, fg_color="#1e1e1e", hover_color="#3a3a3a", command=self.close_task)
-        self.close_button.grid(row=2, column=0, padx=20, pady=20, sticky="ew")
+        # 副本按钮
+        self.dungeon_task_button = ctk.CTkButton(self.root, text="副本", font=self.font_style, height=40, width=200,
+                                          corner_radius=10, fg_color="#1e1e1e", hover_color="#3a3a3a", command=self.dungeon_task_task)
+        self.dungeon_task_button.grid(row=2, column=0, padx=20, pady=20, sticky="ew")
+
+        # 抓鬼按钮
+        self.ghost_button = ctk.CTkButton(self.root, text="抓鬼", font=self.font_style, height=40, width=200,
+                                                 corner_radius=10, fg_color="#1e1e1e", hover_color="#3a3a3a",
+                                                 command=self.ghost_task)
+        self.ghost_button.grid(row=3, column=0, padx=20, pady=20, sticky="ew")
 
         # 名称为 320 的按钮
         self.button_320 = ctk.CTkButton(self.root, text="320", font=self.font_style, height=40, width=200,
                                         corner_radius=10, fg_color="#1e1e1e", hover_color="#3a3a3a",
                                         command=self.task_320)
-        self.button_320.grid(row=3, column=0, padx=20, pady=20, sticky="ew")
+        self.button_320.grid(row=4, column=0, padx=20, pady=20, sticky="ew")
     def configure_grid(self):
         """配置行和列的自适应大小"""
         self.root.grid_rowconfigure(0, weight=1)  # 第一行（按钮行）自适应
@@ -76,7 +82,7 @@ class AppUI:
         try:
 
             # 动态加载模块
-            module = importlib.import_module(f"mh_script.{file_name}")
+            module = importlib.import_module(f"{file_name}")
 
             # 调用模块中的 main 方法
             if hasattr(module, 'main'):
@@ -97,10 +103,15 @@ class AppUI:
         self.disable_buttons_temporarily()  # 禁用按钮
         self.execute_file("daily_task")
 
-    def close_task(self):
+    def dungeon_task_task(self):
+        """副本任务（对应 '关闭' 按钮）"""
+        self.disable_buttons_temporarily()  # 禁用按钮
+        self.execute_file("dungeon_task")
+
+    def ghost_task(self):
         """关闭任务（对应 '关闭' 按钮）"""
         self.disable_buttons_temporarily()  # 禁用按钮
-        self.execute_file("close")
+        self.execute_file("ghost_task")
 
     def task_320(self):
         """320任务（对应 '320' 按钮）"""
@@ -111,8 +122,9 @@ class AppUI:
         """禁用按钮并在1秒后重新启用"""
         self.open_button.configure(state="disabled")
         self.daily_button.configure(state="disabled")
-        self.close_button.configure(state="disabled")
+        self.dungeon_task_button.configure(state="disabled")
         self.button_320.configure(state="disabled")
+        self.ghost_button.configure(state="disabled")
 
         # 设置1秒后重新启用按钮
         self.root.after(1000, self.enable_buttons)
@@ -121,8 +133,9 @@ class AppUI:
         """重新启用按钮"""
         self.open_button.configure(state="normal")
         self.daily_button.configure(state="normal")
-        self.close_button.configure(state="normal")
+        self.dungeon_task_button.configure(state="normal")
         self.button_320.configure(state="normal")
+        self.ghost_button.configure(state="normal")
 
 
 def main():

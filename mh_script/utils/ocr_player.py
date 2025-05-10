@@ -116,7 +116,7 @@ class OCR_Player(Player):
         return position
 
     # 匹配截图
-    def find_by_pic(self, region: ScreenRegion, target_name):
+    def find_by_pic(self, region: ScreenRegion, target_name,match=None):
         """在截图中寻找目标"""
         loc_pos = []
         if target_name not in self.target_map:
@@ -127,9 +127,11 @@ class OCR_Player(Player):
         h, w = target.shape[:2]
         ex, ey = 0, 0
 
+        if match is None:
+            match = self.accuracy
         background = ScreenUtils.screen_shot(region)
         result = cv2.matchTemplate(background, target, cv2.TM_CCOEFF_NORMED)
-        locations = numpy.where(result >= self.accuracy)
+        locations = numpy.where(result >= match)
 
         for pt in zip(*locations[::-1]):
             x = pt[0]  + w // 2
@@ -172,7 +174,7 @@ class OCR_Player(Player):
             return None
 
     # 加载资源库的所有截图
-    def load_targets(self, folder_name='resource'):
+    def load_targets(self, folder_name=os.path.join('mh_script', 'resource')):
         """加载目标图片"""
         self.target_map.clear()
         target_folder = os.path.join(os.getcwd(), folder_name)
