@@ -2,13 +2,15 @@ import importlib
 import os
 import sys
 import customtkinter as ctk
+
+from mh_script.constant.constant import Constant
 from mh_script.utils.log_util import TextHandler, logger
 
 class AppUI:
     def __init__(self, root):
         self.root = root
-        self.root.title("功能型 UI 示例")
-        self.root.geometry("700x400")  # 设置窗口大小
+        self.root.title("脚本【version1.0】")
+        self.root.geometry("700x500")  # 设置窗口大小
         self.root.config(bg="#2b2b2b")  # 设置背景色
 
         # 使用 Dark/Light 模式
@@ -67,6 +69,16 @@ class AppUI:
                                         corner_radius=10, fg_color="#1e1e1e", hover_color="#3a3a3a",
                                         command=self.task_320)
         self.button_320.grid(row=4, column=0, padx=20, pady=20, sticky="ew")
+
+        # 副本轮数输入框
+        self.dungeon_num_entry = ctk.CTkEntry(self.root, placeholder_text="副本开始点 0 侠士 1 普本1 2 普本2", font=self.font_style, width=200)
+        self.dungeon_num_entry.grid(row=5, column=0, padx=20, pady=(0, 10), sticky="ew")
+
+        # 抓鬼轮数输入框
+        self.ghost_num_entry = ctk.CTkEntry(self.root, placeholder_text="抓鬼轮数 (默认2)", font=self.font_style, width=200)
+        self.ghost_num_entry.grid(row=6, column=0, padx=20, pady=(0, 20), sticky="ew")
+
+
     def configure_grid(self):
         """配置行和列的自适应大小"""
         self.root.grid_rowconfigure(0, weight=1)  # 第一行（按钮行）自适应
@@ -106,11 +118,28 @@ class AppUI:
     def dungeon_task_task(self):
         """副本任务（对应 '关闭' 按钮）"""
         self.disable_buttons_temporarily()  # 禁用按钮
+        try:
+            val = int(self.dungeon_num_entry.get().strip())
+        except ValueError:
+            val = 0
+
+        Constant.DUNGEON_NUM = val
+        logger.info(f"副本轮数设置为：{Constant.DUNGEON_NUM}")
+
         self.execute_file("dungeon_task")
 
     def ghost_task(self):
         """关闭任务（对应 '关闭' 按钮）"""
         self.disable_buttons_temporarily()  # 禁用按钮
+
+        try:
+            val = int(self.ghost_num_entry.get().strip())
+        except ValueError:
+            val = 2
+
+        Constant.GHOST_NUM = val
+        logger.info(f"抓鬼轮数设置为：{Constant.GHOST_NUM}")
+
         self.execute_file("ghost_task")
 
     def task_320(self):

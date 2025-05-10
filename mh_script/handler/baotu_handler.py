@@ -83,11 +83,14 @@ class BaoTu:
 
 
     def while_do(self, region: ScreenRegion):
-        log.info("[宝图] 等待战斗或任务执行完成")
         while True:
+            log.info("[宝图] 等待战斗或任务执行完成")
             in_battle = self.basicHandler.battling(region)
             has_task = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission")
             has_blood = self.ocrPlayer.find_by_pic_first(region, "common.blood")
+            if has_task:
+                self.ocrPlayer.touch(has_task, True, None)
+                self.delay()
             # 不在战斗且没有任务，并且有人物血条，说明不在切换地图
             if not in_battle and not has_task and has_blood:
                 break  # 任务完成，退出循环

@@ -72,11 +72,11 @@ class Fuben:
                 self.delay()
             # 进入
             pos_list = self.ocrPlayer.find_by_name(region, "进入", 0.9)
-            if times == 0 or times == 1:
+            if times == 0 :
                 self.ocrPlayer.touch(pos_list[0], True, None)
                 self.delay()
             else:
-                self.ocrPlayer.touch(pos_list[1], True, None)
+                self.ocrPlayer.touch(pos_list[times-1], True, None)
                 self.delay()
 
             # 侠士需要全图点击确定

@@ -1,7 +1,9 @@
 from typing import List
 
+from mh_script.constant.constant import Constant
 from mh_script.handler.fuben_handler import Fuben
 from mh_script.model.screen_region import ScreenRegion
+from mh_script.utils.log_util import global_log
 from mh_script.utils.ocr_player import OCR_Player
 
 
@@ -16,5 +18,5 @@ class DungeonTask:
 
 
     def run(self,idx):
-        Fuben(self.ocrPlayer).do(self.regions[idx],False,0)
+        Fuben(self.ocrPlayer).do(self.regions[idx],Constant.DUNGEON_NUM)
         global_log.info("✅ 所有副本任务完成！")
