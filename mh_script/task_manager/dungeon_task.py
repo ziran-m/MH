@@ -17,4 +17,4 @@ class DungeonTask:
 
     def run(self,idx):
         Fuben(self.ocrPlayer).do(self.regions[idx],False,0)
-        print("✅ 所有副本任务完成！")
+        global_log.info("✅ 所有副本任务完成！")

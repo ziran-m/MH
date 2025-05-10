@@ -5,6 +5,7 @@ from paddleocr import PaddleOCR
 
 from mh_script.model.screen_region import ScreenRegion
 from mh_script.utils.screen import ScreenUtils
+from .log_util import global_log
 from .player import Player
 import os
 import cv2
@@ -31,7 +32,7 @@ class OCR_Player(Player):
         loc_pos = []
         """根据关键字查找文本中心坐标"""
         if debug:
-            print(f"[OCR] 开始查找关键字：'{keyword}'，区域：{region}，置信度阈值：{accuracy}")
+            global_log.info(f"[OCR] 开始查找关键字：'{keyword}'，区域：{region}，置信度阈值：{accuracy}")
 
         data = self.read(region, debug=debug)
 
@@ -41,7 +42,7 @@ class OCR_Player(Player):
         for i, line in enumerate(data):
             text, confidence = line[1][0], line[1][1]
             if debug:
-                print(f"[OCR][{i}] 文本：'{text}'，置信度：{confidence:.4f}")
+                global_log.info(f"[OCR][{i}] 文本：'{text}'，置信度：{confidence:.4f}")
 
             if keyword in text and confidence is not None and confidence >= self.accuracy:
                 box = line[0]  # 四个顶点坐标
@@ -50,7 +51,7 @@ class OCR_Player(Player):
                 loc_pos.append([x, y])
 
 
-        print(f'查找结果：{keyword} 匹配到 {len(loc_pos)} 个位置')
+        global_log.info(f'查找结果：{keyword} 匹配到 {len(loc_pos)} 个位置')
         return loc_pos if loc_pos else None
 
     # 匹配文字
@@ -58,7 +59,7 @@ class OCR_Player(Player):
 
         """根据关键字查找文本中心坐标"""
         if debug:
-            print(f"[OCR] 开始查找关键字：'{keyword}'，区域：{region}，置信度阈值：{accuracy}")
+            global_log.info(f"[OCR] 开始查找关键字：'{keyword}'，区域：{region}，置信度阈值：{accuracy}")
 
         data = self.read(region, debug=debug)
 
@@ -68,15 +69,15 @@ class OCR_Player(Player):
         for i, line in enumerate(data):
             text, confidence = line[1][0], line[1][1]
             if debug:
-                print(f"[OCR][{i}] 文本：'{text}'，置信度：{confidence:.4f}")
+                global_log.info(f"[OCR][{i}] 文本：'{text}'，置信度：{confidence:.4f}")
 
             if keyword in text and confidence is not None and confidence >= self.accuracy:
                 box = line[0]  # 四个顶点坐标
                 x = sum(pt[0] for pt in box) / 4 + region.left
                 y = sum(pt[1] for pt in box) / 4 + region.top
-                print(f"[OCR] 找到匹配项 '{text}'，坐标：({int(x)}, {int(y)})")
+                global_log.info(f"[OCR] 找到匹配项 '{text}'，坐标：({int(x)}, {int(y)})")
                 return int(x), int(y)
-        print(f"[OCR] 未找到匹配关键字：'{keyword}'")
+        global_log.info(f"[OCR] 未找到匹配关键字：'{keyword}'")
         return None
 
     # 循环等待
@@ -120,7 +121,7 @@ class OCR_Player(Player):
         """在截图中寻找目标"""
         loc_pos = []
         if target_name not in self.target_map:
-            print(f"❌ 未加载目标图片: {target_name}")
+            global_log.info(f"❌ 未加载目标图片: {target_name}")
             return loc_pos
 
         target, _ = self.target_map[target_name]
@@ -141,14 +142,14 @@ class OCR_Player(Player):
             ex, ey = x, y
             loc_pos.append([x, y])
 
-        print(f'查找结果：{target_name} 匹配到 {len(loc_pos)} 个位置')
+        global_log.info(f'查找结果：{target_name} 匹配到 {len(loc_pos)} 个位置')
         return loc_pos if loc_pos else None
 
     # 匹配第一个截图
     def find_by_pic_first(self, region: ScreenRegion, target_name, match=None, rightmost=False):
         """在截图中寻找目标"""
         if target_name not in self.target_map:
-            print(f"❌ 未加载目标图片: {target_name}")
+            global_log.info(f"❌ 未加载目标图片: {target_name}")
             return None
 
         target, _ = self.target_map[target_name]
@@ -177,9 +178,9 @@ class OCR_Player(Player):
     def load_targets(self):
         """加载目标图片"""
         self.target_map.clear()
-        target_folder = self.resource_path('mh_script/resource')
+        target_folder = self.resource_path('resource')
         if not os.path.exists(target_folder):
-            print(f"❌ 目标文件夹 {target_folder} 不存在")
+            global_log.info(f"❌ 目标文件夹 {target_folder} 不存在")
             return
 
         for root, _, files in os.walk(target_folder):
@@ -199,4 +200,6 @@ class OCR_Player(Player):
         """获取资源文件真实路径，兼容打包后路径"""
         if hasattr(sys, '_MEIPASS'):
             return os.path.join(sys._MEIPASS, relative_path)
-        return os.path.join(os.path.dirname(os.path.abspath(__file__)), relative_path)
+        # 获取当前文件的上一级目录，然后拼接 'resource'
+        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        return os.path.join(parent_dir, relative_path)

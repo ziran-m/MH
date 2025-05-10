@@ -21,7 +21,7 @@ class Ghost:
             self.basicHandler.clean(region)
             pos = self.ocrPlayer.find_by_name_first(region, "长安城", 0.9)
             if pos is None:
-                print("找不到长安")
+                global_log.info("找不到长安")
                 return
             self.ocrPlayer.touch(pos, False, None)
             self.delay()

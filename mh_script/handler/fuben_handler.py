@@ -24,7 +24,7 @@ class Fuben:
                 pos = self.ocrPlayer.find_by_pic_first(region, "fuben.canjia", 0.9, True)
                 # 找不到就是已经完成了
                 if pos is None:
-                    print("副本任务已完成或找不到")
+                    global_log.info("副本任务已完成或找不到")
                     return
                 self.ocrPlayer.touch(pos, True, None)
                 self.delay()
@@ -33,7 +33,7 @@ class Fuben:
                 self.basicHandler.clean(region)
                 pos = self.ocrPlayer.find_by_name_first(region, "长安城", 0.9)
                 if pos is None:
-                    print("找不到长安")
+                    global_log.info("找不到长安")
                     return
                 self.ocrPlayer.touch(pos, False, None)
                 self.delay()
@@ -50,7 +50,7 @@ class Fuben:
                     self.basicHandler.clean(region)
                     pos = self.ocrPlayer.find_by_name_first(region, "长安城", 0.9)
                     if pos is None:
-                        print("找不到长安")
+                        global_log.info("找不到长安")
                         return
                     self.ocrPlayer.touch(pos, False, None)
                     self.delay()

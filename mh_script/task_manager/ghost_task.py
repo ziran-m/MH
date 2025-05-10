@@ -17,4 +17,4 @@ class GhostTask:
 
     def run(self,idx):
         Ghost(self.ocrPlayer).do(self.regions[idx])
-        print("✅ 抓鬼任务完成！")
+        global_log.info("✅ 抓鬼任务完成！")

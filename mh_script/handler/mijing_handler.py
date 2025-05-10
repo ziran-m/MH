@@ -68,7 +68,7 @@ class MiJing:
             self.delay()
             pos = self.ocrPlayer.find_by_pic_first(region, "mijing.yes")
             if pos is not None:
-                print(f"[秘境] 点击“确定”：{pos}")
+                log.info(f"[秘境] 点击“确定”：{pos}")
                 self.ocrPlayer.touch(pos, True, None)
                 self.delay()
 
