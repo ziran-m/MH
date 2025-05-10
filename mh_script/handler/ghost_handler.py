@@ -39,7 +39,7 @@ class Ghost:
 
         # 点击任务栏的捉鬼任务
         self.basicHandler.clean(region)
-        pos = self.ocrPlayer.wait_find_by_name_first(region, "捉鬼",0.9)
+        pos = self.ocrPlayer.wait_find_by_name_first(region, "捉鬼（1/10）",0.9)
         if pos:
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
@@ -51,8 +51,8 @@ class Ghost:
             if pos:
                 self.ocrPlayer.touch(pos, True, None)
                 self.delay()
-            end = self.ocrPlayer.find_by_name_first(region, "一轮",0.9)
-            if  end:
+            if  self.ocrPlayer.find_by_name_first(region, "是否继续抓鬼",0.9):
+                end = self.ocrPlayer.find_by_name_first(region, "确定",0.9)
                 self.ocrPlayer.touch(end, True, None)
                 self.delay()
                 break

@@ -174,10 +174,10 @@ class OCR_Player(Player):
             return None
 
     # 加载资源库的所有截图
-    def load_targets(self, folder_name=os.path.join('mh_script', 'resource')):
+    def load_targets(self):
         """加载目标图片"""
         self.target_map.clear()
-        target_folder = os.path.join(os.getcwd(), folder_name)
+        target_folder = self.resource_path('mh_script/resource')
         if not os.path.exists(target_folder):
             print(f"❌ 目标文件夹 {target_folder} 不存在")
             return
@@ -193,3 +193,10 @@ class OCR_Player(Player):
                     image = cv2.imread(file_path)
                     if image is not None:
                         self.target_map[name] = (image, name)
+
+    @staticmethod
+    def resource_path(relative_path):
+        """获取资源文件真实路径，兼容打包后路径"""
+        if hasattr(sys, '_MEIPASS'):
+            return os.path.join(sys._MEIPASS, relative_path)
+        return os.path.join(os.path.dirname(os.path.abspath(__file__)), relative_path)

@@ -1,2 +1,2 @@
-# 打包命令
-pyinstaller application.py --onefile --add-data "mh_script/resource;mh_script/resource"
+# 打包
+pyinstaller -F app_ui.py --add-data "mh_script/resource;mh_script/resource"

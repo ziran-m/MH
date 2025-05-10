@@ -1,34 +1,47 @@
+import threading
 from mh_script.client_manager.launcher import Launcher
-from mh_script.handler.basic_handler import BasicHandler
-from mh_script.task_manager.daily_task import DailyTask
 from mh_script.task_manager.dungeon_task import DungeonTask
 from mh_script.task_manager.ghost_task import GhostTask
-from mh_script.utils.log_util import global_log
+from mh_script.task_manager.daily_task import DailyTask
+from mh_script.handler.basic_handler import BasicHandler
 from mh_script.utils.ocr_player import OCR_Player
 
 
-def main():
+def run_all_tasks_in_order():
     launcher = Launcher()
-    ocr_player = OCR_Player()
-    basic_handler = BasicHandler(ocr_player)
-    #获取窗口
     regions = launcher.get_regions()
-    if regions is None or len(regions) == 0:
+    if not regions:
+        print("❌ 未获取到窗口区域信息")
         return
-    # 调整排列窗口
+
     launcher.resize_and_move_window()
-    # 副本
+
     dungeon = DungeonTask(regions)
-    dungeon.run(0)
-    # 抓鬼
     ghost = GhostTask(regions)
+    daily = DailyTask(regions)
+
+    # 顺序执行任务
+    print("▶️ 开始执行 Dungeon 任务...")
+    dungeon.run(0)
+    print("✅ Dungeon 任务完成！")
+
+    print("▶️ 开始执行 Ghost 任务...")
     ghost.run(0)
-    # 脱离队伍
-    basic_handler.escape_all(regions)
-    # 日常
-    task = DailyTask(regions)
-    task.run(-1)
-    global_log.info("320完成")
+    print("✅ Ghost 任务完成！")
+
+    print("▶️ 开始执行脱离队伍...")
+    BasicHandler(OCR_Player()).escape_all(regions)
+    print("✅ 脱离队伍完成！")
+
+    print("▶️ 开始执行 Daily 任务...")
+    daily.run(-1)
+    print("✅ Daily 任务完成！")
+
+
+def main():
+    # 整个流程在子线程中运行，避免主线程阻塞
+    thread = threading.Thread(target=run_all_tasks_in_order, daemon=True)
+    thread.start()
 
 
 if __name__ == "__main__":

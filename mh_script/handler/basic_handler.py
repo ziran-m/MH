@@ -32,15 +32,10 @@ class BasicHandler:
         self.ocrPlayer.touch(pos, True, None)
         self.ocrPlayer.delay()
 
-    def escape_all(self,regions:List[ScreenRegion]):
+    def escape_all(self, regions: List[ScreenRegion]):
         threads = []
         for i in range(Constant.NUM_WINDOWS):
-            thread = threading.Thread(target=self.escape_team, args=(regions[i],))
-            threads.append(thread)
-            thread.start()
-
-        for thread in threads:
-            thread.join()
+            self.escape_team(regions[i])
 
         global_log.info("✅ 脱离队伍完毕")
 
