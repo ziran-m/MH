@@ -68,7 +68,7 @@ class Fuben:
                 self.delay()
 
         # 副本里面没有活动这个图标
-        while self.ocrPlayer.find_by_pic_first(region, "common.activity") is None:
+        while self.ocrPlayer.find_by_pic_first(region, "common.activity",0.5) is None:
             while self.basicHandler.battling(region):
                 global_log.info("[副本]战斗中")
                 self.delay()
