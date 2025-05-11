@@ -4,7 +4,8 @@ import sys
 import customtkinter as ctk
 
 from mh_script.constant.constant import Constant
-from mh_script.utils.log_util import TextHandler, logger
+from mh_script.utils.log_util import TextHandler, logger, global_log
+
 
 class AppUI:
     def __init__(self, root):
@@ -124,7 +125,7 @@ class AppUI:
             val = 0
 
         Constant.DUNGEON_NUM = val
-        logger.info(f"副本轮数设置为：{Constant.DUNGEON_NUM}")
+        global_log.info(f"副本轮数设置为：{Constant.DUNGEON_NUM}")
 
         self.execute_file("dungeon_task")
 
@@ -145,6 +146,24 @@ class AppUI:
     def task_320(self):
         """320任务（对应 '320' 按钮）"""
         self.disable_buttons_temporarily()  # 禁用按钮
+
+        try:
+            val1 = int(self.dungeon_num_entry.get().strip())
+        except ValueError:
+            val1 = 0
+
+        try:
+            val2 = int(self.ghost_num_entry.get().strip())
+        except ValueError:
+            val2 = 2
+
+        Constant.DUNGEON_NUM = val1
+
+        Constant.GHOST_NUM = val2
+
+        global_log.info(f"副本轮数设置为：{Constant.DUNGEON_NUM}")
+
+
         self.execute_file("three_two_zero")
 
     def disable_buttons_temporarily(self):

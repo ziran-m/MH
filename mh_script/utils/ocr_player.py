@@ -27,7 +27,7 @@ class OCR_Player(Player):
         data = result[0]
         return data
 
-    def find_by_name(self, region: ScreenRegion, keyword, accuracy=None, debug=True):
+    def find_by_name(self, region: ScreenRegion, keyword, accuracy=None, debug=False):
         """在截图中寻找目标"""
         loc_pos = []
         """根据关键字查找文本中心坐标"""
@@ -55,7 +55,7 @@ class OCR_Player(Player):
         return loc_pos if loc_pos else None
 
     # 匹配文字
-    def find_by_name_first(self, region: ScreenRegion, keyword, accuracy=None, debug=True) -> tuple[int, int] | None:
+    def find_by_name_first(self, region: ScreenRegion, keyword, accuracy=None, debug=False) -> tuple[int, int] | None:
 
         """根据关键字查找文本中心坐标"""
         if debug:

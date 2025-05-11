@@ -41,17 +41,18 @@ class BasicHandler:
 
     # 退出队伍
     def escape_team(self, region: ScreenRegion = None):
+        log.info("开始脱离队伍")
         # 点击队伍
-        pos = self.ocrPlayer.find_by_name_first(region, "队伍")
+        pos = self.ocrPlayer.find_by_name_first(region, "队伍",0.9)
         if pos is None:
-            log.info("页面有问题请检查")
+            log.info("找不到队伍")
             return
         self.ocrPlayer.touch(pos, True, None)
         self.ocrPlayer.delay()
         # 退出队伍
         pos = self.ocrPlayer.find_by_name_first(region, "退出队伍")
         if pos is None:
-            log.info("页面有问题请检查")
+            log.info("找不到退出队伍")
             return
         self.ocrPlayer.touch(pos, True, None)
         self.ocrPlayer.delay()
@@ -60,9 +61,9 @@ class BasicHandler:
         self.ocrPlayer.delay()
 
         # 点击任务
-        pos = self.ocrPlayer.find_by_name_first(region, "任务")
+        pos = self.ocrPlayer.find_by_pic_first(region, "common.task",0.5)
         if pos is None:
-            log.info("页面有问题请检查")
+            log.info("任务未匹配")
             return
         self.ocrPlayer.touch(pos, True, None)
         self.ocrPlayer.delay()

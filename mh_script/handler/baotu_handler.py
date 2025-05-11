@@ -69,7 +69,7 @@ class BaoTu:
             self.delay()
 
             log.info("[宝图] 查找任务栏宝图任务")
-            pos = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission")
+            pos = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission",0.7)
             if not pos:
                 log.info("[宝图] 找不到任务栏宝图任务，领取失败")
                 return

@@ -15,8 +15,8 @@ class Ghost:
         if times >= Constant.GHOST_NUM:
             return
         if times == 0:
-            log.info("[抓鬼] 开始执行任务流程")
-            log.info("[抓鬼] 清理界面")
+            global_log.info("[抓鬼] 开始执行任务流程")
+            global_log.info("[抓鬼] 清理界面")
             # 点长安城图标
             self.basicHandler.clean(region)
             pos = self.ocrPlayer.find_by_name_first(region, "长安城", 0.9)
@@ -27,19 +27,22 @@ class Ghost:
             self.delay()
             # 找到钟馗
             pos = self.ocrPlayer.find_by_name_first(region, "钟道",0.8)
+            if pos is None:
+                global_log.info("找不到钟道")
+                return
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
 
+
         # 点击捉鬼任务
-        pos = self.ocrPlayer.wait_find_by_name_first(region, "捉鬼任务",0.9)
-        if pos:
+        pos = self.ocrPlayer.wait_find_by_pic_first(region, "ghost.start",0.9)
+        if pos is not None:
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
             self.basicHandler.clickLeftCenter(region)
 
         # 点击任务栏的捉鬼任务
-        self.basicHandler.clean(region)
-        pos = self.ocrPlayer.wait_find_by_name_first(region, "捉鬼（1/10）",0.9)
+        pos = self.ocrPlayer.wait_find_by_pic_first(region, "common.time",0.9)
         if pos:
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
@@ -47,11 +50,11 @@ class Ghost:
         while True:
             global_log.info("抓鬼ing")
             self.delay(30,35)
-            pos = self.ocrPlayer.wait_find_by_name_first(region, "捉鬼", 0.9)
+            pos = self.ocrPlayer.wait_find_by_pic_first(region, "common.time",0.9)
             if pos:
                 self.ocrPlayer.touch(pos, True, None)
                 self.delay()
-            if  self.ocrPlayer.find_by_name_first(region, "是否继续抓鬼",0.9):
+            if  self.ocrPlayer.find_by_name_first(region, "少侠已经捉完1轮鬼，是否继续捉鬼",0.9):
                 end = self.ocrPlayer.find_by_name_first(region, "确定",0.9)
                 self.ocrPlayer.touch(end, True, None)
                 self.delay()
