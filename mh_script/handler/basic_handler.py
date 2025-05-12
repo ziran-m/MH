@@ -49,6 +49,8 @@ class BasicHandler:
             return
         self.ocrPlayer.touch(pos, True, None)
         self.ocrPlayer.delay()
+        self.ocrPlayer.touch(pos, True, None)
+        self.ocrPlayer.delay()
         # 退出队伍
         out = self.ocrPlayer.find_by_name_first(region, "退出队伍",0.9)
         if out is None:
