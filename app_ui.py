@@ -90,7 +90,7 @@ class App:
         self.button_320.grid(row=row, column=0, columnspan=2, pady=(0, 10), sticky="ew")
 
         row += 1
-        self.wabao_button = ctk.CTkButton(self.left_frame, text="挖宝", command=self.wabao_task, **button_config)
+        self.wabao_button = ctk.CTkButton(self.left_frame, text="考古", command=self.wabao_task, **button_config)
         self.wabao_button.grid(row=row, column=0, columnspan=2, pady=(0, 10), sticky="ew")
 
         # 添加退出按钮到 left_frame（假设 row 是从上往下排的）
