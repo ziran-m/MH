@@ -3,6 +3,7 @@ import datetime
 from mh_script.client_manager.launcher import Launcher
 from mh_script.handler.basic_handler import BasicHandler
 from mh_script.model.screen_region import ScreenRegion
+from mh_script.utils.log_util import log
 from mh_script.utils.ocr_player import OCR_Player
 from mh_script.utils.player import Player
 

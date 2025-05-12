@@ -93,11 +93,16 @@ class AppUI:
     def execute_file(self, file_name):
         """加载并执行指定文件的 main 方法"""
         try:
+            # 确保当前路径下的 module 文件夹在 sys.path 中
+            module_path = os.path.join(os.path.dirname(__file__), 'module')
+            if module_path not in sys.path:
+                sys.path.insert(0, module_path)
 
-            # 动态加载模块
-            module = importlib.import_module(f"{file_name}")
 
-            # 调用模块中的 main 方法
+            # 加载模块
+            module = importlib.import_module(file_name)
+
+            # 执行 main
             if hasattr(module, 'main'):
                 module.main()
             else:
@@ -114,7 +119,7 @@ class AppUI:
     def daily_task(self):
         """日常任务（对应 '日常' 按钮）"""
         self.disable_buttons_temporarily()  # 禁用按钮
-        self.execute_file("daily_task")
+        self.execute_file("daily")
 
     def dungeon_task_task(self):
         """副本任务（对应 '关闭' 按钮）"""
@@ -127,7 +132,7 @@ class AppUI:
         Constant.DUNGEON_NUM = val
         global_log.info(f"副本轮数设置为：{Constant.DUNGEON_NUM}")
 
-        self.execute_file("dungeon_task")
+        self.execute_file("dungeon")
 
     def ghost_task(self):
         """关闭任务（对应 '关闭' 按钮）"""
@@ -141,7 +146,7 @@ class AppUI:
         Constant.GHOST_NUM = val
         logger.info(f"抓鬼轮数设置为：{Constant.GHOST_NUM}")
 
-        self.execute_file("ghost_task")
+        self.execute_file("ghost")
 
     def task_320(self):
         """320任务（对应 '320' 按钮）"""
