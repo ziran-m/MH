@@ -91,6 +91,9 @@ class BasicHandler:
                 self.ocrPlayer.delay()
                 return
 
+    def get_center(self, region: ScreenRegion):
+        return [region.left + region.width // 2, region.top + region.height // 2]
+
     # 点击图中间
     def clickCenter(self, region: ScreenRegion):
         center = [region.left + region.width // 2, region.top + region.height // 2]
@@ -101,3 +104,23 @@ class BasicHandler:
         center = [region.left + region.width // 2, region.top + region.height // 2]
         self.ocrPlayer.touch(center, True)
         self.ocrPlayer.delay()
+    # 智能查找目标图片：
+    def smart_find_pic_with_scroll(self, region, target_names,target_names2=None, match=0.8, rightmost=False, start_pos=None):
+        # 向上拖动尝试3次
+        for _ in range(3):
+            Player.drag_up(start_pos)
+
+
+        # 向下拖动尝试6次
+        for _ in range(6):
+            pos = self.ocrPlayer.find_by_pic_first(region, target_names, match, rightmost)
+            if  pos is not  None:
+                return pos
+            if target_names2 is not None:
+                pos = self.ocrPlayer.find_by_pic_first(region, target_names2, match, rightmost)
+                if pos is not None:
+                    return pos
+            Player.drag_down(*start_pos)
+        return None
+
+

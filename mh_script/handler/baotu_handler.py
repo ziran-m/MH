@@ -44,12 +44,10 @@ class BaoTu:
             self.basicHandler.goDailyActivity(region)
 
             log.info("[宝图] 查找“宝图.参加”按钮")
-            pos = self.ocrPlayer.find_by_pic_first(region, "baotu.canjia", 0.9, True)
-            if not pos:
-                pos = self.ocrPlayer.find_by_pic_first(region, "baotu.canjia_v2", 0.9, True)
-                if not pos:
-                    log.info("[宝图] 找不到参加按钮，任务可能已完成")
-                    return
+            pos = self.basicHandler.smart_find_pic_with_scroll(region,"baotu.canjia","baotu.canjia_v2",0.9,True,self.basicHandler.get_center(region))
+            if pos is None:
+                log.info("[宝图] 找不到参加按钮，任务可能已完成")
+                return
 
             log.info(f"[宝图] 点击“参加”：{pos}")
             self.ocrPlayer.touch(pos, True, None)
@@ -116,8 +114,9 @@ class BaoTu:
             self.delay()
 
         log.info("[宝图] 查找包裹中的藏宝图")
-        pos = self.ocrPlayer.find_by_pic_first(region, "baotu.bag_baotu")
-        if not pos:
+        pos = self.basicHandler.smart_find_pic_with_scroll(region, "baotu.bag_baotu", None, 0.8, False,
+                                                           self.basicHandler.get_center(region))
+        if pos is None:
             log.info("[宝图] 找不到宝图，挖宝流程结束")
             return
         log.info(f"[宝图] 双击藏宝图：{pos}")

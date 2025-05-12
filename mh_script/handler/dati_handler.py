@@ -26,12 +26,11 @@ class DaTi:
         self.basicHandler.goDailyActivity(region)
 
         log.info("[三界奇缘] 寻找“参加”按钮")
-        pos = self.ocrPlayer.find_by_pic_first(region, "dati.sanjie", 0.9, True)
+        pos = self.basicHandler.smart_find_pic_with_scroll(region, "dati.sanjie", "dati.sanjie_v2", 0.9, True,
+                                                           self.basicHandler.get_center(region))
         if pos is None:
-            pos = self.ocrPlayer.find_by_pic_first(region, "dati.sanjie_v2", 0.9, True)
-            if pos is None:
-                log.info("[三界奇缘] 任务已完成或找不到“参加”按钮")
-                return
+            log.info("[三界奇缘] 任务已完成或找不到“参加”按钮")
+            return
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
 
@@ -52,12 +51,11 @@ class DaTi:
         self.basicHandler.goDailyActivity(region)
 
         log.info("[科举答题] 寻找“参加”按钮")
-        pos = self.ocrPlayer.find_by_pic_first(region, "dati.keju", 0.9, True)
+        pos = self.basicHandler.smart_find_pic_with_scroll(region, "dati.keju", "dati.keju_v2", 0.9, True,
+                                                           self.basicHandler.get_center(region))
         if pos is None:
-            pos = self.ocrPlayer.find_by_pic_first(region, "dati.keju_v2", 0.9, True)
-            if pos is None:
-                log.info("[科举答题] 任务已完成或找不到“参加”按钮")
-                return
+            log.info("[科举答题] 任务已完成或找不到“参加”按钮")
+            return
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
 

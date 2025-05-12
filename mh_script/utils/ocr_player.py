@@ -17,6 +17,7 @@ class OCR_Player(Player):
         super().__init__(accuracy)
         self.target_map = {}
         self.load_targets()
+        _touch_lock = threading.Lock()
 
     def read(self, region: ScreenRegion = None, debug=False):
 
@@ -92,10 +93,12 @@ class OCR_Player(Player):
 
 
     def touch(self, position, offset_click=True, img_name=None):
-        Player.touch(position, offset_click, img_name)
+        with self._touch_lock:
+            Player.touch(position, offset_click, img_name)
 
     def doubleTouch(self, position, offset_click=True, img_name=None):
-        Player.doubleTouch(position, offset_click, img_name)
+        with self._touch_lock:
+            Player.doubleTouch(position, offset_click, img_name)
 
     # 循环等待
     def wait_find_by_pic_first(self, background: ScreenRegion, target_name, match=None, rightmost=False,max_num=10):
