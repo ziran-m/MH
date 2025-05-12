@@ -1,94 +1,118 @@
 import importlib
 import os
 import sys
+
 import customtkinter as ctk
 
 from mh_script.constant.constant import Constant
 from mh_script.utils.log_util import TextHandler, logger, global_log
 
 
-class AppUI:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("脚本【version1.0】")
-        self.root.geometry("700x500")  # 设置窗口大小
-        self.root.config(bg="#2b2b2b")  # 设置背景色
-
-        # 使用 Dark/Light 模式
+class App:
+    def __init__(self):
         ctk.set_appearance_mode("dark")
+        ctk.set_default_color_theme("blue")
+        self.root = ctk.CTk()
+        self.root.geometry("700x500")
+        self.root.title("梦幻西游脚本启动器")
 
-        # 设置字体
-        self.font_style = ("Arial", 14)
+        self.font_style = ("Microsoft YaHei", 14)
 
-        # 创建滚动条和文本框显示日志
+        self.setup_layout()
+        self.create_buttons()
         self.create_log_ui()
 
-        # 创建按钮并绑定命令
-        self.create_buttons()
+        self.root.mainloop()
 
-        # 配置行和列的自适应大小
-        self.configure_grid()
+    def setup_layout(self):
+        # 左边按钮区域
+        self.left_frame = ctk.CTkFrame(self.root)
+        self.left_frame.grid(row=0, column=0, padx=10, pady=10, sticky="ns")
+
+        # 右边日志区域
+        self.right_frame = ctk.CTkFrame(self.root)
+        self.right_frame.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+
+        # 让日志区随窗口伸缩
+        self.root.grid_rowconfigure(0, weight=1)
+        self.root.grid_columnconfigure(1, weight=1)
+
+    def create_buttons(self):
+        button_config = {
+            "font": self.font_style,
+            "height": 40,
+            "width": 100,
+            "corner_radius": 10,
+            "fg_color": "#1e1e1e",
+            "hover_color": "#3a3a3a",
+        }
+
+        row = 0
+        self.open_button = ctk.CTkButton(self.left_frame, text="启动", command=self.start_task, **button_config)
+        self.open_button.grid(row=row, column=0, columnspan=2, pady=(0, 10), sticky="ew")
+
+        row += 1
+        self.dungeon_task_button = ctk.CTkButton(self.left_frame, text="副本", command=self.dungeon_task_task,
+                                                 **button_config)
+        self.dungeon_task_button.grid(row=row, column=0, pady=(0, 10), sticky="ew")
+
+        # 副本输入框放在副本按钮旁边
+        self.dungeon_num_entry = ctk.CTkEntry(self.left_frame, placeholder_text="副本开始点 0 侠士 1 普本1 2 普本2",
+                                              font=self.font_style, width=150)
+        self.dungeon_num_entry.grid(row=row, column=1, padx=10, pady=(0, 10), sticky="ew")
+
+        # 让副本按钮和输入框列宽一致
+        self.left_frame.grid_columnconfigure(0, weight=1)
+        self.left_frame.grid_columnconfigure(1, weight=1)
+
+        row += 1
+        # 日常按钮跨越两列
+        self.daily_button = ctk.CTkButton(self.left_frame, text="日常", command=self.daily_task, **button_config)
+        self.daily_button.grid(row=row, column=0, columnspan=2, pady=(0, 10), sticky="ew")
+
+        row += 1
+        self.ghost_button = ctk.CTkButton(self.left_frame, text="抓鬼", command=self.ghost_task, **button_config)
+        self.ghost_button.grid(row=row, column=0, pady=(0, 10), sticky="ew")
+
+        # 抓鬼轮数输入框放在抓鬼按钮旁边
+        self.ghost_num_entry = ctk.CTkEntry(self.left_frame, placeholder_text="抓鬼轮数 (默认2)", font=self.font_style,
+                                            width=150)
+        self.ghost_num_entry.grid(row=row, column=1, padx=10, pady=(0, 10), sticky="ew")
+
+        row += 1
+        self.button_320 = ctk.CTkButton(self.left_frame, text="320", command=self.task_320, **button_config)
+        self.button_320.grid(row=row, column=0, columnspan=2, pady=(0, 10), sticky="ew")
+
+        row += 1
+        self.wabao_button = ctk.CTkButton(self.left_frame, text="挖宝", command=self.wabao_task, **button_config)
+        self.wabao_button.grid(row=row, column=0, columnspan=2, pady=(0, 10), sticky="ew")
+
+        # 使按钮和输入框宽度一致
+        self.left_frame.grid_columnconfigure(0, weight=1)  # 使按钮的列宽度可伸缩
+        self.left_frame.grid_columnconfigure(1, weight=1)  # 使输入框的列宽度可伸缩
 
     def create_log_ui(self):
         """创建日志区域（文本框和滚动条）"""
-        self.scrollbar = ctk.CTkScrollbar(self.root, orientation="vertical")
 
-        self.log_text = ctk.CTkTextbox(self.root, font=self.font_style, wrap="word", state="normal")
-        self.log_text.grid(row=0, column=1, padx=20, pady=20, rowspan=3, sticky="nsew")  # 使用 grid 布局，控制文本框的高度和位置
-        self.log_text.configure(yscrollcommand=self.scrollbar.set)  # 使用 'configure' 而不是 'config'
-        self.scrollbar.configure(command=self.log_text.yview)
+        # 日志框 + 滚动条放入一个单独的 Frame 内
+        log_frame = ctk.CTkFrame(self.right_frame)
+        log_frame.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")  # 占满右侧
 
-        # 创建 TextHandler 并添加到 logger
-        self.log_text_handler = TextHandler(self.log_text)  # 将 UI 中的 Text 控件传入
-        logger.addHandler(self.log_text_handler)  # 将 handler 添加到原始 logger
+        log_frame.grid_rowconfigure(0, weight=1)
+        log_frame.grid_columnconfigure(0, weight=1)
 
-    def create_buttons(self):
-        """创建操作按钮"""
-        # 启动按钮
-        self.open_button = ctk.CTkButton(self.root, text="启动", font=self.font_style, height=40, width=200,
-                                         corner_radius=10, fg_color="#1e1e1e", hover_color="#3a3a3a", command=self.start_task)
-        self.open_button.grid(row=0, column=0, padx=20, pady=20, sticky="ew")
-
-        # 日常按钮
-        self.daily_button = ctk.CTkButton(self.root, text="日常", font=self.font_style, height=40, width=200,
-                                          corner_radius=10, fg_color="#1e1e1e", hover_color="#3a3a3a", command=self.daily_task)
-        self.daily_button.grid(row=1, column=0, padx=20, pady=20, sticky="ew")
-
-        # 副本按钮
-        self.dungeon_task_button = ctk.CTkButton(self.root, text="副本", font=self.font_style, height=40, width=200,
-                                          corner_radius=10, fg_color="#1e1e1e", hover_color="#3a3a3a", command=self.dungeon_task_task)
-        self.dungeon_task_button.grid(row=2, column=0, padx=20, pady=20, sticky="ew")
-
-        # 抓鬼按钮
-        self.ghost_button = ctk.CTkButton(self.root, text="抓鬼", font=self.font_style, height=40, width=200,
-                                                 corner_radius=10, fg_color="#1e1e1e", hover_color="#3a3a3a",
-                                                 command=self.ghost_task)
-        self.ghost_button.grid(row=3, column=0, padx=20, pady=20, sticky="ew")
-
-        # 名称为 320 的按钮
-        self.button_320 = ctk.CTkButton(self.root, text="320", font=self.font_style, height=40, width=200,
-                                        corner_radius=10, fg_color="#1e1e1e", hover_color="#3a3a3a",
-                                        command=self.task_320)
-        self.button_320.grid(row=4, column=0, padx=20, pady=20, sticky="ew")
-
-        # 副本轮数输入框
-        self.dungeon_num_entry = ctk.CTkEntry(self.root, placeholder_text="副本开始点 0 侠士 1 普本1 2 普本2", font=self.font_style, width=200)
-        self.dungeon_num_entry.grid(row=5, column=0, padx=20, pady=(0, 10), sticky="ew")
-
-        # 抓鬼轮数输入框
-        self.ghost_num_entry = ctk.CTkEntry(self.root, placeholder_text="抓鬼轮数 (默认2)", font=self.font_style, width=200)
-        self.ghost_num_entry.grid(row=6, column=0, padx=20, pady=(0, 20), sticky="ew")
+        # 文本框
+        self.log_text = ctk.CTkTextbox(log_frame, font=self.font_style, wrap="word", state="normal")
+        self.log_text.grid(row=0, column=0, sticky="nsew")
 
 
-    def configure_grid(self):
-        """配置行和列的自适应大小"""
-        self.root.grid_rowconfigure(0, weight=1)  # 第一行（按钮行）自适应
-        self.root.grid_rowconfigure(1, weight=1)  # 第二行（按钮行）自适应
-        self.root.grid_rowconfigure(2, weight=1)  # 第三行（按钮行）自适应
-        self.root.grid_rowconfigure(3, weight=3)  # 第四行（日志显示区域）占更多空间
+        # 最外层布局
+        self.right_frame.grid_rowconfigure(0, weight=1)
+        self.right_frame.grid_columnconfigure(0, weight=1)
 
-        self.root.grid_columnconfigure(0, weight=1)  # 第一列（按钮列）自适应
-        self.root.grid_columnconfigure(1, weight=3)  # 第二列（日志列）占更多空间
+        # 设置日志 handler
+        self.log_text_handler = TextHandler(self.log_text)
+        logger.addHandler(self.log_text_handler)
 
     def execute_file(self, file_name):
         """加载并执行指定文件的 main 方法"""
@@ -97,7 +121,6 @@ class AppUI:
             module_path = os.path.join(os.path.dirname(__file__), 'module')
             if module_path not in sys.path:
                 sys.path.insert(0, module_path)
-
 
             # 加载模块
             module = importlib.import_module(file_name)
@@ -168,8 +191,12 @@ class AppUI:
 
         global_log.info(f"副本轮数设置为：{Constant.DUNGEON_NUM}")
 
-
         self.execute_file("three_two_zero")
+
+    def wabao_task(self):
+        """挖宝任务"""
+        self.disable_buttons_temporarily()
+        self.execute_file("wabao")
 
     def disable_buttons_temporarily(self):
         """禁用按钮并在1秒后重新启用"""
@@ -178,6 +205,7 @@ class AppUI:
         self.dungeon_task_button.configure(state="disabled")
         self.button_320.configure(state="disabled")
         self.ghost_button.configure(state="disabled")
+        self.wabao_button.configure(state="disabled")
 
         # 设置1秒后重新启用按钮
         self.root.after(1000, self.enable_buttons)
@@ -189,17 +217,8 @@ class AppUI:
         self.dungeon_task_button.configure(state="normal")
         self.button_320.configure(state="normal")
         self.ghost_button.configure(state="normal")
-
-
-def main():
-    # 创建UI窗口
-    app = ctk.CTk()
-    # 创建AppUI实例
-    ui = AppUI(app)
-
-    # 启动UI主循环
-    app.mainloop()
+        self.wabao_button.configure(state="normal")
 
 
 if __name__ == "__main__":
-    main()
+    App()
