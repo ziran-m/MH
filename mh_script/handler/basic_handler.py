@@ -50,10 +50,12 @@ class BasicHandler:
         self.ocrPlayer.touch(pos, True, None)
         self.ocrPlayer.delay()
         # 退出队伍
-        pos = self.ocrPlayer.find_by_name_first(region, "退出队伍",0.9)
-        if pos is None:
+        out = self.ocrPlayer.find_by_name_first(region, "退出队伍",0.9)
+        if out is None:
+            self.ocrPlayer.touch(pos, True, None)
+            self.ocrPlayer.delay()
             log.info("找不到退出队伍")
-        self.ocrPlayer.touch(pos, True, None)
+        self.ocrPlayer.touch(out, True, None)
         self.ocrPlayer.delay()
         # 清理页面
         self.clickCenter(region)
