@@ -10,11 +10,11 @@ from mh_script.utils.log_util import TextHandler, logger, global_log
 
 class App:
     def __init__(self):
-        ctk.set_appearance_mode("dark")
+        ctk.set_appearance_mode("light")
         ctk.set_default_color_theme("blue")
         self.root = ctk.CTk()
         self.root.geometry("700x500")
-        self.root.title("梦幻西游脚本启动器")
+        self.root.title("脚本启动器")
 
         self.font_style = ("Microsoft YaHei", 14)
 
@@ -43,9 +43,18 @@ class App:
             "height": 40,
             "width": 100,
             "corner_radius": 10,
-            "fg_color": "#1e1e1e",
-            "hover_color": "#3a3a3a",
+            "fg_color": "#1abc9c",
+            "hover_color": "#2A6E84",
+            "text_color": "white"
+
         }
+        # 创建一个复制的字典，并覆盖颜色配置
+        exit_button_config = button_config.copy()
+        exit_button_config.update({
+            "fg_color": "#e74c3c",
+            "hover_color": "#660000",
+            "text_color": "white"
+        })
 
         row = 0
         self.open_button = ctk.CTkButton(self.left_frame, text="启动", command=self.start_task, **button_config)
@@ -58,12 +67,9 @@ class App:
 
         # 副本输入框放在副本按钮旁边
         self.dungeon_num_entry = ctk.CTkEntry(self.left_frame, placeholder_text="副本开始点 0 侠士 1 普本1 2 普本2",
-                                              font=self.font_style, width=150)
+                                              font=self.font_style, width=150, height=40,border_color="#95a5a6", border_width=2)
         self.dungeon_num_entry.grid(row=row, column=1, padx=10, pady=(0, 10), sticky="ew")
 
-        # 让副本按钮和输入框列宽一致
-        self.left_frame.grid_columnconfigure(0, weight=1)
-        self.left_frame.grid_columnconfigure(1, weight=1)
 
         row += 1
         # 日常按钮跨越两列
@@ -76,7 +82,7 @@ class App:
 
         # 抓鬼轮数输入框放在抓鬼按钮旁边
         self.ghost_num_entry = ctk.CTkEntry(self.left_frame, placeholder_text="抓鬼轮数 (默认2)", font=self.font_style,
-                                            width=150)
+                                            width=150, height=40,border_color="#95a5a6", border_width=2)
         self.ghost_num_entry.grid(row=row, column=1, padx=10, pady=(0, 10), sticky="ew")
 
         row += 1
@@ -86,6 +92,11 @@ class App:
         row += 1
         self.wabao_button = ctk.CTkButton(self.left_frame, text="挖宝", command=self.wabao_task, **button_config)
         self.wabao_button.grid(row=row, column=0, columnspan=2, pady=(0, 10), sticky="ew")
+
+        # 添加退出按钮到 left_frame（假设 row 是从上往下排的）
+
+        self.exit_button = ctk.CTkButton(self.left_frame, text="退出", command=self.root.quit,**exit_button_config)
+        self.exit_button.grid(row=99, column=0, columnspan=2, pady=(0, 10), sticky="ew")
 
         # 使按钮和输入框宽度一致
         self.left_frame.grid_columnconfigure(0, weight=1)  # 使按钮的列宽度可伸缩
