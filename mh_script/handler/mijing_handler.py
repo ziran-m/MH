@@ -41,12 +41,12 @@ class MiJing:
         self.basicHandler.goDailyActivity(region)
 
         log.info("[秘境] 寻找“参加”按钮")
-        pos = self.ocrPlayer.find_by_pic_first(region, "mijing.canjia", 0.9, True)
+        pos = self.basicHandler.smart_find_pic_with_scroll(region, "mijing.canjia", "mijing.canjia_v2", 0.9, True,
+                                                           self.basicHandler.get_center(region))
         if pos is None:
-            pos = self.ocrPlayer.find_by_pic_first(region, "mijing.canjia_v2", 0.9, True)
-            if pos is None:
-                log.info("[秘境] 任务已完成或找不到“参加”按钮")
-                return
+            log.info("[秘境] 任务已完成或找不到“参加”按钮")
+            return
+
         log.info(f"[秘境] 点击“参加”按钮：{pos}")
         self.ocrPlayer.touch(pos, True, None)
         self.delay()

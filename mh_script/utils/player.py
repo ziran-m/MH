@@ -72,6 +72,22 @@ class Player:
         pyautogui.dragTo(ex, ey, duration, button='left')
 
     @staticmethod
+    def drag_down(start_pos, distance=300):
+        center_x, center_y = start_pos
+        """从中心向下滑动"""
+        start = (center_x, center_y - distance // 2)
+        end = (center_x, center_y + distance // 2)
+        Player.drag(start, end)
+
+    @staticmethod
+    def drag_up(start_pos, distance=300):
+        center_x, center_y = start_pos
+        """从中心向上滑动"""
+        start = (center_x, center_y + distance // 2)
+        end = (center_x, center_y - distance // 2)
+        Player.drag(start, end)
+
+    @staticmethod
     def move(position, is_offset=True):
         if is_offset:
             x, y = Player.random_offset(position)

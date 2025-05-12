@@ -3,7 +3,7 @@ from typing import List
 
 from mh_script.handler.basic_handler import BasicHandler
 from mh_script.model.screen_region import ScreenRegion
-from mh_script.utils.log_util import log,global_log
+from mh_script.utils.log_util import log, global_log
 from mh_script.utils.player import Player
 
 
@@ -13,8 +13,7 @@ class YaBiao:
         self.ocrPlayer = ocrPlayer
         self.basicHandler = BasicHandler(ocrPlayer)
 
-
-    def do_all(self,regions:List[ScreenRegion]):
+    def do_all(self, regions: List[ScreenRegion]):
         global_log.info("[押镖] 开始执行押镖任务流程")
         threads = []
 
@@ -25,13 +24,11 @@ class YaBiao:
             t_do.start()  # do任务
             threads.append(t_do)
 
-
         # 等待所有线程执行完毕
         for t in threads:
             t.join()
 
         global_log.info("[押镖] 所有任务执行完成")
-
 
     def do(self, region: ScreenRegion = None):
         log.info("[押镖] 开始执行押镖任务流程")
@@ -44,13 +41,12 @@ class YaBiao:
         self.basicHandler.goDailyActivity(region)
 
         log.info("[押镖] 查找“押镖.参加”按钮")
-        pos = self.ocrPlayer.find_by_pic_first(region, "yabiao.canjia", 0.9, True)
+        pos = self.basicHandler.smart_find_pic_with_scroll(region, "yabiao.canjia", "yabiao.canjia_v2", 0.9, True,
+                                                           self.basicHandler.get_center(region))
         if pos is None:
-            pos = self.ocrPlayer.find_by_pic_first(region, "yabiao.canjia_v2", 0.9, True)
-            if pos is None:
-                log.info("[押镖] 找不到参加按钮，可能任务已完成")
-                self.basicHandler.clickCenter(region)
-                return
+            log.info("[押镖] 找不到参加按钮，可能任务已完成")
+            return
+
         log.info(f"[押镖] 点击“参加”按钮：{pos}")
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
@@ -93,4 +89,4 @@ class YaBiao:
         log.info("[押镖] 押镖任务完成")
 
     def delay(self, min_seconds=1.0, max_seconds=3.0):
-        Player.delay(min_seconds,max_seconds)
+        Player.delay(min_seconds, max_seconds)
