@@ -44,7 +44,7 @@ class Fuben:
                 self.delay()
 
             # 找到百晓仙子
-            pos = self.ocrPlayer.find_by_name_first(region, "百晓仙子")
+            pos = self.ocrPlayer.find_by_name_first(region, "百晓仙子",0.9)
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
 
@@ -77,7 +77,7 @@ class Fuben:
                 self.basicHandler.clickLeftCenter(region)
                 self.delay()
             # 跳过剧情
-            pos = self.ocrPlayer.find_by_name_first(region, "跳过剧情动画")
+            pos = self.ocrPlayer.find_by_name_first(region, "跳过剧情动画",0.9)
             if pos is not None:
                 self.ocrPlayer.touch(pos, True, None)
                 self.delay()

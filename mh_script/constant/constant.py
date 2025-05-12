@@ -6,7 +6,7 @@ class Constant:
     PROCESS_NAME_KEYWORD = "MyLauncher"
     NUM_WINDOWS = 5  # 打开5个客户端
     GHOST_NUM = 2  # 抓鬼轮数
-    DUNGEON_NUM=1 # 是否打狭义 1 不打 0 打
+    DUNGEON_NUM= 0 # 是否打狭义 1 不打 0 打
 
 
     # 窗口尺寸（4:3）
