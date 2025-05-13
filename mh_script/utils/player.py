@@ -65,8 +65,8 @@ class Player:
 
     @staticmethod
     def drag(start_pos, end_pos):
-        sx, sy = Player.random_offset(start_pos)
-        ex, ey = Player.random_offset(end_pos)
+        sx, sy = start_pos
+        ex, ey = end_pos
         duration = random.uniform(0.1, 0.2)
         pyautogui.moveTo(sx, sy, duration)
         pyautogui.dragTo(ex, ey, duration, button='left')

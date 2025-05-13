@@ -17,7 +17,7 @@ class OCR_Player(Player):
         super().__init__(accuracy)
         self.target_map = {}
         self.load_targets()
-        _touch_lock = threading.Lock()
+        self._touch_lock = threading.Lock()
 
     def read(self, region: ScreenRegion = None, debug=False):
 

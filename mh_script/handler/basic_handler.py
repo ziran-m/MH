@@ -108,7 +108,8 @@ class BasicHandler:
     def smart_find_pic_with_scroll(self, region, target_names,target_names2=None, match=0.8, rightmost=False, start_pos=None):
         # 向上拖动尝试3次
         for _ in range(3):
-            Player.drag_up(start_pos)
+            Player.drag_down(start_pos)
+            Player.delay()
 
 
         # 向下拖动尝试6次
@@ -120,7 +121,28 @@ class BasicHandler:
                 pos = self.ocrPlayer.find_by_pic_first(region, target_names2, match, rightmost)
                 if pos is not None:
                     return pos
-            Player.drag_down(*start_pos)
+            Player.drag_up(start_pos,100)
+        return None
+
+    def smart_find_bag_pic_with_scroll(self, region, target_names,target_names2=None, match=0.8, rightmost=False, start_pos=None):
+        x,y = start_pos
+        start_pos = x+50,y
+        # 向上拖动尝试3次
+        for _ in range(6):
+            Player.drag_down(start_pos,100)
+            Player.delay()
+
+
+        # 向下拖动尝试6次
+        for _ in range(6):
+            pos = self.ocrPlayer.find_by_pic_first(region, target_names, match, rightmost)
+            if  pos is not  None:
+                return pos
+            if target_names2 is not None:
+                pos = self.ocrPlayer.find_by_pic_first(region, target_names2, match, rightmost)
+                if pos is not None:
+                    return pos
+            Player.drag_up(start_pos,100)
         return None
 
 
