@@ -26,7 +26,7 @@ class WaBao:
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
 
-        pos = self.basicHandler.smart_find_pic_with_scroll(region, "wabao.wabao", None, 0.8, False,
+        pos = self.basicHandler.smart_find_bag_pic_with_scroll(region, "wabao.wabao", None, 0.8, False,
                                                            self.basicHandler.get_center(region))
         if pos is None:
             log.info("[考古] 找不到铲子，考古流程结束")
