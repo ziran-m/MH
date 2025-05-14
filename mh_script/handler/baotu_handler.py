@@ -114,7 +114,7 @@ class BaoTu:
             self.delay()
 
         log.info("[宝图] 查找包裹中的藏宝图")
-        pos = self.basicHandler.smart_find_pic_with_scroll(region, "baotu.bag_baotu", None, 0.8, False,
+        pos = self.basicHandler.smart_find_bag_pic_with_scroll(region, "baotu.bag_baotu", None, 0.8, False,
                                                            self.basicHandler.get_center(region))
         if pos is None:
             log.info("[宝图] 找不到宝图，挖宝流程结束")

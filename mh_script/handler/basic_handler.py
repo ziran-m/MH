@@ -11,6 +11,7 @@ class BasicHandler:
     def __init__(self, ocrPlayer):
         # 初始化时创建 OCR_Player 实例
         self.ocrPlayer = ocrPlayer
+        self._touch_lock = threading.Lock()
 
     # 打开日常活动
     def goDailyActivity(self, region: ScreenRegion = None):
@@ -43,24 +44,28 @@ class BasicHandler:
     def escape_team(self, region: ScreenRegion = None):
         log.info("开始脱离队伍")
         # 点击队伍
-        pos = self.ocrPlayer.find_by_name_first(region, "队伍",0.9)
+        pos = self.ocrPlayer.find_by_name_first(region, "队伍", 0.9)
         if pos is None:
             log.info("找不到队伍")
             return
         self.ocrPlayer.touch(pos, True, None)
         self.ocrPlayer.delay()
-        # 退出队伍
-        pos = self.ocrPlayer.find_by_name_first(region, "退出队伍",0.9)
-        if pos is None:
-            log.info("找不到退出队伍")
         self.ocrPlayer.touch(pos, True, None)
+        self.ocrPlayer.delay()
+        # 退出队伍
+        out = self.ocrPlayer.find_by_name_first(region, "退出队伍", 0.9)
+        if out is None:
+            self.ocrPlayer.touch(pos, True, None)
+            self.ocrPlayer.delay()
+            log.info("找不到退出队伍")
+        self.ocrPlayer.touch(out, True, None)
         self.ocrPlayer.delay()
         # 清理页面
         self.clickCenter(region)
         self.ocrPlayer.delay()
 
         # 点击任务
-        pos = self.ocrPlayer.find_by_pic_first(region, "common.task",0.5)
+        pos = self.ocrPlayer.find_by_pic_first(region, "common.task", 0.5)
         if pos is None:
             log.info("任务未匹配")
             return
@@ -100,23 +105,73 @@ class BasicHandler:
         center = [region.left + region.width // 2, region.top + region.height // 2]
         self.ocrPlayer.touch(center, True)
         self.ocrPlayer.delay()
-    # 智能查找目标图片：
-    def smart_find_pic_with_scroll(self, region, target_names,target_names2=None, match=0.8, rightmost=False, start_pos=None):
-        # 向上拖动尝试3次
-        for _ in range(3):
-            Player.drag_up(start_pos)
 
+    # 智能查找目标图片：
+    def smart_find_pic_with_scroll(self, region, target_names, target_names2=None, match=0.8, rightmost=False,
+                                   start_pos=None):
+        pos = self.ocrPlayer.find_by_pic_first(region, target_names, match, rightmost)
+        if pos is not None:
+            return pos
+        if target_names2 is not None:
+            pos = self.ocrPlayer.find_by_pic_first(region, target_names2, match, rightmost)
+            if pos is not None:
+                return pos
+        # 向上拖动尝试3次
+        self.drag_down(start_pos)
+        Player.delay()
 
         # 向下拖动尝试6次
-        for _ in range(6):
+        for _ in range(3):
             pos = self.ocrPlayer.find_by_pic_first(region, target_names, match, rightmost)
-            if  pos is not  None:
+            if pos is not None:
                 return pos
             if target_names2 is not None:
                 pos = self.ocrPlayer.find_by_pic_first(region, target_names2, match, rightmost)
                 if pos is not None:
                     return pos
-            Player.drag_down(*start_pos)
+            self.drag_up(start_pos, 80)
+            Player.delay()
+
         return None
 
+    def smart_find_bag_pic_with_scroll(self, region, target_names, target_names2=None, match=0.8, rightmost=False,
+                                       start_pos=None):
+        pos = self.ocrPlayer.find_by_pic_first(region, target_names, match, rightmost)
+        if pos is not None:
+            return pos
+        if target_names2 is not None:
+            pos = self.ocrPlayer.find_by_pic_first(region, target_names2, match, rightmost)
+            if pos is not None:
+                return pos
+        x, y = start_pos
+        start_pos = x + 50, y
+        # 向上拖动尝试3次
+        for _ in range(6):
+            pos = self.ocrPlayer.find_by_pic_first(region, target_names, match, rightmost)
+            if pos is not None:
+                return pos
+            if target_names2 is not None:
+                pos = self.ocrPlayer.find_by_pic_first(region, target_names2, match, rightmost)
+                if pos is not None:
+                    return pos
+            self.drag_down(start_pos, 100)
 
+        # 向下拖动尝试6次
+        for _ in range(6):
+            pos = self.ocrPlayer.find_by_pic_first(region, target_names, match, rightmost)
+            if pos is not None:
+                return pos
+            if target_names2 is not None:
+                pos = self.ocrPlayer.find_by_pic_first(region, target_names2, match, rightmost)
+                if pos is not None:
+                    return pos
+            self.drag_up(start_pos, 100)
+        return None
+
+    def drag_down(self, start_pos, distance=100):
+        with self._touch_lock:
+            Player.drag_down(start_pos, distance)
+
+    def drag_up(self, start_pos, distance=100):
+        with self._touch_lock:
+            Player.drag_up(start_pos, distance)

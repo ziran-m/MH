@@ -1,3 +1,5 @@
+import threading
+
 import pyautogui
 import random
 import time
@@ -65,8 +67,8 @@ class Player:
 
     @staticmethod
     def drag(start_pos, end_pos):
-        sx, sy = Player.random_offset(start_pos)
-        ex, ey = Player.random_offset(end_pos)
+        sx, sy = start_pos
+        ex, ey = end_pos
         duration = random.uniform(0.1, 0.2)
         pyautogui.moveTo(sx, sy, duration)
         pyautogui.dragTo(ex, ey, duration, button='left')
@@ -78,14 +80,16 @@ class Player:
         start = (center_x, center_y - distance // 2)
         end = (center_x, center_y + distance // 2)
         Player.drag(start, end)
+        Player.delay(2,3)
 
     @staticmethod
-    def drag_up(start_pos, distance=300):
+    def drag_up(start_pos, distance=100):
         center_x, center_y = start_pos
         """从中心向上滑动"""
         start = (center_x, center_y + distance // 2)
         end = (center_x, center_y - distance // 2)
         Player.drag(start, end)
+        Player.delay(2, 3)
 
     @staticmethod
     def move(position, is_offset=True):
