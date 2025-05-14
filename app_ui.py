@@ -58,12 +58,12 @@ class App:
 
         row = 0
         self.open_button = ctk.CTkButton(self.left_frame, text="启动", command=self.start_task, **button_config)
-        self.open_button.grid(row=row, column=0, columnspan=2, pady=(0, 10), sticky="ew")
+        self.open_button.grid(row=row, column=0, columnspan=2,padx=10, pady=(0, 10), sticky="ew")
 
         row += 1
         self.dungeon_task_button = ctk.CTkButton(self.left_frame, text="副本", command=self.dungeon_task_task,
                                                  **button_config)
-        self.dungeon_task_button.grid(row=row, column=0, pady=(0, 10), sticky="ew")
+        self.dungeon_task_button.grid(row=row, column=0,padx=10, pady=(0, 10), sticky="ew")
 
         # 副本输入框放在副本按钮旁边
         self.dungeon_num_entry = ctk.CTkEntry(self.left_frame, placeholder_text="副本开始点 0 侠士 1 普本1 2 普本2",
@@ -74,11 +74,11 @@ class App:
         row += 1
         # 日常按钮跨越两列
         self.daily_button = ctk.CTkButton(self.left_frame, text="日常", command=self.daily_task, **button_config)
-        self.daily_button.grid(row=row, column=0, columnspan=2, pady=(0, 10), sticky="ew")
+        self.daily_button.grid(row=row, column=0, columnspan=2,padx=10, pady=(0, 10), sticky="ew")
 
         row += 1
         self.ghost_button = ctk.CTkButton(self.left_frame, text="抓鬼", command=self.ghost_task, **button_config)
-        self.ghost_button.grid(row=row, column=0, pady=(0, 10), sticky="ew")
+        self.ghost_button.grid(row=row, column=0,padx=10, pady=(0, 10), sticky="ew")
 
         # 抓鬼轮数输入框放在抓鬼按钮旁边
         self.ghost_num_entry = ctk.CTkEntry(self.left_frame, placeholder_text="抓鬼轮数 (默认2)", font=self.font_style,
@@ -87,16 +87,20 @@ class App:
 
         row += 1
         self.button_320 = ctk.CTkButton(self.left_frame, text="320", command=self.task_320, **button_config)
-        self.button_320.grid(row=row, column=0, columnspan=2, pady=(0, 10), sticky="ew")
+        self.button_320.grid(row=row, column=0, columnspan=2,padx=10, pady=(0, 10), sticky="ew")
 
         row += 1
         self.wabao_button = ctk.CTkButton(self.left_frame, text="考古", command=self.wabao_task, **button_config)
-        self.wabao_button.grid(row=row, column=0, columnspan=2, pady=(0, 10), sticky="ew")
+        self.wabao_button.grid(row=row, column=0, columnspan=2,padx=10, pady=(0, 10), sticky="ew")
+        row += 1
+        self.path_entry = ctk.CTkEntry(self.left_frame, placeholder_text="文件运行地址",
+                                              font=self.font_style, width=150, height=40, border_color="#95a5a6",
+                                              border_width=2)
+        self.path_entry.grid(row=row, column=0,columnspan=2, padx=10, pady=(0, 10), sticky="ew")
 
         # 添加退出按钮到 left_frame（假设 row 是从上往下排的）
-
         self.exit_button = ctk.CTkButton(self.left_frame, text="退出", command=self.root.quit,**exit_button_config)
-        self.exit_button.grid(row=99, column=0, columnspan=2, pady=(0, 10), sticky="ew")
+        self.exit_button.grid(row=99, column=0, columnspan=2,padx=10, pady=(0, 10), sticky="ew")
 
         # 使按钮和输入框宽度一致
         self.left_frame.grid_columnconfigure(0, weight=1)  # 使按钮的列宽度可伸缩
@@ -217,6 +221,7 @@ class App:
         self.button_320.configure(state="disabled")
         self.ghost_button.configure(state="disabled")
         self.wabao_button.configure(state="disabled")
+        self.path_entry.configure(state="disabled")
 
         # 设置1秒后重新启用按钮
         self.root.after(1000, self.enable_buttons)
@@ -229,6 +234,7 @@ class App:
         self.button_320.configure(state="normal")
         self.ghost_button.configure(state="normal")
         self.wabao_button.configure(state="normal")
+        self.path_entry.configure(state="normal")
 
 
 if __name__ == "__main__":
