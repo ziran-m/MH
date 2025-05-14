@@ -109,7 +109,7 @@ class OCR_Player(Player):
             times += 1
             position = self.find_by_pic_first(background, target_name, match, rightmost)
         return position
-
+    # 无限时等待
     def wait_no_time_find_by_pic_first(self, background: ScreenRegion, target_name, match=None, rightmost=False):
         position = self.find_by_pic_first(background, target_name, match, rightmost)
 
