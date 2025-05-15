@@ -301,7 +301,7 @@ class App:
         self.button_320.configure(state="disabled")
         self.ghost_button.configure(state="disabled")
         self.wabao_button.configure(state="disabled")
-        self.path_entry.configure(state="disabled")
+        self.app_path_entry.configure(state="disabled")
         self.config_button.configure(state="disabled")
 
         # 设置1秒后重新启用按钮
@@ -315,7 +315,7 @@ class App:
         self.button_320.configure(state="normal")
         self.ghost_button.configure(state="normal")
         self.wabao_button.configure(state="normal")
-        self.path_entry.configure(state="normal")
+        self.app_path_entry.configure(state="normal")
         self.config_button.configure(state="normal")
 
 
