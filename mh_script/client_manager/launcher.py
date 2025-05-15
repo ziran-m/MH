@@ -25,11 +25,16 @@ class Launcher:
         self.y_gap = constant.Constant.Y_GAP
 
     def start_clients(self, num_windows=None):
-        if  num_windows is not None:
+        if num_windows is not None:
             self.num_windows = num_windows
+
         for i in range(self.num_windows - self.get_regions_num()):
-            subprocess.Popen(self.exe_path)
-            global_log.info(f"启动第 {i + 1} 个客户端...")
+            try:
+                subprocess.Popen(self.exe_path)
+                global_log.info(f"启动第 {i + 1} 个客户端...")
+            except Exception as e:
+                global_log.error(f"启动第客户端失败: 请检查应用程序启动路径")
+                return
             time.sleep(2)
 
     def resize_and_move_window(self):

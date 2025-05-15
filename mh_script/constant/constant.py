@@ -1,7 +1,6 @@
 
 class Constant:
     # 游戏启动器配置
-    CONFIG_FILE =  "app_config.json"
     EXE_PATH = r"E:\D\MH\My\MyLauncher_x64r.exe"
     WINDOW_TITLE_KEYWORD = "梦幻西游"
     PROCESS_NAME_KEYWORD = "MyLauncher"
