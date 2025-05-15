@@ -22,16 +22,17 @@ class BasicHandler:
         pos = self.ocrPlayer.find_by_pic_first(region, "common.activity", 0.4)
         if pos is None:
             log.info("❌ 匹配活动失败")
-            return
+            return None
         self.ocrPlayer.touch(pos, True, None)
         self.ocrPlayer.delay()
         # 点击日常活动，防止再挑战活动页面
         pos = self.ocrPlayer.wait_find_by_pic_first(region, "common.activity_daily")
         if pos is None:
             log.info("❌ 匹配活动页面的日常活动失败")
-            return
+            return None
         self.ocrPlayer.touch(pos, True, None)
         self.ocrPlayer.delay()
+        return True
 
     def escape_all(self, regions: List[ScreenRegion]):
         threads = []

@@ -30,25 +30,25 @@ class BaoTu:
 
     def do(self, region: ScreenRegion):
         log.info("[宝图] 开始执行宝图任务流程")
-        log.info("[宝图] 清理页面")
         self.basicHandler.clean(region)
 
         log.info("[宝图] 检查任务栏是否存在宝图任务")
-        pos = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission")
+        pos = self.ocrPlayer.wait_find_by_pic_first(region, "baotu.baotu_mission",0.7)
         if pos:
             log.info(f"[宝图] 点击宝图任务：{pos}")
             self.ocrPlayer.touch(pos, True, None)
             self.delay(3, 5)
         else:
             log.info("[宝图] 进入日常活动界面")
-            self.basicHandler.goDailyActivity(region)
+            if self.basicHandler.goDailyActivity(region) is None:
+                log.error("[宝图] 进入日常活动页面失败，宝图结束")
+                return
 
             log.info("[宝图] 查找“宝图.参加”按钮")
             pos = self.basicHandler.smart_find_pic_with_scroll(region,"baotu.canjia","baotu.canjia_v2",0.9,True,self.basicHandler.get_center(region))
             if pos is None:
                 log.info("[宝图] 找不到参加按钮，任务可能已完成")
                 return
-
             log.info(f"[宝图] 点击“参加”：{pos}")
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
@@ -56,7 +56,7 @@ class BaoTu:
             log.info("[宝图] 等待“听听无妨”按钮")
             pos = self.ocrPlayer.wait_find_by_pic_first(region, "baotu.start", 0.9)
             if not pos:
-                log.info("[宝图] 等待“听听无妨”按钮异常")
+                log.error("[宝图] 等待“听听无妨”按钮异常，宝图结束")
                 return
             log.info(f"[宝图] 点击“听听无妨”：{pos}")
             self.ocrPlayer.touch(pos, True, None)
@@ -69,7 +69,7 @@ class BaoTu:
             log.info("[宝图] 查找任务栏宝图任务")
             pos = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission",0.7)
             if not pos:
-                log.info("[宝图] 找不到任务栏宝图任务，领取失败")
+                log.info("[宝图] 找不到任务栏宝图任务，领取失败,宝图结束")
                 return
 
             log.info(f"[宝图] 点击任务栏宝图任务：{pos}")
@@ -100,11 +100,11 @@ class BaoTu:
         self.basicHandler.clean(region)
 
         log.info("[宝图] 打开包裹")
-        pos = self.ocrPlayer.find_by_pic_first(region, "common.bag", 0.7)
-        if pos:
-            log.info(f"[宝图] 点击包裹图标：{pos}")
-            self.ocrPlayer.touch(pos, True, None)
-            self.delay()
+        pos = self.ocrPlayer.wait_find_by_pic_first(region, "common.bag", 0.7)
+        if pos is None:
+            log.info("[宝图] 找不到包裹图标,挖宝失败")
+        self.ocrPlayer.touch(pos, True, None)
+        self.delay()
 
         log.info("[宝图] 点击整理按钮")
         pos = self.ocrPlayer.find_by_pic_first(region, "common.clean_up")
@@ -117,7 +117,7 @@ class BaoTu:
         pos = self.basicHandler.smart_find_bag_pic_with_scroll(region, "baotu.bag_baotu", None, 0.8, False,
                                                            self.basicHandler.get_center(region))
         if pos is None:
-            log.info("[宝图] 找不到宝图，挖宝流程结束")
+            log.info("[宝图] 找不到宝图，挖宝完成")
             return
         log.info(f"[宝图] 双击藏宝图：{pos}")
         self.ocrPlayer.doubleTouch(pos, True, None)
@@ -134,7 +134,7 @@ class BaoTu:
         while dig_flag:
             pos = self.ocrPlayer.find_by_pic_first(region, "baotu.use_baotu")
             if pos:
-                log.info(f"[宝图] 点击使用藏宝图：{pos}")
+                log.info("[宝图] 点击使用藏宝图")
                 self.ocrPlayer.touch(pos, False, None)
                 times = 0
             times += 1
