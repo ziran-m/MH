@@ -33,7 +33,8 @@ class Launcher:
                 subprocess.Popen(self.exe_path)
                 global_log.info(f"启动第 {i + 1} 个客户端...")
             except Exception as e:
-                global_log.error(f"启动第 {i + 1} 个客户端失败: {e}")
+                global_log.error(f"启动第客户端失败: 请检查应用程序启动路径")
+                return
             time.sleep(2)
 
     def resize_and_move_window(self):

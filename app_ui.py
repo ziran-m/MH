@@ -17,7 +17,7 @@ class App:
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("blue")
         self.root = ctk.CTk()
-        self.root.geometry("600x400")
+        self.root.geometry("500x400")
         self.root.title("脚本启动器[当前只支持2k显示器]")
 
         self.font_style = ("Microsoft YaHei", 14)
