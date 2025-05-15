@@ -30,9 +30,7 @@ def run_all_tasks_in_order():
     ghost.run(0)
     global_log.info("✅ Ghost 任务完成！")
 
-    global_log.info("▶️ 开始执行脱离队伍...")
     BasicHandler(OCR_Player()).escape_all(regions)
-    global_log.info("✅ 脱离队伍完成！")
 
     global_log.info("▶️ 开始执行 Daily 任务...")
     daily.run(-1)

@@ -11,7 +11,6 @@ class WaBao:
         self.basicHandler = BasicHandler(ocrPlayer)
 
     def do(self, region: ScreenRegion = None):
-        self.delay()
         self.basicHandler.clean(region)
 
         pos = self.ocrPlayer.find_by_pic_first(region, "common.bag", 0.7)
