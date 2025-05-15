@@ -48,7 +48,7 @@ class Ghost:
             self.delay()
 
         while True:
-            global_log.info(f"当前第{times}轮，抓鬼中......")
+            global_log.info(f"当前第{times+1}轮，抓鬼中......")
             self.delay(30,35)
             pos = self.ocrPlayer.wait_find_by_pic_first(region, "common.time",0.9)
             if pos:

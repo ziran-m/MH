@@ -101,10 +101,12 @@ class BaoTu:
 
         log.info("[宝图] 打开包裹")
         pos = self.ocrPlayer.find_by_pic_first(region, "common.bag", 0.7)
-        if pos:
-            log.info(f"[宝图] 点击包裹图标：{pos}")
-            self.ocrPlayer.touch(pos, True, None)
-            self.delay()
+        if pos is None:
+            log.info(f"[宝图] 找不到包裹图标")
+            return
+        log.info(f"[宝图] 点击包裹图标：{pos}")
+        self.ocrPlayer.touch(pos, True, None)
+        self.delay()
 
         log.info("[宝图] 点击整理按钮")
         pos = self.ocrPlayer.find_by_pic_first(region, "common.clean_up")
