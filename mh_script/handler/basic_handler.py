@@ -35,6 +35,7 @@ class BasicHandler:
         return True
 
     def escape_all(self, regions: List[ScreenRegion]):
+        self.clickCenter(regions[0])
         global_log.info("▶️ 开始执行脱离队伍...")
         threads = []
         for i in range(Constant.NUM_WINDOWS):
@@ -44,11 +45,11 @@ class BasicHandler:
 
     # 退出队伍
     def escape_team(self, region: ScreenRegion = None):
-        log.info("▶️ 开始脱离队伍")
+        log.info("开始脱离队伍")
         # 点击队伍
         pos = self.ocrPlayer.find_by_name_first(region, "队伍", 0.9)
         if pos is None:
-            log.info("🚫 找不到队伍")
+            log.info("找不到队伍")
             return
         self.ocrPlayer.touch(pos, True, None)
         self.ocrPlayer.delay()
@@ -56,11 +57,7 @@ class BasicHandler:
         self.ocrPlayer.delay()
         # 退出队伍
         out = self.ocrPlayer.find_by_name_first(region, "退出队伍", 0.9)
-        if out is None:
-            self.ocrPlayer.touch(pos, True, None)
-            self.ocrPlayer.delay()
-            log.info("🚫 找不到退出队伍")
-        else:
+        if out is not None:
             self.ocrPlayer.touch(out, True, None)
             self.ocrPlayer.delay()
         # 清理页面

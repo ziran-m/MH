@@ -31,6 +31,8 @@ class DailyTask:
         self.yabiao.do(region)
         self.dati.do(region)
 
+
+
         log.info("✅ 所有日常任务完成")
 
     def run(self, idx: int):
