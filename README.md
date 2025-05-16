@@ -1,1 +1,1 @@
-pyinstaller  app_ui.py  --collect-submodules paddleocr --collect-submodules mss  --collect-submodules pygetwindow  --collect-submodules pyautogui  --add-data "module;module" --add-data "mh_script;mh_script" --noconsole --clean -D
+pyinstaller  app_ui.py  --collect-submodules paddleocr --collect-submodules mss  --collect-submodules pygetwindow  --collect-submodules pyautogui  --add-data "mh_script;mh_script" --noconsole --clean -D
