@@ -116,7 +116,7 @@ class App:
         self.config_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
 
         # 添加退出按钮到 left_frame（假设 row 是从上往下排的）
-        self.exit_button = ctk.CTkButton(self.left_frame, text="退出", command=self.root.quit, **self.button_config)
+        self.exit_button = ctk.CTkButton(self.left_frame, text="退出", command=self.root.destroy, **self.button_config)
         self.exit_button.grid(row=99, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
 
     # 日志页面
@@ -222,7 +222,7 @@ class App:
         self.disable_buttons_temporarily()  # 禁用按钮
 
         val = self.config_data.get("app_path", "").strip()
-        if not val:
+        if  val:
             Constant.EXE_PATH = val
         global_log.info(f"应用程序启动地址：{Constant.EXE_PATH}")
 
@@ -256,7 +256,7 @@ class App:
         self.disable_buttons_temporarily()  # 禁用按钮
 
         val = self.config_data.get("dungeon_num", "").strip()
-        if not val:
+        if  val:
             Constant.DUNGEON_NUM = val
         global_log.info(f"副本轮数设置为：{Constant.DUNGEON_NUM}")
 
@@ -275,7 +275,7 @@ class App:
         self.disable_buttons_temporarily()  # 禁用按钮
 
         val = self.config_data.get("ghost_num", "").strip()
-        if not val:
+        if  val:
             Constant.GHOST_NUM = val
         logger.info(f"抓鬼轮数设置为：{Constant.GHOST_NUM}")
 
@@ -290,7 +290,7 @@ class App:
         thread.start()
 
     def task_320(self):
-        def run_all_tasks_in_order(self):
+        def run_all_tasks_in_order():
             regions = self.launcher.get_regions()
             if not regions:
                 global_log.info("❌ 未获取到窗口区域信息")
@@ -345,12 +345,11 @@ class App:
     def wabao_task(self):
         """挖宝任务"""
         self.disable_buttons_temporarily()
-        launcher = Launcher()
-        regions = launcher.get_regions()
+        regions = self.launcher.get_regions()
         if not regions:
             return
 
-        launcher.resize_and_move_window()
+        self.launcher.resize_and_move_window()
 
         task = WaBao(regions)
         thread = threading.Thread(target=task.do, args=(regions[0],), daemon=True)
