@@ -1,1 +1,1 @@
-pyinstaller -F app_ui.py --add-data "module;module" --add-data "mh_script;mh_script" --noconsole
+pyinstaller  app_ui.py --hidden-import=cython --collect-submodules paddleocr --collect-submodules mss  --collect-submodules pygetwindow  --collect-submodules pyautogui  --add-data "module;module" --add-data "mh_script;mh_script" --noconsole --clean -D

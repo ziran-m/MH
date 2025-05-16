@@ -1,18 +1,25 @@
-import importlib
 import json
 import os
-import sys
+import threading
 
 import customtkinter as ctk
 
+from mh_script.client_manager.launcher import Launcher
 from mh_script.constant.constant import Constant
+from mh_script.handler.basic_handler import BasicHandler
+from mh_script.handler.wabao_handler import WaBao
+from mh_script.task_manager.daily_task import DailyTask
+from mh_script.task_manager.dungeon_task import DungeonTask
+from mh_script.task_manager.ghost_task import GhostTask
 from mh_script.utils.log_util import TextHandler, logger, global_log
+from mh_script.utils.ocr_player import OCR_Player
 
 
 class App:
     def __init__(self):
         self.config_file = "config.json"
         self.config_data = self.load_config()
+        self.launcher = Launcher()
 
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("blue")
@@ -210,25 +217,6 @@ class App:
         self.config_frame.grid_remove()
         self.left_frame.grid()
 
-    def execute_file(self, file_name):
-        """加载并执行指定文件的 main 方法"""
-        try:
-            # 确保当前路径下的 module 文件夹在 sys.path 中
-            module_path = os.path.join(os.path.dirname(__file__), 'module')
-            if module_path not in sys.path:
-                sys.path.insert(0, module_path)
-
-            # 加载模块
-            module = importlib.import_module(file_name)
-
-            # 执行 main
-            if hasattr(module, 'main'):
-                module.main()
-            else:
-                logger.error(f"模块 {file_name} 中没有找到 'main' 方法")
-        except Exception as e:
-            logger.error(f"执行 {file_name} 时出错: {e}")
-
     def start_task(self):
         """启动任务（对应 '启动' 按钮）"""
         self.disable_buttons_temporarily()  # 禁用按钮
@@ -237,12 +225,31 @@ class App:
         if not val:
             Constant.EXE_PATH = val
         global_log.info(f"应用程序启动地址：{Constant.EXE_PATH}")
-        self.execute_file("start")
+
+        def task():
+            global_log.info("🔵 第一步：启动并排列客户端")
+            launcher = Launcher()
+            launcher.start_and_arrange()
+
+        thread = threading.Thread(target=task)
+        thread.start()
+        return thread
 
     def daily_task(self):
-        """日常任务（对应 '日常' 按钮）"""
         self.disable_buttons_temporarily()  # 禁用按钮
-        self.execute_file("daily")
+
+        regions = self.launcher.get_regions()
+        if not regions:
+            return
+
+        self.launcher.resize_and_move_window()
+
+        task = DailyTask(regions)
+
+        # 启动线程执行耗时任务
+        thread = threading.Thread(target=task.run, args=(-1,), daemon=True)
+        thread.start()
+        return thread
 
     def dungeon_task_task(self):
         """副本任务（对应 '关闭' 按钮）"""
@@ -253,7 +260,15 @@ class App:
             Constant.DUNGEON_NUM = val
         global_log.info(f"副本轮数设置为：{Constant.DUNGEON_NUM}")
 
-        self.execute_file("dungeon")
+        regions = self.launcher.get_regions()
+        if not regions:
+            return
+
+        self.launcher.resize_and_move_window()
+
+        dungeon = DungeonTask(regions)
+        thread = threading.Thread(target=dungeon.run, args=(0,), daemon=True)
+        thread.start()
 
     def ghost_task(self):
         """关闭任务（对应 '关闭' 按钮）"""
@@ -264,9 +279,44 @@ class App:
             Constant.GHOST_NUM = val
         logger.info(f"抓鬼轮数设置为：{Constant.GHOST_NUM}")
 
-        self.execute_file("ghost")
+        regions = self.launcher.get_regions()
+        if not regions:
+            return
+
+        self.launcher.resize_and_move_window()
+
+        task = GhostTask(regions)
+        thread = threading.Thread(target=task.run, args=(0,), daemon=True)
+        thread.start()
 
     def task_320(self):
+        def run_all_tasks_in_order(self):
+            regions = self.launcher.get_regions()
+            if not regions:
+                global_log.info("❌ 未获取到窗口区域信息")
+                return
+
+            self.launcher.resize_and_move_window()
+
+            dungeon = DungeonTask(regions)
+            ghost = GhostTask(regions)
+            daily = DailyTask(regions)
+
+            # 顺序执行任务
+            global_log.info("▶️ 开始执行 Dungeon 任务...")
+            dungeon.run(0)
+            global_log.info("✅ Dungeon 任务完成！")
+
+            global_log.info("▶️ 开始执行 Ghost 任务...")
+            ghost.run(0)
+            global_log.info("✅ Ghost 任务完成！")
+
+            BasicHandler(OCR_Player()).escape_all(regions)
+
+            global_log.info("▶️ 开始执行 Daily 任务...")
+            daily.run(-1)
+            global_log.info("✅ Daily 任务完成！")
+
         """320任务（对应 '320' 按钮）"""
         self.disable_buttons_temporarily()  # 禁用按钮
 
@@ -286,12 +336,25 @@ class App:
 
         global_log.info(f"副本轮数设置为：{Constant.DUNGEON_NUM}")
 
-        self.execute_file("three_two_zero")
+        # 整个流程在子线程中运行，避免主线程阻塞
+        thread = threading.Thread(target=run_all_tasks_in_order, daemon=True)
+        thread.start()
+
+
 
     def wabao_task(self):
         """挖宝任务"""
         self.disable_buttons_temporarily()
-        self.execute_file("wabao")
+        launcher = Launcher()
+        regions = launcher.get_regions()
+        if not regions:
+            return
+
+        launcher.resize_and_move_window()
+
+        task = WaBao(regions)
+        thread = threading.Thread(target=task.do, args=(regions[0],), daemon=True)
+        thread.start()
 
     def disable_buttons_temporarily(self):
         """禁用按钮并在1秒后重新启用"""
