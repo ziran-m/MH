@@ -321,12 +321,12 @@ class App:
         self.disable_buttons_temporarily()  # 禁用按钮
 
         try:
-            val1 = int(self.dungeon_num_entry.get().strip())
+            val1 =self.config_data.get("dungeon_start", "0").strip()
         except ValueError:
             val1 = 0
 
         try:
-            val2 = int(self.ghost_num_entry.get().strip())
+            val2 =self.config_data.get("ghost_num", "2").strip()
         except ValueError:
             val2 = 2
 
