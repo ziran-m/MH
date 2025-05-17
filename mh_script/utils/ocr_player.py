@@ -51,8 +51,8 @@ class OCR_Player(Player):
                 y = sum(pt[1] for pt in box) / 4
                 loc_pos.append([x, y])
 
-
-        global_log.info(f'查找结果：{keyword} 匹配到 {len(loc_pos)} 个位置')
+        if debug:
+            global_log.info(f'查找结果：{keyword} 匹配到 {len(loc_pos)} 个位置')
         return loc_pos if loc_pos else None
 
     # 匹配文字
@@ -76,9 +76,11 @@ class OCR_Player(Player):
                 box = line[0]  # 四个顶点坐标
                 x = sum(pt[0] for pt in box) / 4 + region.left
                 y = sum(pt[1] for pt in box) / 4 + region.top
-                global_log.info(f"[OCR] 找到匹配项 '{text}'，坐标：({int(x)}, {int(y)})")
+                if debug:
+                    global_log.info(f"[OCR] 找到匹配项 '{text}'，坐标：({int(x)}, {int(y)})")
                 return int(x), int(y)
-        global_log.info(f"[OCR] 未找到匹配关键字：'{keyword}'")
+        if debug:
+            global_log.info(f"[OCR] 未找到匹配关键字：'{keyword}'")
         return None
 
     # 循环等待
@@ -144,8 +146,6 @@ class OCR_Player(Player):
                 continue
             ex, ey = x, y
             loc_pos.append([x, y])
-
-        global_log.info(f'查找结果：{target_name} 匹配到 {len(loc_pos)} 个位置')
         return loc_pos if loc_pos else None
 
     # 匹配第一个截图

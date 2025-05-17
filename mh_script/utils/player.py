@@ -41,7 +41,7 @@ class Player:
         duration = random.uniform(0.1, 0.2)
         pyautogui.moveTo(x, y, duration)
         pyautogui.click(x, y)
-        global_log.info(f"点击坐标 ({x}, {y}) 成功")
+
 
     @staticmethod
     def doubleClick(position, is_offset=True):
@@ -52,7 +52,6 @@ class Player:
         duration = random.uniform(0.1, 0.2)
         pyautogui.moveTo(x, y, duration)
         pyautogui.doubleClick(x, y)
-        global_log.info(f"双击坐标 ({x}, {y}) 成功")
 
     @staticmethod
     def rightClick(position, is_offset=True):
@@ -63,7 +62,6 @@ class Player:
         duration = random.uniform(0.1, 0.2)
         pyautogui.moveTo(x, y, duration)
         pyautogui.rightClick(x, y)
-        global_log.info(f"右键点击坐标 ({x}, {y}) 成功")
 
     @staticmethod
     def drag(start_pos, end_pos):
@@ -99,7 +97,6 @@ class Player:
             x, y = position
         duration = random.uniform(0.1, 0.2)
         pyautogui.moveTo(x, y, duration)
-        global_log.info(f"移动坐标 ({x}, {y}) 成功")
 
     @staticmethod
     def touch(position, offset_click=True, img_name=None):

@@ -30,7 +30,7 @@ class BaoTu:
         pos = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission", 0.7)
         if pos:
             log.info("⚔️ [宝图] 找到宝图任务，点击开始")
-            self.ocrPlayer.touch(pos, True, None)
+            self.ocrPlayer.touch(pos, False, None)
             self.delay(3, 5)
         else:
             log.info("📅 [宝图] 进入日常活动尝试开始宝图")
@@ -61,7 +61,7 @@ class BaoTu:
                 log.info("🚫 [宝图] 未找到任务栏宝图，领取失败")
                 return
             log.info("⚔️ [宝图] 点击任务栏宝图任务")
-            self.ocrPlayer.touch(pos, True, None)
+            self.ocrPlayer.touch(pos, False, None)
             self.delay(3, 5)
 
         self.while_do(region)
@@ -75,7 +75,7 @@ class BaoTu:
             has_blood = self.ocrPlayer.find_by_pic_first(region, "common.blood")
             if has_task:
                 log.info("⚔️ [宝图] 点击任务栏宝图任务")
-                self.ocrPlayer.touch(has_task, True, None)
+                self.ocrPlayer.touch(has_task, False, None)
                 self.delay()
             if not in_battle and not has_task and has_blood:
                 break
@@ -89,7 +89,7 @@ class BaoTu:
         if pos is None:
             log.info("🚫 [宝图] 未找到包裹图标，挖宝失败")
             return
-        self.ocrPlayer.touch(pos, True, None)
+        self.ocrPlayer.touch(pos, False, None)
         self.delay()
 
         pos = self.ocrPlayer.find_by_pic_first(region, "common.clean_up")

@@ -274,7 +274,7 @@ class App:
         """关闭任务（对应 '关闭' 按钮）"""
         self.disable_buttons_temporarily()  # 禁用按钮
 
-        val = self.config_data.get("ghost_num", "").strip()
+        val = int(self.ghost_num_entry.get().strip())
         if  val:
             Constant.GHOST_NUM = val
         logger.info(f"抓鬼轮数设置为：{Constant.GHOST_NUM}")
@@ -321,12 +321,12 @@ class App:
         self.disable_buttons_temporarily()  # 禁用按钮
 
         try:
-            val1 =self.config_data.get("dungeon_start", "0").strip()
+            val1 =int (self.config_data.get("dungeon_start", "0").strip())
         except ValueError:
             val1 = 0
 
         try:
-            val2 =self.config_data.get("ghost_num", "2").strip()
+            val2 =int (self.config_data.get("ghost_num", "2").strip())
         except ValueError:
             val2 = 2
 

@@ -105,7 +105,10 @@ class Fuben:
             if pos is not None:
                 self.ocrPlayer.touch(pos, True, None)
                 self.delay()
-
+            pos = self.ocrPlayer.find_by_name_first(region, "休要血口喷人", 0.9)
+            if pos is not None:
+                self.ocrPlayer.touch(pos, True, None)
+                self.delay()
         self.do(region, times + 1)
 
     def delay(self, min_seconds=0.5, max_seconds=3.0):
