@@ -62,24 +62,25 @@ class BaoTu:
                 return
             log.info("⚔️ [宝图] 点击任务栏宝图任务")
             self.ocrPlayer.touch(pos, False, None)
-            self.delay(3, 5)
+            self.delay(30, 30)
 
         self.while_do(region)
         log.info("✅ [宝图] 任务完成")
 
     def while_do(self, region: ScreenRegion):
         log.info("⏳ [宝图] 等待战斗和任务完成")
+        times = 0
         while True:
             in_battle = self.basicHandler.battling(region)
-            has_task = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission")
-            has_blood = self.ocrPlayer.find_by_pic_first(region, "common.blood")
-            if has_task:
-                log.info("⚔️ [宝图] 点击任务栏宝图任务")
-                self.ocrPlayer.touch(has_task, False, None)
-                self.delay()
-            if not in_battle and not has_task and has_blood:
+            if  in_battle :
+                times = 0
+            self.delay(2, 2)
+            times += 1
+            if times > 15:
+                log.info("✅ [宝图] 30s没有触发战斗，任务已完成")
                 break
-            self.delay(15, 30)
+
+
         log.info("✅ [宝图] 战斗和任务已完成")
 
     def dig(self, region: ScreenRegion):
