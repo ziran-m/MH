@@ -1,7 +1,11 @@
+import warnings
+warnings.filterwarnings("ignore",
+    message="No ccache found",
+    module="paddle.utils.cpp_extension")
+
 import json
 import os
 import threading
-
 import customtkinter as ctk
 
 from mh_script.client_manager.launcher import Launcher
@@ -121,7 +125,6 @@ class App:
         # 添加退出按钮到 left_frame（假设 row 是从上往下排的）
         self.exit_button = ctk.CTkButton(self.left_frame, text="退出", command=self.root.destroy, **self.button_config)
         self.exit_button.grid(row=99, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
-
     # 日志页面
     def create_log_ui(self):
         """创建日志区域（文本框和滚动条）"""
