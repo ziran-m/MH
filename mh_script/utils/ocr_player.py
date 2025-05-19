@@ -202,7 +202,6 @@ class OCR_Player(Player):
     def resource_path(relative_path):
         """获取资源文件真实路径，兼容打包后路径"""
         if hasattr(sys, '_MEIPASS'):
-            global_log.info(os.path.join(sys._MEIPASS, relative_path))
             return os.path.join(sys._MEIPASS, relative_path)
         # 获取当前文件的上一级目录，然后拼接 'resource'
         parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
