@@ -8,6 +8,7 @@ from mh_script.client_manager.launcher import Launcher
 from mh_script.constant.constant import Constant
 from mh_script.handler.basic_handler import BasicHandler
 from mh_script.handler.wabao_handler import WaBao
+from mh_script.handler.red_lls_handler import RedLLS
 from mh_script.task_manager.daily_task import DailyTask
 from mh_script.task_manager.dungeon_task import DungeonTask
 from mh_script.task_manager.ghost_task import GhostTask
@@ -109,7 +110,9 @@ class App:
         row += 1
         self.wabao_button = ctk.CTkButton(self.left_frame, text="考古", command=self.wabao_task, **self.button_config)
         self.wabao_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
-
+        row += 1
+        self.lls_button = ctk.CTkButton(self.left_frame, text="玲珑石", command=self.lls_task, **self.button_config)
+        self.lls_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
         row += 1
         self.config_button = ctk.CTkButton(self.left_frame, text="配置", command=self.show_config_ui,
                                            **self.button_config)
@@ -354,6 +357,18 @@ class App:
         task = WaBao(regions)
         thread = threading.Thread(target=task.do, args=(regions[0],), daemon=True)
         thread.start()
+    def lls_task(self):
+        """玲珑石"""
+        self.disable_buttons_temporarily()
+        regions = self.launcher.get_regions()
+        if not regions:
+            return
+
+        self.launcher.resize_and_move_window()
+
+        task = RedLLS(regions)
+        thread = threading.Thread(target=task.do, args=(regions[0],), daemon=True)
+        thread.start()
 
     def disable_buttons_temporarily(self):
         """禁用按钮并在1秒后重新启用"""
@@ -363,6 +378,7 @@ class App:
         self.button_320.configure(state="disabled")
         self.ghost_button.configure(state="disabled")
         self.wabao_button.configure(state="disabled")
+        self.lls_button.configure(state="disabled")
         self.app_path_entry.configure(state="disabled")
         self.config_button.configure(state="disabled")
 
@@ -377,6 +393,7 @@ class App:
         self.button_320.configure(state="normal")
         self.ghost_button.configure(state="normal")
         self.wabao_button.configure(state="normal")
+        self.lls_button.configure(state="normal")
         self.app_path_entry.configure(state="normal")
         self.config_button.configure(state="normal")
 
