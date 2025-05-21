@@ -1,4 +1,10 @@
 import warnings
+
+from mh_script.handler.baotu_handler import BaoTu
+from mh_script.handler.dati_handler import DaTi
+from mh_script.handler.mijing_handler import MiJing
+from mh_script.handler.yabiao_handler import YaBiao
+
 warnings.filterwarnings("ignore",
     message="No ccache found",
     module="paddle.utils.cpp_extension")
@@ -62,9 +68,12 @@ class App:
         }
 
         self.setup_layout()
+
         self.create_buttons()
+
         self.create_log_ui()
 
+        self.create_daily_ui()
         self.create_config_ui()
 
         self.root.mainloop()
@@ -87,6 +96,11 @@ class App:
         self.config_frame.grid(row=0, column=0, padx=10, pady=10, sticky="ns")
         self.config_frame.grid_remove()  # 默认隐藏
 
+        # 日常明细页面
+        self.daily_frame = ctk.CTkFrame(self.root)
+        self.daily_frame.grid(row=0, column=0, padx=10, pady=10, sticky="ns")
+        self.daily_frame.grid_remove()  # 默认隐藏
+
     # 主页面
     def create_buttons(self):
 
@@ -98,11 +112,11 @@ class App:
         self.dungeon_task_button = ctk.CTkButton(self.left_frame, text="副本", command=self.dungeon_task_task,
                                                  **self.button_config)
         self.dungeon_task_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
+
         row += 1
         # 日常按钮跨越两列
-        self.daily_button = ctk.CTkButton(self.left_frame, text="日常", command=self.daily_task, **self.button_config)
-        self.daily_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
-
+        self.show_daily_button = ctk.CTkButton(self.left_frame, text="日常", command=self.show_daily_ui, **self.button_config)
+        self.show_daily_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
         row += 1
         self.ghost_button = ctk.CTkButton(self.left_frame, text="抓鬼", command=self.ghost_task, **self.button_config)
         self.ghost_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
@@ -112,8 +126,8 @@ class App:
         self.button_320.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
 
         row += 1
-        self.wabao_button = ctk.CTkButton(self.left_frame, text="考古", command=self.wabao_task, **self.button_config)
-        self.wabao_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
+        self.kaogu_button = ctk.CTkButton(self.left_frame, text="考古", command=self.kaogu_task, **self.button_config)
+        self.kaogu_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
         row += 1
         self.lls_button = ctk.CTkButton(self.left_frame, text="玲珑石", command=self.lls_task, **self.button_config)
         self.lls_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
@@ -125,6 +139,39 @@ class App:
         # 添加退出按钮到 left_frame（假设 row 是从上往下排的）
         self.exit_button = ctk.CTkButton(self.left_frame, text="退出", command=self.root.destroy, **self.button_config)
         self.exit_button.grid(row=99, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
+
+        # 主页面
+
+    def create_daily_ui(self):
+
+        row = 0
+        # 日常按钮跨越两列
+        self.daily_button = ctk.CTkButton(self.daily_frame, text="全部", command=self.daily_task, **self.button_config)
+        self.daily_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
+        row += 1
+        self.baotu_button = ctk.CTkButton(self.daily_frame, text="宝图", command=self.baotu_task, **self.button_config)
+        self.baotu_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
+
+        row += 1
+        self.wabao_button = ctk.CTkButton(self.daily_frame, text="挖宝", command=self.dig_task,
+                                          **self.button_config)
+        self.wabao_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
+        row += 1
+        # 日常按钮跨越两列
+        self.mijing_button = ctk.CTkButton(self.daily_frame, text="秘境", command=self.mijing_task, **self.button_config)
+        self.mijing_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
+
+        row += 1
+        self.yabiao_button = ctk.CTkButton(self.daily_frame, text="押镖", command=self.yabiao_task, **self.button_config)
+        self.yabiao_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
+
+        row += 1
+        self.dati_button = ctk.CTkButton(self.daily_frame, text="答题", command=self.dati_task, **self.button_config)
+        self.dati_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
+        # 返回按钮
+        self.daily_back_button = ctk.CTkButton(self.daily_frame, text="返回", command=self.show_main_ui,
+                                         **self.button_config)
+        self.daily_back_button.grid(row=99, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
     # 日志页面
     def create_log_ui(self):
         """创建日志区域（文本框和滚动条）"""
@@ -218,9 +265,15 @@ class App:
         self.left_frame.grid_remove()
         self.config_frame.grid()
 
+    def show_daily_ui(self):
+        """显示配置界面，隐藏主按钮区域"""
+        self.left_frame.grid_remove()
+        self.daily_frame.grid()
+
     def show_main_ui(self):
         """返回主按钮区域，隐藏配置界面"""
         self.config_frame.grid_remove()
+        self.daily_frame.grid_remove()
         self.left_frame.grid()
 
     def start_task(self):
@@ -348,7 +401,7 @@ class App:
 
 
 
-    def wabao_task(self):
+    def kaogu_task(self):
         """挖宝任务"""
         self.disable_buttons_temporarily()
         regions = self.launcher.get_regions()
@@ -357,7 +410,7 @@ class App:
 
         self.launcher.resize_and_move_window()
 
-        task = WaBao(regions)
+        task = WaBao(OCR_Player())
         thread = threading.Thread(target=task.do, args=(regions[0],), daemon=True)
         thread.start()
     def lls_task(self):
@@ -373,6 +426,71 @@ class App:
         thread = threading.Thread(target=task.do, args=(regions[0],), daemon=True)
         thread.start()
 
+    def baotu_task(self):
+        """宝图"""
+        self.disable_buttons_temporarily()
+        regions = self.launcher.get_regions()
+        if not regions:
+            return
+
+        self.launcher.resize_and_move_window()
+
+        task = BaoTu(OCR_Player())
+        thread = threading.Thread(target=task.do_all, args=(regions,), daemon=True)
+        thread.start()
+
+    def dig_task(self):
+        """挖宝图"""
+        self.disable_buttons_temporarily()
+        regions = self.launcher.get_regions()
+        if not regions:
+            return
+
+        self.launcher.resize_and_move_window()
+
+        task = BaoTu(OCR_Player())
+        thread = threading.Thread(target=task.dig_all, args=(regions,), daemon=True)
+        thread.start()
+
+    def mijing_task(self):
+        """秘境"""
+        self.disable_buttons_temporarily()
+        regions = self.launcher.get_regions()
+        if not regions:
+            return
+
+        self.launcher.resize_and_move_window()
+
+        task = MiJing(OCR_Player())
+        thread = threading.Thread(target=task.do_all, args=(regions,), daemon=True)
+        thread.start()
+
+    def yabiao_task(self):
+        """押镖"""
+        self.disable_buttons_temporarily()
+        regions = self.launcher.get_regions()
+        if not regions:
+            return
+
+        self.launcher.resize_and_move_window()
+
+        task = YaBiao(OCR_Player())
+        thread = threading.Thread(target=task.do_all, args=(regions,), daemon=True)
+        thread.start()
+
+    def dati_task(self):
+        """答题"""
+        self.disable_buttons_temporarily()
+        regions = self.launcher.get_regions()
+        if not regions:
+            return
+
+        self.launcher.resize_and_move_window()
+
+        task = DaTi(OCR_Player())
+        thread = threading.Thread(target=task.do_all, args=(regions,), daemon=True)
+        thread.start()
+
     def disable_buttons_temporarily(self):
         """禁用按钮并在1秒后重新启用"""
         self.open_button.configure(state="disabled")
@@ -380,7 +498,7 @@ class App:
         self.dungeon_task_button.configure(state="disabled")
         self.button_320.configure(state="disabled")
         self.ghost_button.configure(state="disabled")
-        self.wabao_button.configure(state="disabled")
+        self.kaogu_button.configure(state="disabled")
         self.lls_button.configure(state="disabled")
         self.app_path_entry.configure(state="disabled")
         self.config_button.configure(state="disabled")
@@ -395,7 +513,7 @@ class App:
         self.dungeon_task_button.configure(state="normal")
         self.button_320.configure(state="normal")
         self.ghost_button.configure(state="normal")
-        self.wabao_button.configure(state="normal")
+        self.kaogu_button.configure(state="normal")
         self.lls_button.configure(state="normal")
         self.app_path_entry.configure(state="normal")
         self.config_button.configure(state="normal")

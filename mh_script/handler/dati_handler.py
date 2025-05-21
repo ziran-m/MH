@@ -1,17 +1,33 @@
+import threading
+from typing import List
+
 from mh_script.handler.basic_handler import BasicHandler
 from mh_script.model.screen_region import ScreenRegion
-from mh_script.utils.log_util import log
+from mh_script.utils.log_util import log, global_log
 from mh_script.utils.player import Player
 
 
 class DaTi:
     def __init__(self, ocrPlayer):
+        self.do_all = None
         self.ocrPlayer = ocrPlayer
         self.basicHandler = BasicHandler(ocrPlayer)
+
+    def do_all(self, regions: List[ScreenRegion]):
+        global_log.info("🚀 [答题] 开始任务")
+        threads = []
+        for region in regions:
+            t = threading.Thread(target=self.do, args=(region,))
+            t.start()
+            threads.append(t)
+        for t in threads:
+            t.join()
+        global_log.info("✅ [答题] 全部完成")
 
     def do(self, region: ScreenRegion):
         self.sanjie(region)
         self.keju(region)
+
 
     # 三界奇缘答题
     def sanjie(self, region: ScreenRegion):

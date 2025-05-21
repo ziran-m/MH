@@ -23,6 +23,17 @@ class BaoTu:
             t.join()
         global_log.info("✅ [宝图] 任务全部完成")
 
+    def dig_all(self, regions: List[ScreenRegion]):
+        global_log.info("🔶 [宝图] 任务开始")
+        threads = []
+        for region in regions:
+            t = threading.Thread(target=self.dig, args=(region,))
+            t.start()
+            threads.append(t)
+        for t in threads:
+            t.join()
+        global_log.info("✅ [宝图] 任务全部完成")
+
     def do(self, region: ScreenRegion):
         log.info("🔶 [宝图] 执行宝图任务")
         self.basicHandler.clean(region)
