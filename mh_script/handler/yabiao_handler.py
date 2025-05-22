@@ -24,6 +24,7 @@ class YaBiao:
             t.join()
         global_log.info("✅ [押镖] 全部完成")
 
+
     def do(self, region: ScreenRegion = None):
         log.info("🚀 [押镖] 开始")
         self.delay()
@@ -75,6 +76,7 @@ class YaBiao:
                 break
 
         log.info("✅ [押镖]押镖完成")
+        self.basicHandler.clean(region)
 
     def delay(self, min_seconds=1.0, max_seconds=3.0):
         Player.delay(min_seconds, max_seconds)

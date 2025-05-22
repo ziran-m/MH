@@ -66,6 +66,7 @@ class Ghost:
 
         self.basicHandler.clean(region)
         global_log.info("✅ [抓鬼] 任务完成")
+        self.basicHandler.clean(region)
 
     def delay(self, min_seconds=2.0, max_seconds=3.0):
         Player.delay(min_seconds, max_seconds)

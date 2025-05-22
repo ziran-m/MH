@@ -14,6 +14,7 @@ class Fuben:
     def do(self, region: ScreenRegion, times=0):
         if times > 2:
             global_log.info("✅ [副本] 三本完成")
+            self.basicHandler.clean(region)
             return
 
         global_log.info(f"🚀 [副本] 任务开始，第{times + 1}个")

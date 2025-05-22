@@ -117,7 +117,7 @@ class BasicHandler:
             if pos is not None:
                 return pos
         # 向上拖动尝试3次
-        self.drag_down(start_pos)
+        self.drag_down(start_pos,100)
         Player.delay()
 
         # 向下拖动尝试6次

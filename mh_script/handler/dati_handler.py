@@ -23,7 +23,7 @@ class DaTi:
         for t in threads:
             t.join()
         global_log.info("✅ [答题] 全部完成")
-
+        self.basicHandler.clean(region)
     def do(self, region: ScreenRegion):
         self.sanjie(region)
         self.keju(region)

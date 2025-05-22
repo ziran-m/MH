@@ -77,6 +77,7 @@ class BaoTu:
 
         self.while_do(region)
         log.info("✅ [宝图] 任务完成")
+        self.basicHandler.clean(region)
 
     def while_do(self, region: ScreenRegion):
         log.info("⏳ [宝图] 等待战斗和任务完成")
@@ -120,6 +121,7 @@ class BaoTu:
         self.delay()
         self.while_dig(region)
         log.info("✅ [宝图] 挖宝流程完成")
+        self.basicHandler.clean(region)
 
     def while_dig(self, region: ScreenRegion):
         log.info("⏳ [宝图] 使用藏宝图中...")

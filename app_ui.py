@@ -22,7 +22,7 @@ from mh_script.handler.red_lls_handler import RedLLS
 from mh_script.task_manager.daily_task import DailyTask
 from mh_script.task_manager.dungeon_task import DungeonTask
 from mh_script.task_manager.ghost_task import GhostTask
-from mh_script.utils.log_util import TextHandler, logger, global_log
+from mh_script.utils.log_util import TextHandler, logger, global_log, log
 from mh_script.utils.ocr_player import OCR_Player
 
 
@@ -330,10 +330,10 @@ class App:
         """关闭任务（对应 '关闭' 按钮）"""
         self.disable_buttons_temporarily()  # 禁用按钮
 
-        val = int(self.ghost_num_entry.get().strip())
+        val = int(self.config_data.get("ghost_rounds", "2").strip())
         if  val:
             Constant.GHOST_NUM = val
-        logger.info(f"抓鬼轮数设置为：{Constant.GHOST_NUM}")
+        log.info(f"抓鬼轮数设置为：{Constant.GHOST_NUM}")
 
         regions = self.launcher.get_regions()
         if not regions:
@@ -382,7 +382,7 @@ class App:
             val1 = 0
 
         try:
-            val2 =int (self.config_data.get("ghost_num", "2").strip())
+            val2 =int (self.config_data.get("ghost_rounds", "2").strip())
         except ValueError:
             val2 = 2
 
@@ -407,7 +407,7 @@ class App:
 
         self.launcher.resize_and_move_window()
 
-        task = WaBao(self.ocrPlayer)
+        task = WaBao(regions)
         thread = threading.Thread(target=task.do, args=(regions[0],), daemon=True)
         thread.start()
     def lls_task(self):

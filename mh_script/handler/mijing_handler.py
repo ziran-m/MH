@@ -26,6 +26,7 @@ class MiJing:
             t.join()
 
         global_log.info("✅ [秘境] 所有任务执行完成")
+        self.basicHandler.clean(region)
 
     def do(self, region: ScreenRegion):
         log.info("🚀 [秘境] 开始执行秘境任务流程")
