@@ -16,7 +16,7 @@ class Fuben:
             global_log.info("✅ [副本] 三本完成")
             return
 
-        global_log.info(f"🚀 [副本] 任务开始，第{times+1}个")
+        global_log.info(f"🚀 [副本] 任务开始，第{times + 1}个")
         if times != 0:
             self.basicHandler.clean(region)
 
@@ -32,8 +32,8 @@ class Fuben:
             global_log.info("🔍 [副本] 查找百晓仙子")
             pos = self.ocrPlayer.find_by_name_first(region, "百晓仙子", 0.9)
             if pos is None:
-                global_log.info("🔍 [副本] 找不到百晓仙子，尝试找袁天罡")
-                pos = self.ocrPlayer.find_by_name_first(region, "袁天罡", 0.9)
+                global_log.info("🔍 [副本] 找不到百晓仙子，尝试找钟馗")
+                pos = self.ocrPlayer.find_by_name_first(region, "钟道", 0.8)
                 if pos is not None:
                     self.ocrPlayer.touch(pos, True, None)
                     self.delay()
@@ -50,9 +50,9 @@ class Fuben:
                     self.delay()
 
                 else:
-                    global_log.info("❌ [副本] 找不到袁天罡，无法继续")
+                    global_log.info("❌ [副本] 找不到钟馗，无法继续")
                     return
-
+            pos = self.ocrPlayer.find_by_name_first(region, "百晓仙子", 0.9)
             global_log.info(f"▶️ [副本] 点击百晓仙子 {pos}")
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
@@ -81,7 +81,7 @@ class Fuben:
         while self.ocrPlayer.find_by_pic_first(region, "common.activity", 0.5) is None:
             global_log.info("⚔️ [副本] 流程中")
             while self.basicHandler.battling(region):
-                self.delay(5,10)
+                self.delay(5, 10)
             while self.ocrPlayer.find_by_name_first(region, "任务", 0.9) is None:
                 self.basicHandler.clickLeftCenter(region)
                 self.delay()
@@ -95,12 +95,10 @@ class Fuben:
             if pos is not None:
                 self.ocrPlayer.touch(pos, True, None)
                 self.delay()
-
-            pos = self.ocrPlayer.find_by_pic_first(region, "fuben.talk", 0.8)
+            pos = self.ocrPlayer.find_by_name_first(region, "休想我束手就擒", 0.9)
             if pos is not None:
                 self.ocrPlayer.touch(pos, True, None)
                 self.delay()
-
             pos = self.ocrPlayer.find_by_name_first(region, "尔等才是", 0.9)
             if pos is not None:
                 self.ocrPlayer.touch(pos, True, None)
@@ -109,6 +107,11 @@ class Fuben:
             if pos is not None:
                 self.ocrPlayer.touch(pos, True, None)
                 self.delay()
+            pos = self.ocrPlayer.find_by_pic_first(region, "fuben.talk", 0.8)
+            if pos is not None:
+                self.ocrPlayer.touch(pos, True, None)
+                self.delay()
+
         self.do(region, times + 1)
 
     def delay(self, min_seconds=0.5, max_seconds=3.0):

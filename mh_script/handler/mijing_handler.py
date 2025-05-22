@@ -84,9 +84,9 @@ class MiJing:
     def while_do(self, region):
         resumeTimes = 0
         lastBattleTime = datetime.datetime.now()
+        log.info("⚔️ [秘境] 正在战斗中...")
         while True:
             if self.basicHandler.battling(region):
-                log.info("⚔️ [秘境] 正在战斗中...")
                 lastBattleTime = datetime.datetime.now()
             elif datetime.datetime.now() - lastBattleTime > datetime.timedelta(seconds=50):
                 log.info("⏰ [秘境] 超过 50 秒未进入战斗，尝试重新进入")
