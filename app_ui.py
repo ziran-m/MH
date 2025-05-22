@@ -31,6 +31,7 @@ class App:
         self.config_file = "config.json"
         self.config_data = self.load_config()
         self.launcher = Launcher()
+        self.ocrPlayer = OCR_Player()
 
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("blue")
@@ -398,7 +399,7 @@ class App:
 
 
     def kaogu_task(self):
-        """挖宝任务"""
+        """考古任务"""
         self.disable_buttons_temporarily()
         regions = self.launcher.get_regions()
         if not regions:
@@ -406,7 +407,7 @@ class App:
 
         self.launcher.resize_and_move_window()
 
-        task = WaBao(OCR_Player())
+        task = WaBao(self.ocrPlayer)
         thread = threading.Thread(target=task.do, args=(regions[0],), daemon=True)
         thread.start()
     def lls_task(self):
@@ -418,7 +419,7 @@ class App:
 
         self.launcher.resize_and_move_window()
 
-        task = RedLLS(regions)
+        task = RedLLS(self.ocrPlayer)
         thread = threading.Thread(target=task.do, args=(regions[0],), daemon=True)
         thread.start()
 
@@ -431,7 +432,7 @@ class App:
 
         self.launcher.resize_and_move_window()
 
-        task = BaoTu(OCR_Player())
+        task = BaoTu(self.ocrPlayer)
         thread = threading.Thread(target=task.do_all, args=(regions,), daemon=True)
         thread.start()
 
@@ -444,7 +445,7 @@ class App:
 
         self.launcher.resize_and_move_window()
 
-        task = BaoTu(OCR_Player())
+        task = BaoTu(self.ocrPlayer)
         thread = threading.Thread(target=task.dig_all, args=(regions,), daemon=True)
         thread.start()
 
@@ -457,7 +458,7 @@ class App:
 
         self.launcher.resize_and_move_window()
 
-        task = MiJing(OCR_Player())
+        task = MiJing(self.ocrPlayer)
         thread = threading.Thread(target=task.do_all, args=(regions,), daemon=True)
         thread.start()
 
@@ -470,7 +471,7 @@ class App:
 
         self.launcher.resize_and_move_window()
 
-        task = YaBiao(OCR_Player())
+        task = YaBiao(self.ocrPlayer)
         thread = threading.Thread(target=task.do_all, args=(regions,), daemon=True)
         thread.start()
 
@@ -483,7 +484,7 @@ class App:
 
         self.launcher.resize_and_move_window()
 
-        task = DaTi(OCR_Player())
+        task = DaTi(self.ocrPlayer)
         thread = threading.Thread(target=task.do_all, args=(regions,), daemon=True)
         thread.start()
 
