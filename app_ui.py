@@ -107,24 +107,20 @@ class App:
         row = 0
         self.open_button = ctk.CTkButton(self.left_frame, text="启动", command=self.start_task, **self.button_config)
         self.open_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
-
+        row += 1
+        self.button_320 = ctk.CTkButton(self.left_frame, text="320", command=self.task_320, **self.button_config)
+        self.button_320.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
         row += 1
         self.dungeon_task_button = ctk.CTkButton(self.left_frame, text="副本", command=self.dungeon_task_task,
                                                  **self.button_config)
         self.dungeon_task_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
-
+        row += 1
+        self.ghost_button = ctk.CTkButton(self.left_frame, text="抓鬼", command=self.ghost_task, **self.button_config)
+        self.ghost_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
         row += 1
         # 日常按钮跨越两列
         self.show_daily_button = ctk.CTkButton(self.left_frame, text="日常", command=self.show_daily_ui, **self.button_config)
         self.show_daily_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
-        row += 1
-        self.ghost_button = ctk.CTkButton(self.left_frame, text="抓鬼", command=self.ghost_task, **self.button_config)
-        self.ghost_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
-
-        row += 1
-        self.button_320 = ctk.CTkButton(self.left_frame, text="320", command=self.task_320, **self.button_config)
-        self.button_320.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
-
         row += 1
         self.kaogu_button = ctk.CTkButton(self.left_frame, text="考古", command=self.kaogu_task, **self.button_config)
         self.kaogu_button.grid(row=row, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="ew")
@@ -502,6 +498,11 @@ class App:
         self.lls_button.configure(state="disabled")
         self.app_path_entry.configure(state="disabled")
         self.config_button.configure(state="disabled")
+        self.baotu_button.configure(state="disabled")
+        self.yabiao_button.configure(state="disabled")
+        self.mijing_button.configure(state="disabled")
+        self.wabao_button.configure(state="disabled")
+        self.dati_button.configure(state="disabled")
 
         # 设置1秒后重新启用按钮
         self.root.after(1000, self.enable_buttons)
@@ -517,6 +518,11 @@ class App:
         self.lls_button.configure(state="normal")
         self.app_path_entry.configure(state="normal")
         self.config_button.configure(state="normal")
+        self.baotu_button.configure(state="normal")
+        self.yabiao_button.configure(state="normal")
+        self.mijing_button.configure(state="normal")
+        self.wabao_button.configure(state="normal")
+        self.dati_button.configure(state="normal")
 
 
 if __name__ == "__main__":
