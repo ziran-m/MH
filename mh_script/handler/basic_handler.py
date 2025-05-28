@@ -118,7 +118,6 @@ class BasicHandler:
                 return pos
         # 向上拖动尝试3次
         self.drag_down(start_pos,100)
-        Player.delay()
 
         # 向下拖动尝试6次
         for _ in range(3):
@@ -130,7 +129,6 @@ class BasicHandler:
                 if pos is not None:
                     return pos
             self.drag_up(start_pos, 80)
-            Player.delay()
 
         return None
 
@@ -171,7 +169,11 @@ class BasicHandler:
     def drag_down(self, start_pos, distance=100):
         with self._touch_lock:
             Player.drag_down(start_pos, distance)
+            Player.delay()
+
 
     def drag_up(self, start_pos, distance=100):
         with self._touch_lock:
             Player.drag_up(start_pos, distance)
+            Player.delay()
+

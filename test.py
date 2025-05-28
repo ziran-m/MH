@@ -16,7 +16,10 @@ from mh_script.utils.ocr_player import OCR_Player
 
 launcher = Launcher()
 
-launcher.resize_and_move_window()
-regions = launcher.get_regions()
-r = RedLLS(OCR_Player())
-r.do(regions[0])
+# launcher.resize_and_move_window()
+# regions = launcher.get_regions()
+# r = RedLLS(OCR_Player())
+# r.do(regions[0])
+
+o = OCR_Player()
+o.move((699,60),True)

@@ -9,7 +9,6 @@ from mh_script.utils.player import Player
 
 class DaTi:
     def __init__(self, ocrPlayer):
-        self.do_all = None
         self.ocrPlayer = ocrPlayer
         self.basicHandler = BasicHandler(ocrPlayer)
 

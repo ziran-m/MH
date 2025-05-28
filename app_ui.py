@@ -407,7 +407,7 @@ class App:
 
         self.launcher.resize_and_move_window()
 
-        task = WaBao(regions)
+        task = WaBao(self.ocrPlayer)
         thread = threading.Thread(target=task.do, args=(regions[0],), daemon=True)
         thread.start()
     def lls_task(self):
