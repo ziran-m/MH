@@ -33,8 +33,8 @@ class Fuben:
         global_log.info("🔍 [副本] 查找百晓仙子")
         pos = self.ocrPlayer.find_by_name_first(region, "百晓仙子", 0.9)
         if pos is None:
-            global_log.info("🔍 [副本] 找不到百晓仙子，尝试找兵器铺老板")
-            pos = self.ocrPlayer.find_by_name_first(region, "兵器铺老板", 0.8)
+            global_log.info("🔍 [副本] 找不到百晓仙子，尝试找乌巢禅师")
+            pos = self.ocrPlayer.find_by_name_first(region, "乌巢禅师", 0.8)
             if pos is not None:
                 self.ocrPlayer.touch(pos, True, None)
                 self.delay()
@@ -51,7 +51,7 @@ class Fuben:
                 self.delay()
 
             else:
-                global_log.info("❌ [副本] 找不到兵器铺老板，无法继续")
+                global_log.info("❌ [副本] 找不到乌巢禅师，无法继续")
                 return
         pos = self.ocrPlayer.find_by_name_first(region, "百晓仙子", 0.9)
         global_log.info(f"▶️ [副本] 点击百晓仙子 {pos}")
