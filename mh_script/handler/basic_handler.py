@@ -110,15 +110,17 @@ class BasicHandler:
     # 智能查找目标图片：
     def smart_find_pic_with_scroll(self, region, target_names, target_names2=None, match=0.8, rightmost=False,
                                    start_pos=None):
-        pos = self.ocrPlayer.find_by_pic_first(region, target_names, match, rightmost)
-        if pos is not None:
-            return pos
-        if target_names2 is not None:
-            pos = self.ocrPlayer.find_by_pic_first(region, target_names2, match, rightmost)
+        # 向上拖动尝试3次
+        for _ in range(3):
+            pos = self.ocrPlayer.find_by_pic_first(region, target_names, match, rightmost)
             if pos is not None:
                 return pos
-        # 向上拖动尝试3次
-        self.drag_down(start_pos,100)
+            if target_names2 is not None:
+                pos = self.ocrPlayer.find_by_pic_first(region, target_names2, match, rightmost)
+                if pos is not None:
+                    return pos
+
+            self.drag_down(start_pos,100)
 
         # 向下拖动尝试6次
         for _ in range(6):
@@ -153,7 +155,7 @@ class BasicHandler:
                 pos = self.ocrPlayer.find_by_pic_first(region, target_names2, match, rightmost)
                 if pos is not None:
                     return pos
-            self.drag_down(start_pos, 100)
+            self.drag_down(start_pos, 80)
 
         # 向下拖动尝试6次
         for _ in range(6):
@@ -164,7 +166,7 @@ class BasicHandler:
                 pos = self.ocrPlayer.find_by_pic_first(region, target_names2, match, rightmost)
                 if pos is not None:
                     return pos
-            self.drag_up(start_pos, 100)
+            self.drag_up(start_pos, 80)
         return None
 
     def drag_down(self, start_pos, distance=100):
