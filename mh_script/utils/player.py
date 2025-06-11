@@ -59,7 +59,7 @@ class Player:
             x, y = Player.random_offset(position)
         else:
             x, y = position
-        duration = random.uniform(0.1, 0.2)
+        duration = random.uniform(0.4, 0.6)
         pyautogui.moveTo(x, y, duration)
         pyautogui.rightClick(x, y)
 
@@ -67,7 +67,7 @@ class Player:
     def drag(start_pos, end_pos):
         sx, sy = start_pos
         ex, ey = end_pos
-        duration = random.uniform(0.1, 0.2)
+        duration = random.uniform(0.4, 0.6)
         pyautogui.moveTo(sx, sy, duration)
         pyautogui.dragTo(ex, ey, duration, button='left')
 

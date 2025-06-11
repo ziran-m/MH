@@ -52,7 +52,6 @@ class BasicHandler:
             log.info("找不到队伍")
             return
         self.ocrPlayer.touch(pos, True, None)
-        self.ocrPlayer.delay()
         self.ocrPlayer.touch(pos, True, None)
         self.ocrPlayer.delay()
         # 退出队伍
@@ -60,6 +59,8 @@ class BasicHandler:
         if out is not None:
             self.ocrPlayer.touch(out, True, None)
             self.ocrPlayer.delay()
+        else:
+            log.info("❌ 找不到退出任务")
         # 清理页面
         self.clickCenter(region)
         self.ocrPlayer.delay()
@@ -120,7 +121,7 @@ class BasicHandler:
         self.drag_down(start_pos,100)
 
         # 向下拖动尝试6次
-        for _ in range(3):
+        for _ in range(6):
             pos = self.ocrPlayer.find_by_pic_first(region, target_names, match, rightmost)
             if pos is not None:
                 return pos
@@ -128,7 +129,7 @@ class BasicHandler:
                 pos = self.ocrPlayer.find_by_pic_first(region, target_names2, match, rightmost)
                 if pos is not None:
                     return pos
-            self.drag_up(start_pos, 80)
+            self.drag_up(start_pos, 50)
 
         return None
 
@@ -143,7 +144,7 @@ class BasicHandler:
                 return pos
         x, y = start_pos
         start_pos = x + 50, y
-        # 向上拖动尝试3次
+        # 向上拖动尝试6次
         for _ in range(6):
             pos = self.ocrPlayer.find_by_pic_first(region, target_names, match, rightmost)
             if pos is not None:
@@ -169,11 +170,11 @@ class BasicHandler:
     def drag_down(self, start_pos, distance=100):
         with self._touch_lock:
             Player.drag_down(start_pos, distance)
-            Player.delay()
+            Player.delay(1,2)
 
 
     def drag_up(self, start_pos, distance=100):
         with self._touch_lock:
             Player.drag_up(start_pos, distance)
-            Player.delay()
+            Player.delay(1,2)
 
