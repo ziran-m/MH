@@ -19,7 +19,7 @@ class OCR_Player(Player):
         self.load_targets()
         self._touch_lock = threading.Lock()
 
-    def read(self, region: ScreenRegion = None, debug=False):
+    def read(self, region: ScreenRegion = None):
 
         # 截图
         img = ScreenUtils.screen_shot(region) if region else ScreenUtils.screen_shot()
@@ -28,14 +28,14 @@ class OCR_Player(Player):
         data = result[0]
         return data
 
-    def find_by_name(self, region: ScreenRegion, keyword, accuracy=None, debug=True):
+    def find_by_name(self, region: ScreenRegion, keyword, accuracy=None, debug=False):
         """在截图中寻找目标"""
         loc_pos = []
         """根据关键字查找文本中心坐标"""
         if debug:
             global_log.info(f"[OCR] 开始查找关键字：'{keyword}'，区域：{region}，置信度阈值：{accuracy}")
 
-        data = self.read(region, debug=debug)
+        data = self.read(region)
 
         if accuracy:
             self.accuracy = accuracy
@@ -56,13 +56,13 @@ class OCR_Player(Player):
         return loc_pos if loc_pos else None
 
     # 匹配文字
-    def find_by_name_first(self, region: ScreenRegion, keyword, accuracy=None, debug=True) -> tuple[int, int] | None:
+    def find_by_name_first(self, region: ScreenRegion, keyword, accuracy=None, debug=False) -> tuple[int, int] | None:
 
         """根据关键字查找文本中心坐标"""
         if debug:
             global_log.info(f"[OCR] 开始查找关键字：'{keyword}'，区域：{region}，置信度阈值：{accuracy}")
 
-        data = self.read(region, debug=debug)
+        data = self.read(region)
 
         if accuracy:
             self.accuracy = accuracy
