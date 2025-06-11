@@ -28,7 +28,7 @@ class OCR_Player(Player):
         data = result[0]
         return data
 
-    def find_by_name(self, region: ScreenRegion, keyword, accuracy=None, debug=False):
+    def find_by_name(self, region: ScreenRegion, keyword, accuracy=None, debug=True):
         """在截图中寻找目标"""
         loc_pos = []
         """根据关键字查找文本中心坐标"""
@@ -56,7 +56,7 @@ class OCR_Player(Player):
         return loc_pos if loc_pos else None
 
     # 匹配文字
-    def find_by_name_first(self, region: ScreenRegion, keyword, accuracy=None, debug=False) -> tuple[int, int] | None:
+    def find_by_name_first(self, region: ScreenRegion, keyword, accuracy=None, debug=True) -> tuple[int, int] | None:
 
         """根据关键字查找文本中心坐标"""
         if debug:
@@ -146,6 +146,8 @@ class OCR_Player(Player):
                 continue
             ex, ey = x, y
             loc_pos.append([x, y])
+        global_log.info(f'查找结果：{target_name} 匹配到 {len(loc_pos)} 个位置')
+
         return loc_pos if loc_pos else None
 
     # 匹配第一个截图
@@ -168,12 +170,15 @@ class OCR_Player(Player):
             for pt in zip(*locations[::-1]):
                 x = pt[0] + region.left + w
                 y = pt[1] + region.top + h // 2
+                print(f'查找结果：{target_name} 匹配最右侧坐标：{x} ,{y}')
+
                 return [x, y]  # 直接返回第一个匹配
         else:
             # 原逻辑，匹配第一个
             for pt in zip(*locations[::-1]):
                 x = pt[0] + region.left + w // 2
                 y = pt[1] + region.top + h // 2
+                print(f'查找结果：{target_name} 匹配坐标：{x} ,{y}')
                 return [x, y]  # 直接返回第一个匹配
             return None
 

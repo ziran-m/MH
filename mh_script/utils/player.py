@@ -41,7 +41,7 @@ class Player:
         duration = random.uniform(0.1, 0.2)
         pyautogui.moveTo(x, y, duration)
         pyautogui.click(x, y)
-
+        print(f"点击坐标 ({x}, {y}) 成功")
 
     @staticmethod
     def doubleClick(position, is_offset=True):
@@ -52,7 +52,7 @@ class Player:
         duration = random.uniform(0.1, 0.2)
         pyautogui.moveTo(x, y, duration)
         pyautogui.doubleClick(x, y)
-
+        print(f"双击坐标 ({x}, {y}) 成功")
     @staticmethod
     def rightClick(position, is_offset=True):
         if is_offset:
@@ -62,6 +62,7 @@ class Player:
         duration = random.uniform(0.4, 0.6)
         pyautogui.moveTo(x, y, duration)
         pyautogui.rightClick(x, y)
+        print(f"右键点击坐标 ({x}, {y}) 成功")
 
     @staticmethod
     def drag(start_pos, end_pos):
@@ -97,6 +98,8 @@ class Player:
             x, y = position
         duration = random.uniform(0.1, 0.2)
         pyautogui.moveTo(x, y, duration)
+        print(f"移动至坐标 ({x}, {y}) 成功")
+
 
     @staticmethod
     def touch(position, offset_click=True, img_name=None):
@@ -107,8 +110,3 @@ class Player:
     def doubleTouch(position, offset_click=True, img_name=None):
         """提供 touch 的简化调用（给 OCR_Player 用）"""
         Player.doubleClick(position, is_offset=offset_click)
-
-    @staticmethod
-    def hotKeyAlt(s):
-        """提供 touch 的简化调用（给 OCR_Player 用）"""
-        pyautogui.hotkey('alt',s)
