@@ -1,9 +1,8 @@
 import threading
 from typing import List
-
 from mh_script.handler.basic_handler import BasicHandler
 from mh_script.model.screen_region import ScreenRegion
-from mh_script.utils.log_util import log,global_log
+from mh_script.utils.log_util import log, global_log
 from mh_script.utils.player import Player
 
 
@@ -11,6 +10,10 @@ class BaoTu:
     def __init__(self, ocrPlayer):
         self.ocrPlayer = ocrPlayer
         self.basicHandler = BasicHandler(ocrPlayer)
+        self._running = True
+
+    def stop(self):
+        self._running = False
 
     def do_all(self, regions: List[ScreenRegion]):
         global_log.info("🔶 [宝图] 任务开始")
@@ -24,7 +27,7 @@ class BaoTu:
         global_log.info("✅ [宝图] 任务全部完成")
 
     def dig_all(self, regions: List[ScreenRegion]):
-        global_log.info("🔶 [宝图] 任务开始")
+        global_log.info("🔶 [宝图] 挖宝开始")
         threads = []
         for region in regions:
             t = threading.Thread(target=self.dig, args=(region,))
@@ -32,31 +35,40 @@ class BaoTu:
             threads.append(t)
         for t in threads:
             t.join()
-        global_log.info("✅ [宝图] 任务全部完成")
+        global_log.info("✅ [宝图] 挖宝全部完成")
 
     def do(self, region: ScreenRegion):
+        if not self._running: return
         log.info("🔶 [宝图] 执行宝图任务")
         self.basicHandler.clean(region)
 
+        if not self._running: return
         pos = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission", 0.7)
         if pos:
             log.info("⚔️ [宝图] 找到宝图任务，点击开始")
             self.ocrPlayer.touch(pos, False, None)
             self.delay(3, 5)
         else:
+            if not self._running: return
             log.info("📅 [宝图] 进入日常活动尝试开始宝图")
             if self.basicHandler.goDailyActivity(region) is None:
                 log.error("❌ [宝图] 进入日常活动失败，任务终止")
                 return
+
+            if not self._running: return
             log.info("🔍 [宝图] 寻找“参加”按钮")
             pos = self.basicHandler.smart_find_pic_with_scroll(region, "baotu.canjia", "baotu.canjia_v2", 0.9, True,
                                                                self.basicHandler.get_center(region))
             if pos is None:
                 log.info("🚫 [宝图] 未找到参加按钮，任务可能已完成")
                 return
+
+            if not self._running: return
             log.info("▶️ [宝图] 点击参加")
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
+
+            if not self._running: return
             log.info("⌛ [宝图] 等待听听无妨按钮")
             pos = self.ocrPlayer.wait_find_by_pic_first(region, "baotu.start", 0.9)
             if not pos:
@@ -67,6 +79,7 @@ class BaoTu:
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
 
+            if not self._running: return
             pos = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission", 0.7)
             if not pos:
                 log.info("🚫 [宝图] 未找到任务栏宝图，领取失败")
@@ -75,6 +88,7 @@ class BaoTu:
             self.ocrPlayer.touch(pos, False, None)
             self.delay(30, 30)
 
+        if not self._running: return
         self.while_do(region)
         log.info("✅ [宝图] 任务完成")
         self.basicHandler.clean(region)
@@ -82,22 +96,23 @@ class BaoTu:
     def while_do(self, region: ScreenRegion):
         log.info("⏳ [宝图] 等待战斗和任务完成")
         times = 0
-        while True:
+        while self._running:
             in_battle = self.basicHandler.battling(region)
-            if  in_battle :
+            if in_battle:
                 times = 0
             self.delay(2, 2)
             times += 1
             if times > 15:
                 log.info("✅ [宝图] 30s没有触发战斗，任务已完成")
                 break
-
-
         log.info("✅ [宝图] 战斗和任务已完成")
 
     def dig(self, region: ScreenRegion):
+        if not self._running: return
         log.info("📦 [宝图] 开始挖宝")
         self.basicHandler.clean(region)
+
+        if not self._running: return
         pos = self.ocrPlayer.wait_find_by_pic_first(region, "common.bag", 0.7)
         if pos is None:
             log.info("🚫 [宝图] 未找到包裹图标，挖宝失败")
@@ -105,20 +120,25 @@ class BaoTu:
         self.ocrPlayer.touch(pos, False, None)
         self.delay()
 
+        if not self._running: return
         pos = self.ocrPlayer.find_by_pic_first(region, "common.clean_up")
         if pos:
             log.info("🧹 [宝图] 整理包裹")
             self.ocrPlayer.touch(pos, True, None)
             self.delay()
 
+        if not self._running: return
         pos = self.basicHandler.smart_find_bag_pic_with_scroll(region, "baotu.bag_baotu", None, 0.8, False,
                                                                self.basicHandler.get_center(region))
         if pos is None:
             log.info("🚫 [宝图] 包裹中无藏宝图，挖宝结束")
             return
+
         log.info("🗺️ [宝图] 双击藏宝图开始挖宝")
         self.ocrPlayer.doubleTouch(pos, True, None)
         self.delay()
+
+        if not self._running: return
         self.while_dig(region)
         log.info("✅ [宝图] 挖宝流程完成")
         self.basicHandler.clean(region)
@@ -126,7 +146,7 @@ class BaoTu:
     def while_dig(self, region: ScreenRegion):
         log.info("⏳ [宝图] 使用藏宝图中...")
         times = 0
-        while True:
+        while self._running:
             pos = self.ocrPlayer.find_by_pic_first(region, "baotu.use_baotu")
             if pos:
                 self.ocrPlayer.touch(pos, False, None)
