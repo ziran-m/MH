@@ -68,7 +68,7 @@ class BaoTu:
             self.ocrPlayer.doubleTouch(pos, True, None)
             self.delay()
 
-            pos = self.ocrPlayer.find_by_pic_first(region, "baotu.baotu_mission", 0.7)
+            pos = self.ocrPlayer.wait_find_by_pic_first(region, "baotu.baotu_mission", 0.7)
             if not pos:
                 log.info("🚫 [宝图] 未找到任务栏宝图，领取失败")
                 return

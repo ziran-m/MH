@@ -49,11 +49,10 @@ class Fuben:
                 global_log.info(f"▶️ [副本] 点击长安城图标 {pos}")
                 self.ocrPlayer.touch(pos, False, None)
                 self.delay()
-
+                pos = self.ocrPlayer.find_by_name_first(region, "百晓仙子", 0.9)
             else:
                 global_log.info("❌ [副本] 找不到乌巢禅师，无法继续")
                 return
-        pos = self.ocrPlayer.find_by_name_first(region, "百晓仙子", 0.9)
         global_log.info(f"▶️ [副本] 点击百晓仙子 {pos}")
         self.ocrPlayer.touch(pos, True, None)
         self.delay()
